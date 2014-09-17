@@ -197,7 +197,11 @@ run_specific_rebase () {
 	if test $ret -eq 0
 	then
 	        cecho hiblue "calling finish_rebase to commit" >&2
-		# git-reset-segment name
+		# fixme: what if "git rebase --abort"?
+		# Does that invoke this part?
+		# no. look below  (mmc!)
+		# fixme: the name is ....
+		git-reset-segment $(cat $GIT_DIR/.rebasing-segment)
 		finish_rebase
 	elif test $ret -eq 2 # special exit status for rebase -i
 	then
@@ -407,6 +411,7 @@ abort)
 	esac
 	output git reset --hard $orig_head
 	cecho hiblue "calling finish_rebase to abort & git-RESET-segment!" >&2
+	# mmc: look here!
 	git-reset-segment
 	finish_rebase
 	exit
