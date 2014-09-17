@@ -84,6 +84,7 @@ else
 	git am $git_am_opt --rebasing --resolvemsg="$resolvemsg" \
 		${gpg_sign_opt:+"$gpg_sign_opt"} <"$GIT_DIR/rebased-patches"
 	ret=$?
+
 	rm -f "$GIT_DIR/rebased-patches"
 fi
 
