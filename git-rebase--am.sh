@@ -81,11 +81,9 @@ else
 		return $?
 	fi
 
-	echo "mmmmmmmmmmmmmmmmmmmmmmm" >&2
 	git am $git_am_opt --rebasing --resolvemsg="$resolvemsg" \
 		${gpg_sign_opt:+"$gpg_sign_opt"} <"$GIT_DIR/rebased-patches"
 	ret=$?
-	set -x
 	rm -f "$GIT_DIR/rebased-patches"
 fi
 
