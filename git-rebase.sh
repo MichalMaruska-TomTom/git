@@ -201,8 +201,8 @@ run_specific_rebase () {
 		# Does that invoke this part?
 		# no. look below  (mmc!)
 		# fixme: the name is ....
-		if test -f $GIT_DIR/.rebasing-segment; then
-		    git-reset-segment $(cat $GIT_DIR/.rebasing-segment)
+		if test -f "$GIT_DIR/.rebasing-segment"; then
+		    git-reset-segment $(cat "$GIT_DIR/.rebasing-segment")
 		fi
 		finish_rebase
 	elif test $ret -eq 2 # special exit status for rebase -i
