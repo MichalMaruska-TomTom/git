@@ -54,7 +54,7 @@ LF='
 '
 ok_to_skip_pre_rebase=
 resolvemsg="
-$(gettext 'When you have resolved this problem, run "git rebase --continue".
+$(gettext 'When you have RESOLVED this problem, run "git rebase --continue".
 If you prefer to skip this patch, run "git rebase --skip" instead.
 To check out the original branch and stop rebasing, run "git rebase --abort".')
 "
@@ -175,6 +175,7 @@ You can run "git stash pop" or "git stash drop" at any time.
 }
 
 finish_rebase () {
+        echo "finish_rebase" >&2
 	if test -x "$GIT_DIR/hooks/post-rebase"
 	then
 		"$GIT_DIR/hooks/post-rebase" ${1+"$@"}
@@ -185,6 +186,7 @@ finish_rebase () {
 }
 
 run_specific_rebase () {
+	echo run_specific_rebase >&2
 	if [ "$interactive_rebase" = implied ]; then
 		GIT_EDITOR=:
 		export GIT_EDITOR
@@ -202,6 +204,8 @@ run_specific_rebase () {
 		apply_autostash &&
 		rm -rf "$state_dir" &&
 		die "Nothing to do"
+	else
+	        echo "rebase failed. State has been saved." >&2
 	fi
 	exit $ret
 }
