@@ -186,7 +186,7 @@ finish_rebase () {
 }
 
 run_specific_rebase () {
-	echo run_specific_rebase >&2
+	# echo run_specific_rebase >&2
 	if [ "$interactive_rebase" = implied ]; then
 		GIT_EDITOR=:
 		export GIT_EDITOR
