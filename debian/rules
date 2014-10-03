@@ -6,7 +6,8 @@ CC =gcc
 CPPFLAGS :=$(shell dpkg-buildflags --get CPPFLAGS)
 CFLAGS :=-Wall $(shell dpkg-buildflags --get CFLAGS) $(CPPFLAGS)
 LDFLAGS :=$(shell dpkg-buildflags --get LDFLAGS)
-STRIP =strip
+STRIP := :
+# strip --dry-run
 TEST =test
 OPTS =NO_OPENSSL=1 prefix=/usr gitexecdir=/usr/lib/git-core \
   libexecdir=/usr/lib/git-core \
