@@ -175,6 +175,9 @@ You can run "git stash pop" or "git stash drop" at any time.
 }
 
 finish_rebase () {
+	if test -x "$GIT_DIR/hooks/post-rebase"; then
+		"$GIT_DIR/hooks/post-rebase" ${1+"$@"}
+	fi
 	apply_autostash &&
 	git gc --auto &&
 	rm -rf "$state_dir"
@@ -399,6 +402,9 @@ abort)
 		;;
 	esac
 	output git reset --hard $orig_head
+	if test -x "$GIT_DIR/hooks/rebase-abort"; then
+		"$GIT_DIR/hooks/rebase-abort"
+	fi
 	finish_rebase
 	exit
 	;;
