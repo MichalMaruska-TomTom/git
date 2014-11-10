@@ -858,7 +858,10 @@ To restore the original branch and stop patching run \"\$cmdline --abort\"."
 		FIRSTLINE=""
 	fi
 
-	say "$(eval_gettext "Applying: \$FIRSTLINE")"
+	if test "x$GIT_QUIET" = x; then
+		/bin/echo -n "Applying: "
+		cecho hiyellow $FIRSTLINE
+	fi
 
 	case "$resolved" in
 	'')
