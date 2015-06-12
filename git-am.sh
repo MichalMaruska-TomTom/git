@@ -378,6 +378,7 @@ committer_date_is_author_date=
 ignore_date=
 allow_rerere_autoupdate=
 gpg_sign_opt=
+threeway=
 
 if test "$(git config --bool --get am.messageid)" = true
 then
@@ -387,6 +388,11 @@ fi
 if test "$(git config --bool --get am.keepcr)" = true
 then
     keepcr=t
+fi
+
+if test "$(git config --bool --get am.threeWay)" = true
+then
+    threeway=t
 fi
 
 while test $# != 0
@@ -400,6 +406,8 @@ it will be removed. Please do not use it anymore."
 		;;
 	-3|--3way)
 		threeway=t ;;
+	--no-3way)
+		threeway=f ;;
 	-s|--signoff)
 		sign=t ;;
 	-u|--utf8)
@@ -657,6 +665,8 @@ fi
 if test "$(cat "$dotest/threeway")" = t
 then
 	threeway=t
+else
+	threeway=f
 fi
 git_apply_opt=$(cat "$dotest/apply-opt")
 if test "$(cat "$dotest/sign")" = t
@@ -827,10 +837,10 @@ To restore the original branch and stop patching run \"\$cmdline --abort\"."
 		continue
 	fi
 
-	if test -x "$GIT_DIR"/hooks/applypatch-msg
+	hook="$(git rev-parse --git-path hooks/applypatch-msg)"
+	if test -x "$hook"
 	then
-		"$GIT_DIR"/hooks/applypatch-msg "$dotest/final-commit" ||
-		stop_here $this
+		"$hook" "$dotest/final-commit" || stop_here $this
 	fi
 
 	if test -f "$dotest/final-commit"
@@ -904,9 +914,10 @@ did you forget to use 'git add'?"
 		stop_here_user_resolve $this
 	fi
 
-	if test -x "$GIT_DIR"/hooks/pre-applypatch
+	hook="$(git rev-parse --git-path hooks/pre-applypatch)"
+	if test -x "$hook"
 	then
-		"$GIT_DIR"/hooks/pre-applypatch || stop_here $this
+		"$hook" || stop_here $this
 	fi
 
 	tree=$(git write-tree) &&
@@ -933,18 +944,17 @@ did you forget to use 'git add'?"
 		echo "$(cat "$dotest/original-commit") $commit" >> "$dotest/rewritten"
 	fi
 
-	if test -x "$GIT_DIR"/hooks/post-applypatch
-	then
-		"$GIT_DIR"/hooks/post-applypatch
-	fi
+	hook="$(git rev-parse --git-path hooks/post-applypatch)"
+	test -x "$hook" && "$hook"
 
 	go_next
 done
 
 if test -s "$dotest"/rewritten; then
     git notes copy --for-rewrite=rebase < "$dotest"/rewritten
-    if test -x "$GIT_DIR"/hooks/post-rewrite; then
-	"$GIT_DIR"/hooks/post-rewrite rebase < "$dotest"/rewritten
+    hook="$(git rev-parse --git-path hooks/post-rewrite)"
+    if test -x "$hook"; then
+	"$hook" rebase < "$dotest"/rewritten
     fi
 fi
 
