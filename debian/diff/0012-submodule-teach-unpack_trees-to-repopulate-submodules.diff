@@ -1,4 +1,4 @@
-From 38c65dea359a8c2f7f9706b1465034ac676441bd Mon Sep 17 00:00:00 2001
+From bf114847bba27b9819a2305efefef9144b3ab321 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Mon, 18 Jun 2012 22:11:45 +0200
 Subject: submodule: teach unpack_trees() to repopulate submodules
@@ -38,7 +38,7 @@ index 1eda8e9..5e18e46 100644
  	default:
  		return error("unknown file mode for %s in index", path);
 diff --git a/submodule.c b/submodule.c
-index 1f6a75a..5e745fe 100644
+index eed36c5..81ea37a 100644
 --- a/submodule.c
 +++ b/submodule.c
 @@ -389,6 +389,42 @@ int submodule_needs_update(const char *path)
@@ -84,22 +84,18 @@ index 1f6a75a..5e745fe 100644
  int depopulate_submodule(const char *path)
  {
  	struct strbuf dot_git = STRBUF_INIT;
-@@ -1174,6 +1210,7 @@ void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir)
+@@ -1172,18 +1208,19 @@ void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir)
  {
  	struct strbuf file_name = STRBUF_INIT;
  	struct strbuf rel_path = STRBUF_INIT;
 +	const char *real_git_dir = xstrdup(real_path(git_dir));
  	const char *real_work_tree = xstrdup(real_path(work_tree));
- 	FILE *fp;
  
-@@ -1182,15 +1219,15 @@ void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir)
- 	fp = fopen(file_name.buf, "w");
- 	if (!fp)
- 		die(_("Could not create git link %s"), file_name.buf);
--	fprintf(fp, "gitdir: %s\n", relative_path(git_dir, real_work_tree,
-+	fprintf(fp, "gitdir: %s\n", relative_path(real_git_dir, real_work_tree,
- 						  &rel_path));
- 	fclose(fp);
+ 	/* Update gitfile */
+ 	strbuf_addf(&file_name, "%s/.git", work_tree);
+ 	write_file(file_name.buf, 1, "gitdir: %s\n",
+-		   relative_path(git_dir, real_work_tree, &rel_path));
++		   relative_path(real_git_dir, real_work_tree, &rel_path));
  
  	/* Update core.worktree setting */
  	strbuf_reset(&file_name);
@@ -111,7 +107,7 @@ index 1f6a75a..5e745fe 100644
  						 &rel_path)))
  		die(_("Could not set core.worktree in %s"),
  		    file_name.buf);
-@@ -1198,4 +1235,5 @@ void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir)
+@@ -1191,4 +1228,5 @@ void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir)
  	strbuf_release(&file_name);
  	strbuf_release(&rel_path);
  	free((void *)real_work_tree);
@@ -161,10 +157,10 @@ index 79cdd34..711f55b 100755
  		reset_work_tree_to add_sub1 &&
  		(
 diff --git a/unpack-trees.c b/unpack-trees.c
-index 85e035f..68dac5f 100644
+index edbeaf9..e774d2c 100644
 --- a/unpack-trees.c
 +++ b/unpack-trees.c
-@@ -1370,6 +1370,7 @@ static int check_ok_to_remove(const char *name, int len, int dtype,
+@@ -1373,6 +1373,7 @@ static int check_ok_to_remove(const char *name, int len, int dtype,
  			      struct unpack_trees_options *o)
  {
  	const struct cache_entry *result;
@@ -172,7 +168,7 @@ index 85e035f..68dac5f 100644
  
  	/*
  	 * It may be that the 'lstat()' succeeded even though
-@@ -1412,6 +1413,24 @@ static int check_ok_to_remove(const char *name, int len, int dtype,
+@@ -1415,6 +1416,24 @@ static int check_ok_to_remove(const char *name, int len, int dtype,
  			return 0;
  	}
  

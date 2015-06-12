@@ -1,4 +1,4 @@
-From 559c7eb4ffceec002cb6044ea3145b867768c639 Mon Sep 17 00:00:00 2001
+From 3f6c46e1bb49508e67f8055ce24f79acfb67a7c0 Mon Sep 17 00:00:00 2001
 From: Jonathan Nieder <jrnieder@gmail.com>
 Date: Mon, 6 Jun 2011 04:37:14 -0500
 Subject: transport: expose git_tcp_connect() and friends in new tcp.h
@@ -13,18 +13,19 @@ library easier to understand before adding to it.
 Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
 ---
  Makefile  |   1 +
- connect.c | 274 +------------------------------------------------------------
- tcp.c     | 278 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- tcp.h     |   9 ++
- 4 files changed, 289 insertions(+), 273 deletions(-)
+ connect.c | 270 +------------------------------------------------------------
+ connect.h |   2 +
+ tcp.c     | 271 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tcp.h     |   9 +++
+ 5 files changed, 285 insertions(+), 268 deletions(-)
  create mode 100644 tcp.c
  create mode 100644 tcp.h
 
 diff --git a/Makefile b/Makefile
-index 06e5d24..d5e66fd 100644
+index 149f1c7..c53da9f 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -767,6 +767,7 @@ LIB_OBJS += string-list.o
+@@ -786,6 +786,7 @@ LIB_OBJS += string-list.o
  LIB_OBJS += submodule.o
  LIB_OBJS += symlinks.o
  LIB_OBJS += tag.o
@@ -33,7 +34,7 @@ index 06e5d24..d5e66fd 100644
  LIB_OBJS += trailer.o
  LIB_OBJS += transport.o
 diff --git a/connect.c b/connect.c
-index 062e133..a738120 100644
+index c0144d8..691aa3b 100644
 --- a/connect.c
 +++ b/connect.c
 @@ -6,6 +6,7 @@
@@ -44,8 +45,17 @@ index 062e133..a738120 100644
  #include "url.h"
  #include "string-list.h"
  #include "sha1-array.h"
-@@ -274,279 +275,6 @@ static enum protocol get_protocol(const char *name)
+@@ -273,7 +274,7 @@ static enum protocol get_protocol(const char *name)
  	die("I don't handle protocol '%s'", name);
+ }
+ 
+-static char *host_end(char **hoststart, int removebrackets)
++char *host_end(char **hoststart, int removebrackets)
+ {
+ 	char *host = *hoststart;
+ 	char *end;
+@@ -297,273 +298,6 @@ static char *host_end(char **hoststart, int removebrackets)
+ 	return end;
  }
  
 -#define STR_(s)	# s
@@ -54,22 +64,16 @@ index 062e133..a738120 100644
 -static void get_host_and_port(char **host, const char **port)
 -{
 -	char *colon, *end;
--
--	if (*host[0] == '[') {
--		end = strchr(*host + 1, ']');
--		if (end) {
--			*end = 0;
--			end++;
--			(*host)++;
--		} else
--			end = *host;
--	} else
--		end = *host;
+-	end = host_end(host, 1);
 -	colon = strchr(end, ':');
--
 -	if (colon) {
--		*colon = 0;
--		*port = colon + 1;
+-		long portnr = strtol(colon + 1, &end, 10);
+-		if (end != colon + 1 && *end == '\0' && 0 <= portnr && portnr < 65536) {
+-			*colon = 0;
+-			*port = colon + 1;
+-		} else if (!colon[1]) {
+-			*colon = 0;
+-		}
 -	}
 -}
 -
@@ -321,15 +325,26 @@ index 062e133..a738120 100644
 -	return proxy;
 -}
 -
- static const char *get_port_numeric(const char *p)
+ static char *get_port(char *host)
  {
  	char *end;
+diff --git a/connect.h b/connect.h
+index c41a685..e97a835 100644
+--- a/connect.h
++++ b/connect.h
+@@ -11,4 +11,6 @@ extern int parse_feature_request(const char *features, const char *feature);
+ extern const char *server_feature_value(const char *feature, int *len_ret);
+ extern int url_is_local_not_ssh(const char *url);
+ 
++extern char *host_end(char **hoststart, int removebrackets);
++
+ #endif
 diff --git a/tcp.c b/tcp.c
 new file mode 100644
-index 0000000..c914532
+index 0000000..a4ece54
 --- /dev/null
 +++ b/tcp.c
-@@ -0,0 +1,278 @@
+@@ -0,0 +1,271 @@
 +#include "cache.h"
 +#include "tcp.h"
 +#include "run-command.h"
@@ -341,22 +356,16 @@ index 0000000..c914532
 +void get_host_and_port(char **host, const char **port)
 +{
 +	char *colon, *end;
-+
-+	if (*host[0] == '[') {
-+		end = strchr(*host + 1, ']');
-+		if (end) {
-+			*end = 0;
-+			end++;
-+			(*host)++;
-+		} else
-+			end = *host;
-+	} else
-+		end = *host;
++	end = host_end(host, 1);
 +	colon = strchr(end, ':');
-+
 +	if (colon) {
-+		*colon = 0;
-+		*port = colon + 1;
++		long portnr = strtol(colon + 1, &end, 10);
++		if (end != colon + 1 && *end == '\0' && 0 <= portnr && portnr < 65536) {
++			*colon = 0;
++			*port = colon + 1;
++		} else if (!colon[1]) {
++			*colon = 0;
++		}
 +	}
 +}
 +
@@ -607,7 +616,6 @@ index 0000000..c914532
 +	fd[1] = proxy->in;  /* write to proxy stdin */
 +	return proxy;
 +}
-+
 diff --git a/tcp.h b/tcp.h
 new file mode 100644
 index 0000000..566afd4

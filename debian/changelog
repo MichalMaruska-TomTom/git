@@ -1,3 +1,14 @@
+git (1:2.4.3+next.20150611-1) experimental; urgency=low
+
+  * new snapshot, taken from upstream commit 4eafbef7.
+  * debian/diff/008-subtree-test-complete-chains.diff: new; subtree
+    test: add "&&" where appropriate to avoid clobbering early
+    failures with later successes (thx Jeff King for enforcing this
+    in test-lib.sh).
+  * update debian/copyright.
+
+ -- Jonathan Nieder <jrnieder@gmail.com>  Fri, 12 Jun 2015 16:39:11 -0700
+
 git (1:2.1.4+next.20141218-2) experimental; urgency=low
 
   * merge branch debian-sid.

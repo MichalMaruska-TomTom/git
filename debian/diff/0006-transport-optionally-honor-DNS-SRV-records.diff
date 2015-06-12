@@ -1,4 +1,4 @@
-From fa2e69a98ca3360aab29487588a27e6831d71288 Mon Sep 17 00:00:00 2001
+From 66db005a818351222a2c4f355b409e14502e4d7e Mon Sep 17 00:00:00 2001
 From: Jonathan Nieder <jrnieder@gmail.com>
 Date: Mon, 6 Jun 2011 04:46:20 -0500
 Subject: transport: optionally honor DNS SRV records
@@ -61,7 +61,7 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  create mode 100644 srv.h
 
 diff --git a/Makefile b/Makefile
-index 80c1f12..d3fa0e5 100644
+index c60509d..95049c1 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -164,6 +164,10 @@ all::
@@ -75,7 +75,7 @@ index 80c1f12..d3fa0e5 100644
  # Define NO_MMAP if you want to avoid mmap.
  #
  # Define NO_SYS_POLL_H if you don't have sys/poll.h.
-@@ -1119,6 +1123,11 @@ endif
+@@ -1149,6 +1153,11 @@ endif
  ifdef NEEDS_NSL
  	EXTLIBS += -lnsl
  endif
@@ -436,7 +436,7 @@ index 0000000..7cea4f4
 +
 +#endif
 diff --git a/tcp.c b/tcp.c
-index e6673e1..62747ca 100644
+index f81e98a..bbc5fd8 100644
 --- a/tcp.c
 +++ b/tcp.c
 @@ -2,6 +2,7 @@
@@ -447,7 +447,7 @@ index e6673e1..62747ca 100644
  
  #ifndef NO_IPV6
  #include "dns-ipv6.h"
-@@ -74,46 +75,85 @@ void git_locate_host(const char *hostname, char **ip_address,
+@@ -102,46 +103,85 @@ void git_lookup_hostname(struct hostinfo *hi)
  static int git_tcp_connect_sock(char *host, int flags)
  {
  	struct strbuf error_message = STRBUF_INIT;
@@ -560,7 +560,7 @@ index e6673e1..62747ca 100644
  		die("unable to connect to %s:\n%s", host, error_message.buf);
  
  	enable_keepalive(sockfd);
-@@ -121,8 +161,12 @@ static int git_tcp_connect_sock(char *host, int flags)
+@@ -149,8 +189,12 @@ static int git_tcp_connect_sock(char *host, int flags)
  	if (flags & CONNECT_VERBOSE)
  		fprintf(stderr, "done.\n");
  

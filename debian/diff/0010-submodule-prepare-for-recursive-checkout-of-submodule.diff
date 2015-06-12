@@ -1,4 +1,4 @@
-From 2f562bd5d938444cba066b49dcacff85f9cdc394 Mon Sep 17 00:00:00 2001
+From 860056a5be4207e5eb03532ea0c1d5b3362f3105 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Mon, 18 Jun 2012 22:17:59 +0200
 Subject: submodule: prepare for recursive checkout of submodules
@@ -17,7 +17,7 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  2 files changed, 39 insertions(+)
 
 diff --git a/submodule.c b/submodule.c
-index 0690dc5..8bf2281 100644
+index 15e90d1..a99597c 100644
 --- a/submodule.c
 +++ b/submodule.c
 @@ -16,6 +16,8 @@ static struct string_list config_name_for_path;
@@ -64,7 +64,7 @@ index 0690dc5..8bf2281 100644
  void show_submodule_summary(FILE *f, const char *path,
  		const char *line_prefix,
  		unsigned char one[20], unsigned char two[20],
-@@ -561,6 +591,12 @@ int push_unpushed_submodules(unsigned char new_sha1[20], const char *remotes_nam
+@@ -562,6 +592,12 @@ int push_unpushed_submodules(unsigned char new_sha1[20], const char *remotes_nam
  	return ret;
  }
  
@@ -98,5 +98,5 @@ index 7beec48..055918c 100644
  int fetch_populated_submodules(const struct argv_array *options,
  			       const char *prefix, int command_line_option,
 -- 
-2.1.0.rc2.206.gedb03e5
+2.2.0.rc0.207.ga3a616c
 

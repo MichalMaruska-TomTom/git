@@ -1,4 +1,4 @@
-From 91793bc25c5028fe804854fcddcd3c1fc633db5e Mon Sep 17 00:00:00 2001
+From 72620e3daf7c00c5e97b60db5573077f4bb6749e Mon Sep 17 00:00:00 2001
 From: Jonathan Nieder <jrnieder@gmail.com>
 Date: Mon, 6 Jun 2011 04:41:28 -0500
 Subject: tcp: unify ipv4 and ipv6 code paths
@@ -84,21 +84,21 @@ Improved-by: Erik Faye-Lund <kusmabite@gmail.com>
 ---
  Makefile   |   3 +
  dns-ipv4.c |  36 ++++++++++++
- dns-ipv4.h |  74 +++++++++++++++++++++++++
- dns-ipv6.c |  49 ++++++++++++++++
+ dns-ipv4.h |  76 +++++++++++++++++++++++++
+ dns-ipv6.c |  52 +++++++++++++++++
  dns-ipv6.h |  32 +++++++++++
- tcp.c      | 184 +++++++++++--------------------------------------------------
- 6 files changed, 225 insertions(+), 153 deletions(-)
+ tcp.c      | 185 ++++++++++---------------------------------------------------
+ 6 files changed, 229 insertions(+), 155 deletions(-)
  create mode 100644 dns-ipv4.c
  create mode 100644 dns-ipv4.h
  create mode 100644 dns-ipv6.c
  create mode 100644 dns-ipv6.h
 
 diff --git a/Makefile b/Makefile
-index d5e66fd..80c1f12 100644
+index c53da9f..c60509d 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -1253,6 +1253,9 @@ ifdef NEEDS_MODE_TRANSLATION
+@@ -1283,6 +1283,9 @@ ifdef NEEDS_MODE_TRANSLATION
  endif
  ifdef NO_IPV6
  	BASIC_CFLAGS += -DNO_IPV6
@@ -152,16 +152,14 @@ index 0000000..8820c9e
 +}
 diff --git a/dns-ipv4.h b/dns-ipv4.h
 new file mode 100644
-index 0000000..c63558b
+index 0000000..63d18cc
 --- /dev/null
 +++ b/dns-ipv4.h
-@@ -0,0 +1,74 @@
+@@ -0,0 +1,76 @@
 +#ifndef DNS_IPV4_H
 +#define DNS_IPV4_H
 +
-+#ifndef HOST_NAME_MAX
-+#define HOST_NAME_MAX 256
-+#endif
++#define ADDRBUFLEN 64	/* 46 for an ipv6 address, plus a little extra */
 +
 +struct ipv4_address {
 +	char **ap;
@@ -192,13 +190,17 @@ index 0000000..c63558b
 +	return inet_ntoa(*(struct in_addr *)&addr->sa.sin_addr);
 +}
 +
-+static inline char *dns_ip_address(const resolved_address *addr,
++static inline int dns_ip_address(struct strbuf *buf,
++					const resolved_address *addr,
 +					const resolver_result *ai)
 +{
-+	char addrbuf[HOST_NAME_MAX + 1];
-+	inet_ntop(ai->he->h_addrtype, &addr->sa.sin_addr,
-+		  addrbuf, sizeof(addrbuf));
-+	return xstrdup(addrbuf);
++	strbuf_reset(buf);
++	strbuf_grow(buf, ADDRBUFLEN);
++	if (!inet_ntop(ai->he->h_addrtype, &addr->sa.sin_addr,
++		  buf->buf, buf->len + 1))
++		return -1;
++	buf->len = strlen(buf->buf);
++	return 0;
 +}
 +
 +static inline int dns_fill_sockaddr_(char *ap,
@@ -232,15 +234,16 @@ index 0000000..c63558b
 +#endif
 diff --git a/dns-ipv6.c b/dns-ipv6.c
 new file mode 100644
-index 0000000..2129136
+index 0000000..e1ddf51
 --- /dev/null
 +++ b/dns-ipv6.c
-@@ -0,0 +1,49 @@
+@@ -0,0 +1,52 @@
 +#include "cache.h"
 +#include "dns-ipv6.h"
 +
-+#ifndef HOST_NAME_MAX
-+#define HOST_NAME_MAX 256
++/* from RFC 2553 */
++#ifndef NI_MAXHOST
++#define NI_MAXHOST 1025
 +#endif
 +
 +const char *dns_name(const resolved_address *i)
@@ -254,15 +257,17 @@ index 0000000..2129136
 +	return addr;
 +}
 +
-+char *dns_ip_address(const resolved_address *i, const resolver_result *ai0)
++int dns_ip_address(struct strbuf *buf, const resolved_address *i, const resolver_result *ai0)
 +{
 +	const struct addrinfo *ai = *i;
-+	char addrbuf[HOST_NAME_MAX + 1];
-+	struct sockaddr_in *sin_addr;
 +
-+	sin_addr = (void *)ai->ai_addr;
-+	inet_ntop(AF_INET, &sin_addr->sin_addr, addrbuf, sizeof(addrbuf));
-+	return xstrdup(addrbuf);
++	strbuf_reset(buf);
++	strbuf_grow(buf, NI_MAXHOST - 1);
++	if (getnameinfo(ai->ai_addr, ai->ai_addrlen, buf->buf, buf->len + 1,
++			NULL, 0, NI_NUMERICHOST))
++		return -1;
++	buf->len = strlen(buf->buf);
++	return 0;
 +}
 +
 +int dns_resolve(const char *host, const char *port, int flags,
@@ -287,7 +292,7 @@ index 0000000..2129136
 +}
 diff --git a/dns-ipv6.h b/dns-ipv6.h
 new file mode 100644
-index 0000000..4211c9e
+index 0000000..7021912
 --- /dev/null
 +++ b/dns-ipv6.h
 @@ -0,0 +1,32 @@
@@ -305,8 +310,8 @@ index 0000000..4211c9e
 +			resolver_result *res);
 +/* result is in static buffer */
 +extern const char *dns_name(const resolved_address *i);
-+/* result is in malloc'ed buffer */
-+extern char *dns_ip_address(const resolved_address *i,
++/* result is in buf */
++extern int dns_ip_address(struct strbuf *buf, const resolved_address *i,
 +				const resolver_result *ai);
 +
 +#define for_each_address(i, ai) \
@@ -324,7 +329,7 @@ index 0000000..4211c9e
 +
 +#endif
 diff --git a/tcp.c b/tcp.c
-index 243e0e5..2eb8597 100644
+index 8579b2a..f81e98a 100644
 --- a/tcp.c
 +++ b/tcp.c
 @@ -3,8 +3,10 @@
@@ -340,7 +345,7 @@ index 243e0e5..2eb8597 100644
  #endif
  
  #define STR_(s)	# s
-@@ -41,44 +43,27 @@ static void enable_keepalive(int sockfd)
+@@ -65,49 +67,31 @@ static void enable_keepalive(int sockfd)
  			strerror(errno));
  }
  
@@ -356,49 +361,53 @@ index 243e0e5..2eb8597 100644
 -	return addr;
 -}
 -
- void git_locate_host(const char *hostname, char **ip_address,
- 					char **canon_hostname)
- {
--	struct addrinfo hints;
--	struct addrinfo *ai;
--	int gai;
--	static char addrbuf[HOST_NAME_MAX + 1];
--	struct sockaddr_in *sin_addr;
-+	resolver_result ai;
-+	resolved_address i;
- 
--	memset(&hints, 0, sizeof(hints));
--	hints.ai_flags = AI_CANONNAME;
--
--	gai = getaddrinfo(hostname, NULL, &hints, &ai);
--	if (gai)
-+	if (dns_resolve(hostname, NULL,
-+			RESOLVE_CANONNAME | RESOLVE_FAIL_QUIETLY, &ai))
- 		return;
- 
--	sin_addr = (void *)ai->ai_addr;
--	inet_ntop(AF_INET, &sin_addr->sin_addr, addrbuf, sizeof(addrbuf));
--	free(*ip_address);
--	*ip_address = xstrdup(addrbuf);
-+	for_each_address(i, ai) {
-+		free(*ip_address);
-+		*ip_address = dns_ip_address(&i, &ai);
- 
--	free(*canon_hostname);
--	*canon_hostname = xstrdup(ai->ai_canonname ?
--				  ai->ai_canonname : *ip_address);
-+		free(*canon_hostname);
-+		*canon_hostname = xstrdup(dns_canonname(i, ai) ?
-+					dns_canonname(i, ai) : *ip_address);
-+		break;
-+	}
- 
--	freeaddrinfo(ai);
-+	dns_free(ai);
- }
- 
  /*
-@@ -89,46 +74,42 @@ static int git_tcp_connect_sock(char *host, int flags)
+  * Locate canonical hostname and its IP address.
+  */
+ void git_lookup_hostname(struct hostinfo *hi)
+ {
+ 	if (!hi->hostname_lookup_done && hi->hostname.len) {
+-		struct addrinfo hints;
+-		struct addrinfo *ai;
+-		int gai;
+-		static char addrbuf[HOST_NAME_MAX + 1];
++		resolver_result ai;
++		resolved_address i;
+ 
+-		memset(&hints, 0, sizeof(hints));
+-		hints.ai_flags = AI_CANONNAME;
++		if (dns_resolve(hi->hostname.buf, NULL,
++				RESOLVE_CANONNAME | RESOLVE_FAIL_QUIETLY, &ai))
++			return;
+ 
+-		gai = getaddrinfo(hi->hostname.buf, NULL, &hints, &ai);
+-		if (!gai) {
+-			struct sockaddr_in *sin_addr = (void *)ai->ai_addr;
+-
+-			inet_ntop(AF_INET, &sin_addr->sin_addr,
+-				  addrbuf, sizeof(addrbuf));
+-			strbuf_addstr(&hi->ip_address, addrbuf);
+-
+-			if (ai->ai_canonname)
++		for_each_address(i, ai) {
++			dns_ip_address(&hi->ip_address, &i, &ai);
++			if (dns_canonname(i, ai))
+ 				git_sanitize_client(&hi->canon_hostname,
+-						ai->ai_canonname);
++						    dns_canonname(i, ai));
+ 			else
+ 				strbuf_addbuf(&hi->canon_hostname,
+ 					      &hi->ip_address);
+-
+-			freeaddrinfo(ai);
++			break;
+ 		}
++
++		dns_free(ai);
+ 		hi->hostname_lookup_done = 1;
+ 	}
+ }
+@@ -120,46 +104,42 @@ static int git_tcp_connect_sock(char *host, int flags)
  	struct strbuf error_message = STRBUF_INIT;
  	int sockfd = -1;
  	const char *port = STR(DEFAULT_GIT_PORT);
@@ -459,37 +468,39 @@ index 243e0e5..2eb8597 100644
  
  	if (sockfd < 0)
  		die("unable to connect to %s:\n%s", host, error_message.buf);
-@@ -143,109 +124,6 @@ static int git_tcp_connect_sock(char *host, int flags)
+@@ -174,111 +154,6 @@ static int git_tcp_connect_sock(char *host, int flags)
  	return sockfd;
  }
  
 -#else /* NO_IPV6 */
 -
--void git_locate_host(const char *hostname, char **ip_address,
--					char **canon_hostname)
+-/*
+- * Locate canonical hostname and its IP address.
+- */
+-void git_lookup_hostname(struct hostinfo *hi)
 -{
--	struct hostent *hent;
--	struct sockaddr_in sa;
--	char **ap;
--	static char addrbuf[HOST_NAME_MAX + 1];
+-	if (!hi->hostname_lookup_done && hi->hostname.len) {
+-		struct hostent *hent;
+-		struct sockaddr_in sa;
+-		char **ap;
+-		static char addrbuf[HOST_NAME_MAX + 1];
 -
--	hent = gethostbyname(hostname);
--	if (!hent)
--		return;
+-		hent = gethostbyname(hi->hostname.buf);
+-		if (hent) {
+-			ap = hent->h_addr_list;
+-			memset(&sa, 0, sizeof sa);
+-			sa.sin_family = hent->h_addrtype;
+-			sa.sin_port = htons(0);
+-			memcpy(&sa.sin_addr, *ap, hent->h_length);
 -
--	ap = hent->h_addr_list;
--	memset(&sa, 0, sizeof sa);
--	sa.sin_family = hent->h_addrtype;
--	sa.sin_port = htons(0);
--	memcpy(&sa.sin_addr, *ap, hent->h_length);
+-			inet_ntop(hent->h_addrtype, &sa.sin_addr,
+-				  addrbuf, sizeof(addrbuf));
 -
--	inet_ntop(hent->h_addrtype, &sa.sin_addr,
--		  addrbuf, sizeof(addrbuf));
--
--	free(*canon_hostname);
--	*canon_hostname = xstrdup(hent->h_name);
--	free(*ip_address);
--	*ip_address = xstrdup(addrbuf);
+-			git_sanitize_client(&hi->canon_hostname, hent->h_name);
+-			strbuf_addstr(&hi->ip_address, addrbuf);
+-		}
+-		hi->hostname_lookup_done = 1;
+-	}
 -}
 -
 -/*

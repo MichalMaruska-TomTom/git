@@ -1,4 +1,4 @@
-From 482e9e81058022306ecad0e73833b0f5a87ca555 Mon Sep 17 00:00:00 2001
+From 5f6f90306e544a5fe8e72e5d48010e6a7c171731 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Wed, 13 Jun 2012 18:50:10 +0200
 Subject: Teach checkout to recursively checkout submodules
@@ -25,12 +25,12 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  14 files changed, 282 insertions(+), 5 deletions(-)
 
 diff --git a/Documentation/git-checkout.txt b/Documentation/git-checkout.txt
-index 33ad2ad..bcf1c4d 100644
+index d263a56..43a2399 100644
 --- a/Documentation/git-checkout.txt
 +++ b/Documentation/git-checkout.txt
-@@ -225,6 +225,14 @@ This means that you can use `git checkout -p` to selectively discard
- edits from your current working tree. See the ``Interactive Mode''
- section of linkgit:git-add[1] to learn how to operate the `--patch` mode.
+@@ -238,6 +238,14 @@ section of linkgit:git-add[1] to learn how to operate the `--patch` mode.
+ 	out anyway. In other words, the ref can be held by more than one
+ 	worktree.
  
 +--[no-]recurse-submodules::
 +	Using --recurse-submodules will update the content of all initialized
@@ -44,23 +44,23 @@ index 33ad2ad..bcf1c4d 100644
  	Branch to checkout; if it refers to a branch (i.e., a name that,
  	when prepended with "refs/heads/", is a valid ref), then that
 diff --git a/builtin/checkout.c b/builtin/checkout.c
-index 52d6cbb..d8df8e6 100644
+index 9b49f0e..52fb0e6 100644
 --- a/builtin/checkout.c
 +++ b/builtin/checkout.c
-@@ -21,6 +21,9 @@
- #include "submodule.h"
+@@ -22,6 +22,9 @@
  #include "argv-array.h"
+ #include "sigchain.h"
  
 +static const char *recurse_submodules_default = "off";
 +static int recurse_submodules = RECURSE_SUBMODULES_DEFAULT;
 +
  static const char * const checkout_usage[] = {
- 	N_("git checkout [options] <branch>"),
- 	N_("git checkout [options] [<branch>] -- <file>..."),
-@@ -1128,6 +1131,12 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
- 			 N_("do not limit pathspecs to sparse entries only")),
- 		OPT_HIDDEN_BOOL(0, "guess", &dwim_new_local_branch,
- 				N_("second guess 'git checkout no-such-branch'")),
+ 	N_("git checkout [<options>] <branch>"),
+ 	N_("git checkout [<options>] [<branch>] -- <file>..."),
+@@ -1370,6 +1373,12 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
+ 			   N_("check a branch out in a separate working directory")),
+ 		OPT_BOOL(0, "ignore-other-worktrees", &opts.ignore_other_worktrees,
+ 			 N_("do not check if another worktree is holding the given ref")),
 +		{ OPTION_CALLBACK, 0, "recurse-submodules", &recurse_submodules,
 +			    "checkout", "control recursive updating of submodules",
 +			    PARSE_OPT_OPTARG, option_parse_update_submodules },
@@ -70,7 +70,7 @@ index 52d6cbb..d8df8e6 100644
  		OPT_END(),
  	};
  
-@@ -1149,6 +1158,11 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
+@@ -1402,6 +1411,11 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
  		git_xmerge_config("merge.conflictstyle", conflict_style, NULL);
  	}
  
@@ -83,7 +83,7 @@ index 52d6cbb..d8df8e6 100644
  		die(_("-b, -B and --orphan are mutually exclusive"));
  
 diff --git a/submodule.c b/submodule.c
-index 91971b0..a86a8a7 100644
+index fd8e677..84bcf72 100644
 --- a/submodule.c
 +++ b/submodule.c
 @@ -375,6 +375,20 @@ int parse_update_recurse_submodules_arg(const char *opt, const char *arg)
@@ -178,7 +178,7 @@ index 20526ae..5e65e3c 100755
  
  test_done
 diff --git a/t/t2013-checkout-submodule.sh b/t/t2013-checkout-submodule.sh
-index 6847f75..4b419c1 100755
+index 6847f75..e5a2fe8 100755
 --- a/t/t2013-checkout-submodule.sh
 +++ b/t/t2013-checkout-submodule.sh
 @@ -5,17 +5,57 @@ test_description='checkout can handle submodules'
@@ -409,7 +409,7 @@ index 6847f75..4b419c1 100755
 +
 +test_expect_failure '"checkout --recurse-submodules" needs -f when submodule commit is not present (but does fail anyway)' '
 +	git checkout --recurse-submodules -b bogus_commit master &&
-+	git update-index --cacheinfo 160000 0123456789012345678901234567890123456789 submodule
++	git update-index --cacheinfo 160000 0123456789012345678901234567890123456789 submodule &&
 +	BOGUS_TREE=$(git write-tree) &&
 +	BOGUS_COMMIT=$(echo "bogus submodule commit" | git commit-tree $BOGUS_TREE) &&
 +	git commit -m "bogus submodule commit" &&

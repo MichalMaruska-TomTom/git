@@ -1,0 +1,46 @@
+From a9d3df032e7b4ba49b6f8d166910a5b32ce536dd Mon Sep 17 00:00:00 2001
+From: Jonathan Nieder <jrnieder@gmail.com>
+Date: Fri, 12 Jun 2015 16:28:17 -0700
+Subject: subtree test: complete &&-chains
+
+test-lib.sh's new &&-chaining checker found two missing &&s, one of
+which was hiding a test failure.
+
+Add the &&s and mark the broken test as known to fail so someone can
+investigate.
+
+Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
+---
+ contrib/subtree/t/t7900-subtree.sh | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/contrib/subtree/t/t7900-subtree.sh b/contrib/subtree/t/t7900-subtree.sh
+index 6309d12..7cd74d0 100755
+--- a/contrib/subtree/t/t7900-subtree.sh
++++ b/contrib/subtree/t/t7900-subtree.sh
+@@ -216,11 +216,11 @@ test_expect_success 'check split with --branch' '
+ 	check_equal ''"$(git rev-parse splitbr1)"'' "$spl1"
+ '
+ 
+-test_expect_success 'check hash of split' '
++test_expect_failure 'check hash of split' '
+ 	spl1=$(git subtree split --prefix subdir) &&
+ 	undo &&
+ 	git subtree split --prefix subdir --branch splitbr1test &&
+-	check_equal ''"$(git rev-parse splitbr1test)"'' "$spl1"
++	check_equal ''"$(git rev-parse splitbr1test)"'' "$spl1" &&
+ 	git checkout splitbr1test &&
+ 	new_hash=$(git rev-parse HEAD~2) &&
+ 	git checkout mainline &&
+@@ -269,7 +269,7 @@ test_expect_success 'add sub9' '
+ cd ..
+ 
+ test_expect_success 'split for sub8' '
+-        split2=''"$(git subtree split --annotate='"'*'"' --prefix subdir/ --rejoin)"''
++        split2=''"$(git subtree split --annotate='"'*'"' --prefix subdir/ --rejoin)"'' &&
+         git branch split2 "$split2"
+ '
+ 
+-- 
+2.2.0.rc0.207.ga3a616c
+
