@@ -331,7 +331,7 @@ Architecture: all
 Multi-Arch: foreign
 Depends: git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.),
  perl, apache2 | httpd | lynx-cur
-Pre-Depends: dpkg (>= 1.15.8~)
+Pre-Depends: dpkg (>= 1.16.1~)
 Recommends: libhttp-date-perl | libtime-modules-perl
 Breaks: apache2.2-common
 Suggests: httpd-cgi | libcgi-fast-perl, git-doc

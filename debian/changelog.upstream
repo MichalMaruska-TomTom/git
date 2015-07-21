@@ -1,8 +1,5 @@
-Version next; changes since v2.4.3:
+Version next; changes since v2.4.6:
 -----------------------------------
-
-Alex Henrie (1):
-      blame, log: format usage strings similarly to those in documentation
 
 Allen Hubbe (1):
       send-email: add sendmail email aliases format
@@ -18,8 +15,7 @@ David Aguilar (2):
       mergetool--lib: set IFS for difftool and mergetool
       mergetools: add winmerge as a builtin tool
 
-David Turner (4):
-      clean: only lstat files in pathspec
+David Turner (3):
       tree-walk: learn get_tree_entry_follow_symlinks
       sha1_name: get_sha1_with_context learns to follow symlinks
       cat-file: add --follow-symlinks to --batch
@@ -27,10 +23,7 @@ David Turner (4):
 Dennis Kaarsemaker (1):
       checkout: don't require a work tree when checking out into a new one
 
-Elia Pinto (1):
-      git-compat-util.h: implement a different ARRAY_SIZE macro for for safely deriving the size of array
-
-Eric Sunshine (16):
+Eric Sunshine (14):
       command-list: prepare machinery for upcoming "common groups" section
       generate-cmdlist: parse common group commands
       send-email: further document missing sendmail aliases functionality
@@ -43,17 +36,15 @@ Eric Sunshine (16):
       t9001: refactor sendmail aliases test infrastructure
       t9001: add sendmail aliases line continuation tests
       send-email: further warn about unsupported sendmail aliases features
-      ewah/bitmap: silence warning about MASK macro redefinition
       config.mak.uname: Darwin: define HAVE_GETDELIM for modern OS X releases
       configure: add getdelim() check
-      utf8: NO_ICONV: silence uninitialized variable warning
 
 Fredrik Medley (3):
       config.txt: clarify allowTipSHA1InWant with camelCase
       upload-pack: prepare to extend allow-tip-sha1-in-want
       upload-pack: optionally allow fetching reachable sha1
 
-Jeff King (51):
+Jeff King (29):
       strbuf_getwholeline: use getc macro
       git-compat-util: add fallbacks for unlocked stdio
       strbuf_getwholeline: use getc_unlocked
@@ -65,11 +56,7 @@ Jeff King (51):
       t1430: add another refs-escape test
       test-lib: turn on GIT_TEST_CHAIN_LINT by default
       remote.c: drop default_remote_name variable
-      http-backend: fix die recursion with custom handler
       progress: treat "no terminal" as being in the foreground
-      t5551: factor out tag creation
-      stash: complain about unknown flags
-      stash: recognize "--help" for subcommands
       remote.c: refactor setup of branch->merge list
       remote.c: drop "remote" pointer from "struct branch"
       remote.c: hoist branch.*.remote lookup out of remote_get_1
@@ -77,7 +64,6 @@ Jeff King (51):
       remote.c: hoist read_config into remote_get_1
       remote.c: introduce branch_get_upstream helper
       remote.c: report specific errors from branch_get_upstream
-      test_bitmap_walk: free bitmap with bitmap_free
       remote.c: untangle error logic in branch_get_upstream
       remote.c: return upstream name from stat_tracking_info
       remote.c: add branch_get_push
@@ -86,28 +72,8 @@ Jeff King (51):
       sha1_name: implement @{push} shorthand
       for-each-ref: use skip_prefix instead of starts_with
       for-each-ref: accept "%(push)" format
-      http-backend: spool ref negotiation requests to buffer
-      clone: use OPT_STRING_LIST for --reference
-      clone: reorder --dissociate and --reference options
       t7063: hide stderr from setup inside prereq
-      diff: accept color.diff.context as a synonym for "plain"
-      diff.h: rename DIFF_PLAIN color slot to DIFF_CONTEXT
-      read-cache.c: drop PROT_WRITE from mmap of index
-      config.c: fix mmap leak when writing config
-      config.c: avoid xmmap error messages
-      config.c: rewrite ENODEV into EISDIR when mmap fails
-      Makefile: drop dependency between git-instaweb and gitweb
-      Makefile: avoid timestamp updates to GIT-BUILD-OPTIONS
-      Makefile: silence perl/PM.stamp recipe
-      setup_git_directory: delay core.bare/core.worktree errors
-      add quieter versions of parse_{tree,commit}
-      silence broken link warnings with revs->ignore_missing_links
-      suppress errors on missing UNINTERESTING links
-      ewah: use less generic macro name
       index-pack: fix truncation of off_t in comparison
-
-Jim Hill (1):
-      sha1_file: pass empty buffer to index empty file
 
 Johannes Sixt (5):
       compat/mingw: stubs for getpgid() and tcgetpgrp()
@@ -119,7 +85,7 @@ Johannes Sixt (5):
 Jonathan Nieder (1):
       config: use error() instead of fprintf(stderr, ...)
 
-Junio C Hamano (38):
+Junio C Hamano (35):
       t2026: fix broken &&-chain
       test: validate prerequistes syntax
       merge: test the top-level merge driver
@@ -143,7 +109,6 @@ Junio C Hamano (38):
       Third batch for 2.5 cycle
       copy.c: make copy_fd() report its status silently
       filter_buffer_or_fd(): ignore EPIPE
-      t5407: use <<- to align the expected output
       Fourth batch for 2.5 cycle
       t4015: modernise style
       t4015: separate common setup and per-test expectation
@@ -151,10 +116,8 @@ Junio C Hamano (38):
       diff.c: add emit_del_line() and emit_context_line()
       diff.c: --ws-error-highlight=<kind> option
       t9001: write $HOME/, not ~/, to help shells without tilde expansion
-      xmmap(): drop "Out of memory?"
       apply: reject a hunk that does not do anything
       Sixth batch for 2.5 cycle
-      format-patch: do not feed tags to clear_commit_marks()
       ll-merge: pass the original path to external drivers
       The first half of the seventh batch for 2.5
       Second half of seventh batch
@@ -183,24 +146,17 @@ Luke Diamand (7):
 Luke Mewburn (1):
       progress: no progress in background
 
-Matthieu Moy (9):
+Matthieu Moy (5):
       t3701-add-interactive: simplify code
       add -p: demonstrate failure when running 'edit' after a split
       t3904-stash-patch: fix test description
       t3904-stash-patch: factor PERL prereq at the top of the file
       stash -p: demonstrate failure of split with mixed y/n
-      Documentation/log: clarify what --raw means
-      Documentation/log: clarify sha1 non-abbreviation in log --raw
-      rebase -i: demonstrate incorrect behavior of post-rewrite
-      rebase -i: fix post-rewrite hook with failed exec command
 
 Max Kirillov (3):
       checkout: do not fail if target is an empty directory
       git-common-dir: make "modules/" per-working-directory directory
       prune --worktrees: fix expire vs worktree existence condition
-
-Michael Coleman (1):
-      Documentation/git-commit: grammofix
 
 Michael Haggerty (62):
       lockfile: allow file locking to be retried with a timeout
@@ -336,8 +292,7 @@ Nguyễn Thái Ngọc Duy (62):
       index-pack: kill union delta_base to save memory
       pathspec: avoid the need of "--" when wildcard is used
 
-Paul Tan (11):
-      pull: remove --tags error in no merge candidates case
+Paul Tan (10):
       t5520: prevent field splitting in content comparisons
       t5520: test no merge candidates cases
       t5520: test for failure if index has unresolved entries
@@ -360,24 +315,15 @@ Remi Lespinet (3):
       t4150-am: refactor am -3 tests
       git-am: add am.threeWay config variable
 
-René Scharfe (3):
-      use file_exists() to check if a file exists in the worktree
-      clean: remove unused variable buf
-      dir: remove unused variable sb
-
-SZEDER Gábor (5):
+SZEDER Gábor (4):
       completion: remove redundant __git_compute_all_commands() call
       completion: remove credential helpers from porcelain commands
       completion: add a helper function to get config variables
       completion: simplify query for config variables
-      Documentation: include 'merge.branchdesc' for merge and config as well
 
-Stefan Beller (5):
+Stefan Beller (2):
       prefix_path(): unconditionally free results in the callers
       refs.c: remove lock_fd from struct ref_lock
-      submodule doc: reorder introductory paragraphs
-      glossary: add "remote", "submodule", "superproject"
-      Documentation/technical/pack-protocol: mention http as possible protocol
 
 Sébastien Guimmara (4):
       command-list.txt: fix whitespace inconsistency
@@ -416,6 +362,140 @@ brian m. carlson (11):
       patch-id: convert to use struct object_id
       apply: convert threeway_stage to object_id
       refs: convert struct ref_entry to use struct object_id
+
+
+Version v2.4.6; changes since v2.4.5:
+-------------------------------------
+
+Ariel Faigon (1):
+      git-completion.tcsh: fix redirect with noclobber
+
+Charles Bailey (1):
+      Fix definition of ARRAY_SIZE for non-gcc builds
+
+Eric Sunshine (2):
+      ewah/bitmap: silence warning about MASK macro redefinition
+      utf8: NO_ICONV: silence uninitialized variable warning
+
+Frans Klaver (1):
+      doc: format-patch: fix typo
+
+Jeff King (2):
+      ewah: use less generic macro name
+      Revert "stash: require a clean index to apply"
+
+Joe Cridge (1):
+      git-prompt.sh: document GIT_PS1_STATESEPARATOR
+
+Junio C Hamano (2):
+      format-patch: do not feed tags to clear_commit_marks()
+      Git 2.4.6
+
+Matthieu Moy (1):
+      Documentation/describe: improve one-line summary
+
+Michael Haggerty (2):
+      fsck_handle_reflog_sha1(): new function
+      fsck: report errors if reflog entries point at invalid objects
+
+Mike Edgar (1):
+      fetch-pack: check for shallow if depth given
+
+Panagiotis Astithas (1):
+      hooks/pre-auto-gc: adjust power checking for newer OS X
+
+Paul Tan (1):
+      t0302: "unreadable" test needs SANITY prereq
+
+
+Version v2.4.5; changes since v2.4.4:
+-------------------------------------
+
+Jeff King (13):
+      diff: accept color.diff.context as a synonym for "plain"
+      diff.h: rename DIFF_PLAIN color slot to DIFF_CONTEXT
+      read-cache.c: drop PROT_WRITE from mmap of index
+      config.c: fix mmap leak when writing config
+      config.c: avoid xmmap error messages
+      config.c: rewrite ENODEV into EISDIR when mmap fails
+      Makefile: drop dependency between git-instaweb and gitweb
+      Makefile: avoid timestamp updates to GIT-BUILD-OPTIONS
+      Makefile: silence perl/PM.stamp recipe
+      setup_git_directory: delay core.bare/core.worktree errors
+      add quieter versions of parse_{tree,commit}
+      silence broken link warnings with revs->ignore_missing_links
+      suppress errors on missing UNINTERESTING links
+
+Junio C Hamano (3):
+      t5407: use <<- to align the expected output
+      xmmap(): drop "Out of memory?"
+      Git 2.4.5
+
+Matthieu Moy (2):
+      rebase -i: demonstrate incorrect behavior of post-rewrite
+      rebase -i: fix post-rewrite hook with failed exec command
+
+Paul Tan (1):
+      pull: remove --tags error in no merge candidates case
+
+SZEDER Gábor (1):
+      Documentation: include 'merge.branchdesc' for merge and config as well
+
+Stefan Beller (1):
+      Documentation/technical/pack-protocol: mention http as possible protocol
+
+
+Version v2.4.4; changes since v2.4.3:
+-------------------------------------
+
+Alex Henrie (1):
+      blame, log: format usage strings similarly to those in documentation
+
+David Turner (1):
+      clean: only lstat files in pathspec
+
+Elia Pinto (1):
+      git-compat-util.h: implement a different ARRAY_SIZE macro for for safely deriving the size of array
+
+Jeff King (8):
+      http-backend: fix die recursion with custom handler
+      t5551: factor out tag creation
+      stash: complain about unknown flags
+      stash: recognize "--help" for subcommands
+      test_bitmap_walk: free bitmap with bitmap_free
+      http-backend: spool ref negotiation requests to buffer
+      clone: use OPT_STRING_LIST for --reference
+      clone: reorder --dissociate and --reference options
+
+Jim Hill (1):
+      sha1_file: pass empty buffer to index empty file
+
+Junio C Hamano (1):
+      Git 2.4.4
+
+Matthieu Moy (2):
+      Documentation/log: clarify what --raw means
+      Documentation/log: clarify sha1 non-abbreviation in log --raw
+
+Michael Coleman (1):
+      Documentation/git-commit: grammofix
+
+Michael J Gruber (3):
+      l10n: de.po: grammar fix
+      l10n: de.po: punctuation fixes
+      l10n: de.po: translation fix for fall-back to 3way merge
+
+Phillip Sz (1):
+      l10n: de.po: change error message from "sagen" to "Meinten Sie"
+
+René Scharfe (3):
+      use file_exists() to check if a file exists in the worktree
+      clean: remove unused variable buf
+      dir: remove unused variable sb
+
+Stefan Beller (2):
+      submodule doc: reorder introductory paragraphs
+      glossary: add "remote", "submodule", "superproject"
 
 
 Version v2.4.3; changes since v2.4.2:

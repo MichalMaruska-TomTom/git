@@ -1,3 +1,28 @@
+git (1:2.4.6+next.20141218-0.1) experimental; urgency=low
+
+  * merge branch debian-sid.
+
+ -- Jonathan Nieder <jrnieder@gmail.com>  Tue, 21 Jul 2015 12:11:31 -0700
+
+git (1:2.4.6-1) unstable; urgency=medium
+
+  * new upstream release (see RelNotes/2.[234].*.txt).
+  * debian/rules: use install-html target for git-subtree docs
+    (see #768795).
+  * gitweb: Pre-Depends: dpkg 1.16.1 for -noawait support.
+  * gitweb.apache2.conf: make configuration conditional on MIME
+    support (thx Uwe Storbeck; closes: #775236).
+
+ -- Jonathan Nieder <jrnieder@gmail.com>  Tue, 21 Jul 2015 12:08:09 -0700
+
+git (1:2.1.4-2.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Use interest-noawait triggers for gitweb to avoid a
+    trigger cycle.  (Closes: #774607)
+
+ -- Niels Thykier <niels@thykier.net>  Mon, 02 Feb 2015 19:42:37 +0100
+
 git (1:2.4.3+next.20150611-1) experimental; urgency=low
 
   * new snapshot, taken from upstream commit 4eafbef7.
