@@ -1,4 +1,4 @@
-From 5f6f90306e544a5fe8e72e5d48010e6a7c171731 Mon Sep 17 00:00:00 2001
+From 95716f20793fe2e53e23fbcbf91484666cb4b3dc Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Wed, 13 Jun 2012 18:50:10 +0200
 Subject: Teach checkout to recursively checkout submodules
@@ -25,10 +25,10 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  14 files changed, 282 insertions(+), 5 deletions(-)
 
 diff --git a/Documentation/git-checkout.txt b/Documentation/git-checkout.txt
-index d263a56..43a2399 100644
+index 63b739c..ff98c03 100644
 --- a/Documentation/git-checkout.txt
 +++ b/Documentation/git-checkout.txt
-@@ -238,6 +238,14 @@ section of linkgit:git-add[1] to learn how to operate the `--patch` mode.
+@@ -235,6 +235,14 @@ section of linkgit:git-add[1] to learn how to operate the `--patch` mode.
  	out anyway. In other words, the ref can be held by more than one
  	worktree.
  
@@ -44,12 +44,12 @@ index d263a56..43a2399 100644
  	Branch to checkout; if it refers to a branch (i.e., a name that,
  	when prepended with "refs/heads/", is a valid ref), then that
 diff --git a/builtin/checkout.c b/builtin/checkout.c
-index 9b49f0e..52fb0e6 100644
+index f71844a..d10def9 100644
 --- a/builtin/checkout.c
 +++ b/builtin/checkout.c
-@@ -22,6 +22,9 @@
- #include "argv-array.h"
- #include "sigchain.h"
+@@ -20,6 +20,9 @@
+ #include "resolve-undo.h"
+ #include "submodule.h"
  
 +static const char *recurse_submodules_default = "off";
 +static int recurse_submodules = RECURSE_SUBMODULES_DEFAULT;
@@ -57,8 +57,8 @@ index 9b49f0e..52fb0e6 100644
  static const char * const checkout_usage[] = {
  	N_("git checkout [<options>] <branch>"),
  	N_("git checkout [<options>] [<branch>] -- <file>..."),
-@@ -1370,6 +1373,12 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
- 			   N_("check a branch out in a separate working directory")),
+@@ -1225,6 +1228,12 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
+ 				N_("second guess 'git checkout <no-such-branch>'")),
  		OPT_BOOL(0, "ignore-other-worktrees", &opts.ignore_other_worktrees,
  			 N_("do not check if another worktree is holding the given ref")),
 +		{ OPTION_CALLBACK, 0, "recurse-submodules", &recurse_submodules,
@@ -70,7 +70,7 @@ index 9b49f0e..52fb0e6 100644
  		OPT_END(),
  	};
  
-@@ -1402,6 +1411,11 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
+@@ -1248,6 +1257,11 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
  		git_xmerge_config("merge.conflictstyle", conflict_style, NULL);
  	}
  
@@ -83,7 +83,7 @@ index 9b49f0e..52fb0e6 100644
  		die(_("-b, -B and --orphan are mutually exclusive"));
  
 diff --git a/submodule.c b/submodule.c
-index fd8e677..84bcf72 100644
+index b194f64..898ed25 100644
 --- a/submodule.c
 +++ b/submodule.c
 @@ -375,6 +375,20 @@ int parse_update_recurse_submodules_arg(const char *opt, const char *arg)
@@ -539,5 +539,5 @@ index d1e9fcc..39ff7b3 100755
  
  test_done
 -- 
-2.2.0.rc0.207.ga3a616c
+2.4.3.573.g4eafbef
 

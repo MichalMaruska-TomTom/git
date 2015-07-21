@@ -1,6 +1,6 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Contact: git@vger.kernel.org
-Source: https://git.kernel.org/cgit/git/git.git/snapshot/4eafbef7.tar.xz
+Source: https://git.kernel.org/cgit/git/git.git/snapshot/76e840be.tar.xz
 
 Files: *
 Copyright: © 2005-2015, Linus Torvalds and others.
@@ -26,7 +26,7 @@ Copyright: © 2005-2015, Paul Mackerras, et al.
 License: GPL-2+
 
 Files: gitk-git/po/bg.po
-Copyright: © 2014, Alexander Shopov <ash@kambanaria.org>
+Copyright: © 2014, 2015 Alexander Shopov <ash@kambanaria.org>
 License: GPL-2
 Comment: This file is distributed under the same license as the git package.
 

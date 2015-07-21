@@ -1,11 +1,355 @@
-Version next; changes since v2.4.6:
------------------------------------
+Version next; changes since v2.5.0-rc2:
+---------------------------------------
+
+Alex Henrie (1):
+      l10n: ca.po: update translation
+
+Alexander Shopov (1):
+      l10n: Updated Bulgarian translation of git (2355t,0f,0u)
+
+Antoine Delaite (3):
+      bisect: correction of typo
+      bisect: replace hardcoded "bad|good" by variables
+      bisect: simplify the addition of new bisect terms
+
+Charles Bailey (2):
+      test-parse-options: update to handle negative ints
+      parse-options: move unsigned long option parsing out of pack-objects.c
+
+David Turner (1):
+      log: add "log.follow" configuration variable
+
+Eric Sunshine (3):
+      Documentation/git-worktree: fix stale "git checkout --to" references
+      Documentation/git: fix stale "MULTIPLE CHECKOUT MODE" reference
+      config: rename "gc.pruneWorktreesExpire" to "gc.worktreePruneExpire"
+
+Erik Elfström (5):
+      setup: add gentle version of read_gitfile
+      setup: sanity check file size in read_gitfile_gently
+      t7300: add tests to document behavior of clean and nested git
+      p7300: add performance tests for clean
+      clean: improve performance when removing lots of directories
+
+Galan Rémi (3):
+      git-rebase -i: add command "drop" to remove a commit
+      git rebase -i: warn about removed commits
+      git rebase -i: add static check for commands and SHA-1
+
+Guillaume Pagès (4):
+      status: factor two rebase-related messages together
+      status: differentiate interactive from non-interactive rebases
+      status: give more information during rebase -i
+      status: add new tests for status during rebase -i
+
+Ilya Bobyr (1):
+      rev-parse --parseopt: allow [*=?!] in argument hints
+
+Jean-Noel Avila (1):
+      l10n: fr.po v2.5.0-rc0 (2355t)
+
+Jeff King (14):
+      pkt-line: simplify starts_with checks in packet tracing
+      pkt-line: tighten sideband PACK check when tracing
+      pkt-line: support tracing verbatim pack contents
+      cat-file: minor style fix in options list
+      cat-file: move batch_options definition to top of file
+      cat-file: add --buffer option
+      cat-file: stop returning value from batch_one_object
+      cat-file: split batch_one_object into two stages
+      cat-file: add --batch-all-objects option
+      read_gitfile_gently: fix use-after-free
+      cat-file: sort and de-dup output of --batch-all-objects
+      show-branch: use DATE_RELATIVE instead of magic number
+      convert "enum date_mode" into a struct
+      introduce "format" date-mode
+
+Jiang Xin (2):
+      l10n: git.pot: v2.5.0 round 1 (65 new, 15 removed)
+      l10n: zh_CN: for git v2.5.0 l10n round 1
+
+Johannes Schindelin (19):
+      fsck: introduce fsck options
+      fsck: introduce identifiers for fsck messages
+      fsck: provide a function to parse fsck message IDs
+      fsck: offer a function to demote fsck errors to warnings
+      fsck (receive-pack): allow demoting errors to warnings
+      fsck: report the ID of the error/warning
+      fsck: make fsck_ident() warn-friendly
+      fsck: make fsck_commit() warn-friendly
+      fsck: handle multiple authors in commits specially
+      fsck: make fsck_tag() warn-friendly
+      fsck: add a simple test for receive.fsck.<msg-id>
+      fsck: disallow demoting grave fsck errors to warnings
+      fsck: optionally ignore specific fsck issues completely
+      fsck: allow upgrading fsck warnings to errors
+      fsck: document the new receive.fsck.<msg-id> options
+      fsck: support demoting errors to warnings
+      fsck: introduce `git fsck --connectivity-only`
+      fsck: git receive-pack: support excluding objects from fsck'ing
+      fsck: support ignoring objects in `git fsck` via fsck.skiplist
+
+Junio C Hamano (4):
+      merge: drop 'git merge <message> HEAD <commit>' syntax
+      commit-slab: introduce slabname##_peek() function
+      Git 2.4.6
+      worktree: caution that this is still experimental
+
+Karsten Blees (1):
+      Documentation/i18n.txt: clarify character encoding support
+
+Karthik Nayak (23):
+      for-each-ref: extract helper functions out of grab_single_ref()
+      for-each-ref: clean up code
+      for-each-ref: rename 'refinfo' to 'ref_array_item'
+      for-each-ref: introduce new structures for better organisation
+      for-each-ref: introduce 'ref_array_clear()'
+      for-each-ref: rename some functions and make them public
+      for-each-ref: rename variables called sort to sorting
+      ref-filter: add 'ref-filter.h'
+      ref-filter: move code from 'for-each-ref'
+      for-each-ref: introduce filter_refs()
+      ref-filter: make 'ref_array_item' use a FLEX_ARRAY for refname
+      Documentation/tag: remove double occurance of "<pattern>"
+      t6302: for-each-ref tests for ref-filter APIs
+      tag: libify parse_opt_points_at()
+      ref-filter: implement '--points-at' option
+      for-each-ref: add '--points-at' option
+      ref-filter: add parse_opt_merge_filter()
+      ref-filter: implement '--merged' and '--no-merged' options
+      for-each-ref: add '--merged' and '--no-merged' options
+      parse-option: rename parse_opt_with_commit()
+      parse-options.h: add macros for '--contains' option
+      ref-filter: implement '--contains' option
+      for-each-ref: add '--contains' option
+
+Matthieu Moy (2):
+      Documentation/bisect: move getting help section to the end
+      bisect: don't mix option parsing and non-trivial code
+
+Michael Haggerty (25):
+      delete_ref(): move declaration to refs.h
+      remove_branches(): remove temporary
+      delete_ref(): handle special case more explicitly
+      delete_refs(): new function for the refs API
+      delete_refs(): make error message more generic
+      delete_refs(): bail early if the packed-refs file cannot be rewritten
+      prune_remote(): use delete_refs()
+      prune_refs(): use delete_refs()
+      repack_without_refs(): make function private
+      initial_ref_transaction_commit(): function for initial ref creation
+      refs: remove some functions from the module's public interface
+      initial_ref_transaction_commit(): check for duplicate refs
+      initial_ref_transaction_commit(): check for ref D/F conflicts
+      refs: move the remaining ref module declarations to refs.h
+      refs.h: add some parameter names to function declarations
+      check_branch_commit(): make first parameter const
+      update_ref(): don't read old reference value before delete
+      cmd_update_ref(): make logic more straightforward
+      delete_ref(): use the usual convention for old_sha1
+      Documentation/bisect: revise overall content
+      fast-import: add a get-mark command
+      Documentation/git-worktree: consistently use term "linked working tree"
+      Documentation/git-worktree: fix incorrect reference to file "locked"
+      Documentation/config: fix stale "git prune --worktree" reference
+      Documentation/git-worktree: wordsmith worktree-related manpages
+
+Michael Rappazzo (1):
+      git-rebase--interactive.sh: add config option for custom instruction format
+
+Mike Hommey (2):
+      Allow to control where the replace refs are looked for
+      fast-import: do less work when given "from" matches current branch head
+
+Nguyễn Thái Ngọc Duy (1):
+      setup: set env $GIT_WORK_TREE when work tree is set, like $GIT_DIR
+
+Paul Tan (24):
+      t4150: test applying StGit patch
+      am: teach StGit patch parser how to read from stdin
+      t4150: test applying StGit series
+      am: use gmtime() to parse mercurial patch date
+      am: teach mercurial patch parser how to read from stdin
+      parse-options-cb: implement parse_opt_passthru()
+      parse-options-cb: implement parse_opt_passthru_argv()
+      argv-array: implement argv_array_pushv()
+      pull: implement skeletal builtin pull
+      pull: implement fetch + merge
+      pull: pass verbosity, --progress flags to fetch and merge
+      pull: pass git-merge's options to git-merge
+      pull: pass git-fetch's options to git-fetch
+      pull: error on no merge candidates
+      pull: support pull.ff config
+      pull: check if in unresolved merge state
+      pull: fast-forward working tree if head is updated
+      pull: implement pulling into an unborn branch
+      pull: set reflog message
+      pull: teach git pull about --rebase
+      pull: configure --rebase via branch.<name>.rebase or pull.rebase
+      pull --rebase: exit early when the working directory is dirty
+      pull --rebase: error on no merge candidate cases
+      pull: remove redirection to git-pull.sh
+
+Peter Krefting (1):
+      l10n: sv.po: Update Swedish translation (2355t0f0u)
+
+Ralf Thielow (3):
+      l10n: de.po: fix translation of "head nodes"
+      l10n: de.po: translate "index" as "Index"
+      l10n: de.po: translate 65 new messages
+
+Remi Lespinet (10):
+      t9001-send-email: move script creation in a setup test
+      send-email: allow aliases in patch header and command script outputs
+      t9001-send-email: refactor header variable fields replacement
+      send-email: refactor address list process
+      send-email: allow use of aliases in the From field of --compose mode
+      send-email: minor code refactoring
+      send-email: reduce dependencies impact on parse_address_line
+      send-email: consider quote as delimiter instead of character
+      send-email: allow multiple emails using --cc, --to and --bcc
+      send-email: suppress meaningless whitespaces in from field
+
+René Scharfe (1):
+      diff: parse ws-error-highlight option more strictly
+
+Stefan Beller (1):
+      revision.c: remove unneeded check for NULL
+
+Trần Ngọc Quân (1):
+      l10n: Updated Vietnamese translation (2355t)
+
+brian m. carlson (7):
+      verify-tag: add tests
+      verify-tag: share code with verify-commit
+      verify-commit: add test for exit status on untrusted signature
+      gpg: centralize signature check
+      gpg: centralize printing signature buffers
+      verify-commit: add option to print raw gpg status information
+      verify-tag: add option to print raw gpg status information
+
+
+Version v2.5.0-rc2; changes since v2.5.0-rc1:
+---------------------------------------------
+
+Charles Bailey (3):
+      contrib/subtree: use tabs consitently for indentation in tests
+      contrib/subtree: fix broken &&-chains and revealed test error
+      contrib/subtree: small tidy-up to test
+
+Clemens Buchacher (1):
+      rebase: return non-zero error code if format-patch fails
+
+Enrique Tobis (1):
+      http: always use any proxy auth method available
+
+Eric Sunshine (23):
+      Documentation/git-checkout: fix incorrect worktree prune command
+      Documentation/git-worktree: associate options with commands
+      Documentation: move linked worktree description from checkout to worktree
+      Documentation/git-worktree: add BUGS section
+      Documentation/git-worktree: split technical info from general description
+      Documentation/git-worktree: add high-level 'lock' overview
+      Documentation/git-worktree: add EXAMPLES section
+      checkout: fix bug with --to and relative HEAD
+      checkout: relocate --to's "no branch specified" check
+      checkout: prepare_linked_checkout: drop now-unused 'new' argument
+      checkout: make --to unconditionally verbose
+      checkout: drop 'checkout_opts' dependency from prepare_linked_checkout
+      worktree: introduce "add" command
+      worktree: add --force option
+      worktree: add --detach option
+      worktree: add -b/-B options
+      tests: worktree: retrofit "checkout --to" tests for "worktree add"
+      checkout: retire --to option
+      checkout: require worktree unconditionally
+      worktree: extract basename computation to new function
+      worktree: add: make -b/-B default to HEAD when <branch> is omitted
+      worktree: add: auto-vivify new branch when <branch> is omitted
+      checkout: retire --ignore-other-worktrees in favor of --force
+
+Jeff King (4):
+      docs: clarify that --encoding can produce invalid sequences
+      for_each_packed_object: automatically open pack index
+      rev-list: disable --use-bitmap-index when pruning commits
+      check_and_freshen_file: fix reversed success-check
+
+Johannes Schindelin (2):
+      t3404: demonstrate CHERRY_PICK_HEAD bug
+      rebase -i: do not leave a CHERRY_PICK_HEAD file behind
+
+Junio C Hamano (6):
+      fsck: it is OK for a tag and a commit to lack the body
+      pager: do not leak "GIT_PAGER_IN_USE" to the pager
+      index-pack: fix allocation of sorted_by_pos array
+      The last minute bits of fixes
+      Revert "checkout: retire --ignore-other-worktrees in favor of --force"
+      Git 2.5.0-rc2
+
+Karsten Blees (2):
+      config.c: fix writing config files on Windows network shares
+      Makefile / racy-git.txt: clarify USE_NSEC prerequisites
+
+Lawrence Siebert (1):
+      rev-list: add --count to usage guide
+
+Matthieu Moy (3):
+      git-multimail: update to release 1.1.1
+      Documentation/branch: document -d --force and -m --force
+      Documentation/branch: document -M and -D in terms of --force
+
+Michael Haggerty (1):
+      strbuf: strbuf_read_file() should return ssize_t
+
+Nguyễn Thái Ngọc Duy (3):
+      checkout: don't check worktrees when not necessary
+      worktree: new place for "git prune --worktrees"
+      Add tests for wildcard "path vs ref" disambiguation
+
+Richard Hansen (2):
+      Revert "test-lib.sh: do tests for color support after changing HOME"
+      test-lib.sh: fix color support when tput needs ~/.terminfo
+
+Sebastian Schuberth (1):
+      clone: simplify string handling in guess_dir_name()
+
+Stefan Beller (1):
+      p5310: Fix broken && chain in performance test
+
+Torsten Bögershausen (1):
+      git-checkout.txt: document "git checkout <pathspec>" better
+
+
+Version v2.5.0-rc1; changes since v2.5.0-rc0:
+---------------------------------------------
+
+Joe Cridge (1):
+      git-prompt.sh: document GIT_PS1_STATESEPARATOR
+
+Junio C Hamano (1):
+      Git 2.5.0-rc1
+
+Matthieu Moy (1):
+      Documentation/describe: improve one-line summary
+
+Michael J Gruber (1):
+      mergetool-lib: fix default tool selection
+
+Mike Edgar (1):
+      fetch-pack: check for shallow if depth given
+
+
+Version v2.5.0-rc0; changes since v2.4.6:
+-----------------------------------------
 
 Allen Hubbe (1):
       send-email: add sendmail email aliases format
 
 Blair Holloway (1):
       git-p4: fix filetype detection on files opened exclusively
+
+Christian Neukirchen (1):
+      cvsimport: silence regex warning appearing in Perl 5.22.
 
 Danny Lin (2):
       contrib/subtree: there's no push --squash
@@ -44,7 +388,7 @@ Fredrik Medley (3):
       upload-pack: prepare to extend allow-tip-sha1-in-want
       upload-pack: optionally allow fetching reachable sha1
 
-Jeff King (29):
+Jeff King (30):
       strbuf_getwholeline: use getc macro
       git-compat-util: add fallbacks for unlocked stdio
       strbuf_getwholeline: use getc_unlocked
@@ -74,6 +418,7 @@ Jeff King (29):
       for-each-ref: accept "%(push)" format
       t7063: hide stderr from setup inside prereq
       index-pack: fix truncation of off_t in comparison
+      index-pack: avoid excessive re-reading of pack directory
 
 Johannes Sixt (5):
       compat/mingw: stubs for getpgid() and tcgetpgrp()
@@ -85,7 +430,7 @@ Johannes Sixt (5):
 Jonathan Nieder (1):
       config: use error() instead of fprintf(stderr, ...)
 
-Junio C Hamano (35):
+Junio C Hamano (38):
       t2026: fix broken &&-chain
       test: validate prerequistes syntax
       merge: test the top-level merge driver
@@ -103,7 +448,6 @@ Junio C Hamano (35):
       merge: decide if we auto-generate the message early in collect_parents()
       merge: handle FETCH_HEAD internally
       merge: deprecate 'git merge <message> HEAD <commit>' syntax
-      merge: drop 'git merge <message> HEAD <commit>' syntax
       First batch for 2.5 cycle
       Second batch for 2.5 cycle
       Third batch for 2.5 cycle
@@ -121,6 +465,10 @@ Junio C Hamano (35):
       ll-merge: pass the original path to external drivers
       The first half of the seventh batch for 2.5
       Second half of seventh batch
+      Eighth batch for 2.5
+      Revert "diff-lib.c: adjust position of i-t-a entries in diff"
+      Ninth batch for 2.5
+      Git 2.5.0-rc0
 
 Karthik Nayak (4):
       sha1_file: support reading from a loose object of unknown type
@@ -134,7 +482,7 @@ Lars Kellogg-Stedman (1):
 Lex Spoon (1):
       git-p4: use -m when running p4 changes
 
-Luke Diamand (7):
+Luke Diamand (11):
       git-p4: fix small bug in locked test scripts
       git-p4: small fix for locked-file-move-test
       git-p4: t9814: prevent --chain-lint failure
@@ -142,23 +490,28 @@ Luke Diamand (7):
       git-p4: add failing test for P4EDITOR handling
       git-p4: fix handling of multi-word P4EDITOR
       git-p4: tests: use test-chmtime in place of touch
+      git-p4: additional testing of --changes-block-size
+      git-p4: test with limited p4 server results
+      git-p4: add tests for non-numeric revision range
+      git-p4: fixing --changes-block-size handling
 
 Luke Mewburn (1):
       progress: no progress in background
 
-Matthieu Moy (5):
+Matthieu Moy (6):
       t3701-add-interactive: simplify code
       add -p: demonstrate failure when running 'edit' after a split
       t3904-stash-patch: fix test description
       t3904-stash-patch: factor PERL prereq at the top of the file
       stash -p: demonstrate failure of split with mixed y/n
+      git-multimail: update to release 1.1.0
 
 Max Kirillov (3):
       checkout: do not fail if target is an empty directory
       git-common-dir: make "modules/" per-working-directory directory
       prune --worktrees: fix expire vs worktree existence condition
 
-Michael Haggerty (62):
+Michael Haggerty (66):
       lockfile: allow file locking to be retried with a timeout
       lock_packed_refs(): allow retries when acquiring the packed-refs lock
       each_ref_fn: change to take an object_id parameter
@@ -221,6 +574,10 @@ Michael Haggerty (62):
       verify_lock(): report errors via a strbuf
       verify_lock(): do not capitalize error messages
       ref_transaction_commit(): do not capitalize error messages
+      t6301: new tests of for-each-ref error handling
+      for-each-ref: report broken references correctly
+      read_loose_refs(): simplify function logic
+      read_loose_refs(): treat NULL_SHA1 loose references as broken
 
 Miguel Torroja (1):
       p4: retrieve the right revision of the file in UTF-16 codepath
@@ -228,7 +585,7 @@ Miguel Torroja (1):
 Mike Hommey (1):
       show-branch: show all local heads when only giving one rev along --topics
 
-Nguyễn Thái Ngọc Duy (62):
+Nguyễn Thái Ngọc Duy (63):
       path.c: make get_pathname() return strbuf instead of static buffer
       path.c: make get_pathname() call sites return const char *
       git_snpath(): retire and replace with strbuf_git_path()
@@ -291,8 +648,9 @@ Nguyễn Thái Ngọc Duy (62):
       diff-lib.c: adjust position of i-t-a entries in diff
       index-pack: kill union delta_base to save memory
       pathspec: avoid the need of "--" when wildcard is used
+      read-cache: fix untracked cache invalidation when split-index is used
 
-Paul Tan (10):
+Paul Tan (16):
       t5520: prevent field splitting in content comparisons
       t5520: test no merge candidates cases
       t5520: test for failure if index has unresolved entries
@@ -303,6 +661,12 @@ Paul Tan (10):
       t5520: check reflog action in fast-forward merge
       pull: handle git-fetch's options as well
       pull: use git-rev-parse --parseopt for option parsing
+      am --skip: revert changes introduced by failed 3way merge
+      am -3: support 3way merge on unborn branch
+      am --skip: support skipping while on unborn branch
+      am --abort: revert changes introduced by failed 3way merge
+      am --abort: support aborting to unborn branch
+      am --abort: keep unrelated commits on unborn branch
 
 Quentin Neill (1):
       blame: add blame.showEmail configuration
@@ -315,11 +679,13 @@ Remi Lespinet (3):
       t4150-am: refactor am -3 tests
       git-am: add am.threeWay config variable
 
-SZEDER Gábor (4):
+SZEDER Gábor (6):
       completion: remove redundant __git_compute_all_commands() call
       completion: remove credential helpers from porcelain commands
       completion: add a helper function to get config variables
       completion: simplify query for config variables
+      completion: teach 'scissors' mode to 'git commit --cleanup='
+      commit: cope with scissors lines in commit message
 
 Stefan Beller (2):
       prefix_path(): unconditionally free results in the callers
