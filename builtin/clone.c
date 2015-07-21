@@ -147,6 +147,7 @@ static char *get_repo_path(const char *repo, int *is_bundle)
 static char *guess_dir_name(const char *repo, int is_bundle, int is_bare)
 {
 	const char *end = repo + strlen(repo), *start;
+	size_t len;
 	char *dir;
 
 	/*
@@ -173,20 +174,12 @@ static char *guess_dir_name(const char *repo, int is_bundle, int is_bare)
 	/*
 	 * Strip .{bundle,git}.
 	 */
-	if (is_bundle) {
-		if (end - start > 7 && !strncmp(end - 7, ".bundle", 7))
-			end -= 7;
-	} else {
-		if (end - start > 4 && !strncmp(end - 4, ".git", 4))
-			end -= 4;
-	}
+	strip_suffix(start, is_bundle ? ".bundle" : ".git" , &len);
 
-	if (is_bare) {
-		struct strbuf result = STRBUF_INIT;
-		strbuf_addf(&result, "%.*s.git", (int)(end - start), start);
-		dir = strbuf_detach(&result, NULL);
-	} else
-		dir = xstrndup(start, end - start);
+	if (is_bare)
+		dir = xstrfmt("%.*s.git", (int)len, start);
+	else
+		dir = xstrndup(start, len);
 	/*
 	 * Replace sequences of 'control' characters and whitespace
 	 * with one ascii space, remove leading and trailing spaces.
@@ -491,16 +484,26 @@ static void write_remote_refs(const struct ref *local_refs)
 {
 	const struct ref *r;
 
-	lock_packed_refs(LOCK_DIE_ON_ERROR);
+	struct ref_transaction *t;
+	struct strbuf err = STRBUF_INIT;
+
+	t = ref_transaction_begin(&err);
+	if (!t)
+		die("%s", err.buf);
 
 	for (r = local_refs; r; r = r->next) {
 		if (!r->peer_ref)
 			continue;
-		add_packed_ref(r->peer_ref->name, r->old_sha1);
+		if (ref_transaction_create(t, r->peer_ref->name, r->old_sha1,
+					   0, NULL, &err))
+			die("%s", err.buf);
 	}
 
-	if (commit_packed_refs())
-		die_errno("unable to overwrite old ref-pack file");
+	if (initial_ref_transaction_commit(t, &err))
+		die("%s", err.buf);
+
+	strbuf_release(&err);
+	ref_transaction_free(t);
 }
 
 static void write_followtags(const struct ref *refs, const char *msg)
