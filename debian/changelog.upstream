@@ -6,15 +6,47 @@ Antoine Delaite (3):
       bisect: replace hardcoded "bad|good" by variables
       bisect: simplify the addition of new bisect terms
 
-Charles Bailey (2):
+Charles Bailey (3):
       test-parse-options: update to handle negative ints
       parse-options: move unsigned long option parsing out of pack-objects.c
+      untracked: fix detection of uname(2) failure
 
-David Turner (1):
+David Turner (9):
       log: add "log.follow" configuration variable
+      unpack-trees: don't update files with CE_WT_REMOVE set
+      refs.c: add err arguments to reflog functions
+      refs: break out check for reflog autocreation
+      refs: new public ref function: safe_create_reflog
+      git-reflog: add exists command
+      refs: add REF_FORCE_CREATE_REFLOG flag
+      update-ref and tag: add --create-reflog arg
+      git-stash: use update-ref --create-reflog instead of creating files
 
-Eric Sunshine (1):
+Eric Sunshine (24):
       config: rename "gc.pruneWorktreesExpire" to "gc.worktreePruneExpire"
+      checkout: avoid resolving HEAD unnecessarily
+      checkout: name check_linked_checkouts() more meaningfully
+      checkout: improve die_if_checked_out() robustness
+      checkout: die_if_checked_out: simplify strbuf management
+      checkout: generalize die_if_checked_out() branch name argument
+      checkout: check_linked_checkout: improve "already checked out" aesthetic
+      checkout: check_linked_checkout: simplify symref parsing
+      checkout: teach check_linked_checkout() about symbolic link HEAD
+      branch: publish die_if_checked_out()
+      worktree: improve worktree setup message
+      worktree: simplify new branch (-b/-B) option checking
+      worktree: introduce options container
+      worktree: make --detach mutually exclusive with -b/-B
+      worktree: add: suppress auto-vivication with --detach and no <branch>
+      worktree: make branch creation distinct from worktree population
+      worktree: elucidate environment variables intended for child processes
+      worktree: add_worktree: construct worktree-population command locally
+      worktree: detect branch-name/detached and error conditions locally
+      worktree: make setup of new HEAD distinct from worktree population
+      worktree: avoid resolving HEAD unnecessarily
+      worktree: populate via "git reset --hard" rather than "git checkout"
+      checkout: drop intimate knowledge of newly created worktree
+      Documentation/git-worktree: fix broken 'linkgit' invocation
 
 Erik Elfström (5):
       setup: add gentle version of read_gitfile
@@ -37,7 +69,7 @@ Guillaume Pagès (4):
 Ilya Bobyr (1):
       rev-parse --parseopt: allow [*=?!] in argument hints
 
-Jeff King (14):
+Jeff King (15):
       pkt-line: simplify starts_with checks in packet tracing
       pkt-line: tighten sideband PACK check when tracing
       pkt-line: support tracing verbatim pack contents
@@ -52,6 +84,7 @@ Jeff King (14):
       show-branch: use DATE_RELATIVE instead of magic number
       convert "enum date_mode" into a struct
       introduce "format" date-mode
+      strbuf: make strbuf_addftime more robust
 
 Johannes Schindelin (19):
       fsck: introduce fsck options
@@ -147,7 +180,7 @@ Mike Hommey (2):
 Nguyễn Thái Ngọc Duy (1):
       setup: set env $GIT_WORK_TREE when work tree is set, like $GIT_DIR
 
-Paul Tan (24):
+Paul Tan (81):
       t4150: test applying StGit patch
       am: teach StGit patch parser how to read from stdin
       t4150: test applying StGit series
@@ -172,6 +205,63 @@ Paul Tan (24):
       pull --rebase: exit early when the working directory is dirty
       pull --rebase: error on no merge candidate cases
       pull: remove redirection to git-pull.sh
+      t4150: am.messageid really adds the message id
+      wrapper: implement xopen()
+      wrapper: implement xfopen()
+      builtin-am: implement skeletal builtin am
+      t4150: am fails if index is dirty
+      t4151: am --abort will keep dirty index intact
+      t4150: am refuses patches when paused
+      t4150: am --resolved fails if index has no changes
+      t4150: am --resolved fails if index has unmerged entries
+      t4150: am with applypatch-msg hook
+      t4150: am with pre-applypatch hook
+      t4150: am with post-applypatch hook
+      t4150: tests for am --[no-]scissors
+      t3418: non-interactive rebase --continue with rerere enabled
+      t3901: test git-am encoding conversion
+      builtin-am: implement patch queue mechanism
+      builtin-am: split out mbox/maildir patches with git-mailsplit
+      builtin-am: auto-detect mbox patches
+      builtin-am: extract patch and commit info with git-mailinfo
+      builtin-am: apply patch with git-apply
+      builtin-am: implement committing applied patch
+      builtin-am: refuse to apply patches if index is dirty
+      builtin-am: implement --resolved/--continue
+      builtin-am: don't parse mail when resuming
+      builtin-am: implement --skip
+      builtin-am: implement --abort
+      builtin-am: reject patches when there's a session in progress
+      builtin-am: implement -q/--quiet
+      builtin-am: exit with user friendly message on failure
+      builtin-am: implement -s/--signoff
+      cache-tree: introduce write_index_as_tree()
+      builtin-am: implement --3way, am.threeWay
+      builtin-am: implement --rebasing mode
+      builtin-am: bypass git-mailinfo when --rebasing
+      builtin-am: handle stray state directory
+      builtin-am: implement -u/--utf8
+      builtin-am: implement -k/--keep, --keep-non-patch
+      builtin-am: implement --[no-]message-id, am.messageid
+      builtin-am: support --keep-cr, am.keepcr
+      builtin-am: implement --[no-]scissors
+      builtin-am: pass git-apply's options to git-apply
+      builtin-am: implement --ignore-date
+      builtin-am: implement --committer-date-is-author-date
+      builtin-am: implement -S/--gpg-sign, commit.gpgsign
+      builtin-am: invoke post-rewrite hook
+      builtin-am: support automatic notes copying
+      builtin-am: invoke applypatch-msg hook
+      builtin-am: invoke pre-applypatch hook
+      builtin-am: invoke post-applypatch hook
+      builtin-am: rerere support
+      builtin-am: support and auto-detect StGit patches
+      builtin-am: support and auto-detect StGit series files
+      builtin-am: support and auto-detect mercurial patches
+      builtin-am: implement -i/--interactive
+      builtin-am: implement legacy -b/--binary option
+      builtin-am: check for valid committer ident
+      builtin-am: remove redirection to git-am.sh
 
 Remi Lespinet (10):
       t9001-send-email: move script creation in a setup test
@@ -184,6 +274,16 @@ Remi Lespinet (10):
       send-email: consider quote as delimiter instead of character
       send-email: allow multiple emails using --cc, --to and --bcc
       send-email: suppress meaningless whitespaces in from field
+
+SZEDER Gábor (2):
+      bash prompt: test untracked files status indicator with untracked dirs
+      bash prompt: faster untracked status indicator with untracked directories
+
+Simon A. Eugster (1):
+      checkout: document subtlety around --ours/--theirs
+
+Zoë Blade (1):
+      userdiff: add support for Fountain documents
 
 brian m. carlson (7):
       verify-tag: add tests

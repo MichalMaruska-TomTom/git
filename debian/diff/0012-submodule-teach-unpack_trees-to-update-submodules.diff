@@ -1,4 +1,4 @@
-From f00a24b88d2ea99c3d8452102269bd83bbaf07b4 Mon Sep 17 00:00:00 2001
+From 479781232c4471fc244cb50456a1cab83cdda003 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Fri, 5 Apr 2013 18:35:27 +0200
 Subject: submodule: teach unpack_trees() to update submodules
@@ -53,7 +53,7 @@ index 5e18e46..eb2384b 100644
  				return error("%s is a directory", path.buf);
  			remove_subtree(&path);
 diff --git a/submodule.c b/submodule.c
-index 81ea37a..fd8e677 100644
+index c4d08fb..b194f64 100644
 --- a/submodule.c
 +++ b/submodule.c
 @@ -462,6 +462,42 @@ int depopulate_submodule(const char *path)
@@ -188,7 +188,7 @@ index 3657ca8..b42ae91 100644
  		    const unsigned char a[20], const unsigned char b[20], int search);
  int find_unpushed_submodules(unsigned char new_sha1[20], const char *remotes_name,
 diff --git a/unpack-trees.c b/unpack-trees.c
-index e774d2c..87a8280 100644
+index 1f0267e..2a4fe20 100644
 --- a/unpack-trees.c
 +++ b/unpack-trees.c
 @@ -29,6 +29,9 @@ static const char *unpack_plumbing_errors[NB_UNPACK_TREES_ERROR_TYPES] = {
@@ -210,7 +210,7 @@ index e774d2c..87a8280 100644
  
  	if (advice_commit_before_merge)
  		msg = "The following untracked working tree files would be %s by %s:\n%%s"
-@@ -1225,17 +1230,15 @@ static int verify_uptodate_1(const struct cache_entry *ce,
+@@ -1229,17 +1234,15 @@ static int verify_uptodate_1(const struct cache_entry *ce,
  	if (!lstat(ce->name, &st)) {
  		int flags = CE_MATCH_IGNORE_VALID|CE_MATCH_IGNORE_SKIP_WORKTREE;
  		unsigned changed = ie_match_stat(o->src_index, ce, &st, flags);
@@ -237,7 +237,7 @@ index e774d2c..87a8280 100644
  		errno = 0;
  	}
  	if (errno == ENOENT)
-@@ -1258,6 +1261,36 @@ static int verify_uptodate_sparse(const struct cache_entry *ce,
+@@ -1262,6 +1265,36 @@ static int verify_uptodate_sparse(const struct cache_entry *ce,
  	return verify_uptodate_1(ce, o, ERROR_SPARSE_NOT_UPTODATE_FILE);
  }
  
@@ -274,7 +274,7 @@ index e774d2c..87a8280 100644
  static void invalidate_ce_path(const struct cache_entry *ce,
  			       struct unpack_trees_options *o)
  {
-@@ -1538,9 +1571,17 @@ static int merged_entry(const struct cache_entry *ce,
+@@ -1542,9 +1575,17 @@ static int merged_entry(const struct cache_entry *ce,
  			copy_cache_entry(merge, old);
  			update = 0;
  		} else {
@@ -308,5 +308,5 @@ index 36a73a6..bee8740 100644
  	ERROR_WOULD_LOSE_UNTRACKED_REMOVED,
  	ERROR_BIND_OVERLAP,
 -- 
-2.2.0.rc0.207.ga3a616c
+2.5.0.rc2.392.g76e840b
 
