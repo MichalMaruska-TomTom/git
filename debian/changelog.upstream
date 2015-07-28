@@ -1,11 +1,5 @@
-Version next; changes since v2.5.0-rc2:
----------------------------------------
-
-Alex Henrie (1):
-      l10n: ca.po: update translation
-
-Alexander Shopov (1):
-      l10n: Updated Bulgarian translation of git (2355t,0f,0u)
+Version next; changes since v2.5.0:
+-----------------------------------
 
 Antoine Delaite (3):
       bisect: correction of typo
@@ -19,9 +13,7 @@ Charles Bailey (2):
 David Turner (1):
       log: add "log.follow" configuration variable
 
-Eric Sunshine (3):
-      Documentation/git-worktree: fix stale "git checkout --to" references
-      Documentation/git: fix stale "MULTIPLE CHECKOUT MODE" reference
+Eric Sunshine (1):
       config: rename "gc.pruneWorktreesExpire" to "gc.worktreePruneExpire"
 
 Erik Elfström (5):
@@ -45,9 +37,6 @@ Guillaume Pagès (4):
 Ilya Bobyr (1):
       rev-parse --parseopt: allow [*=?!] in argument hints
 
-Jean-Noel Avila (1):
-      l10n: fr.po v2.5.0-rc0 (2355t)
-
 Jeff King (14):
       pkt-line: simplify starts_with checks in packet tracing
       pkt-line: tighten sideband PACK check when tracing
@@ -63,10 +52,6 @@ Jeff King (14):
       show-branch: use DATE_RELATIVE instead of magic number
       convert "enum date_mode" into a struct
       introduce "format" date-mode
-
-Jiang Xin (2):
-      l10n: git.pot: v2.5.0 round 1 (65 new, 15 removed)
-      l10n: zh_CN: for git v2.5.0 l10n round 1
 
 Johannes Schindelin (19):
       fsck: introduce fsck options
@@ -89,11 +74,9 @@ Johannes Schindelin (19):
       fsck: git receive-pack: support excluding objects from fsck'ing
       fsck: support ignoring objects in `git fsck` via fsck.skiplist
 
-Junio C Hamano (4):
+Junio C Hamano (2):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       commit-slab: introduce slabname##_peek() function
-      Git 2.4.6
-      worktree: caution that this is still experimental
 
 Karsten Blees (1):
       Documentation/i18n.txt: clarify character encoding support
@@ -190,14 +173,6 @@ Paul Tan (24):
       pull --rebase: error on no merge candidate cases
       pull: remove redirection to git-pull.sh
 
-Peter Krefting (1):
-      l10n: sv.po: Update Swedish translation (2355t0f0u)
-
-Ralf Thielow (3):
-      l10n: de.po: fix translation of "head nodes"
-      l10n: de.po: translate "index" as "Index"
-      l10n: de.po: translate 65 new messages
-
 Remi Lespinet (10):
       t9001-send-email: move script creation in a setup test
       send-email: allow aliases in patch header and command script outputs
@@ -210,15 +185,6 @@ Remi Lespinet (10):
       send-email: allow multiple emails using --cc, --to and --bcc
       send-email: suppress meaningless whitespaces in from field
 
-René Scharfe (1):
-      diff: parse ws-error-highlight option more strictly
-
-Stefan Beller (1):
-      revision.c: remove unneeded check for NULL
-
-Trần Ngọc Quân (1):
-      l10n: Updated Vietnamese translation (2355t)
-
 brian m. carlson (7):
       verify-tag: add tests
       verify-tag: share code with verify-commit
@@ -227,6 +193,73 @@ brian m. carlson (7):
       gpg: centralize printing signature buffers
       verify-commit: add option to print raw gpg status information
       verify-tag: add option to print raw gpg status information
+
+
+Version v2.5.0; changes since v2.5.0-rc3:
+-----------------------------------------
+
+Junio C Hamano (4):
+      Revert "git-am: add am.threeWay config variable"
+      RelNotes: am.threeWay does not exist (yet)
+      Git 2.4.7
+      Git 2.5
+
+
+Version v2.5.0-rc3; changes since v2.5.0-rc2:
+---------------------------------------------
+
+Alex Henrie (2):
+      l10n: ca.po: update translation
+      l10n: ca.po: update translation
+
+Alexander Shopov (2):
+      l10n: Updated Bulgarian translation of git (2355t,0f,0u)
+      l10n: Updated Bulgarian translation of git (2359t,0f,0u)
+
+Dimitriy Ryazantcev (1):
+      l10n: ru.po: update Russian translation
+
+Eric Sunshine (2):
+      Documentation/git-worktree: fix stale "git checkout --to" references
+      Documentation/git: fix stale "MULTIPLE CHECKOUT MODE" reference
+
+Jean-Noel Avila (2):
+      l10n: fr.po v2.5.0-rc0 (2355t)
+      l10n: fr v2.5.0 round 2 (2359t)
+
+Jiang Xin (4):
+      l10n: git.pot: v2.5.0 round 1 (65 new, 15 removed)
+      l10n: zh_CN: for git v2.5.0 l10n round 1
+      l10n: git.pot: v2.5.0 round 2 (9 new, 5 removed)
+      l10n: zh_CN: for git v2.5.0 l10n round 2
+
+Junio C Hamano (3):
+      Git 2.4.6
+      worktree: caution that this is still experimental
+      Git 2.5.0-rc3
+
+Peter Krefting (2):
+      l10n: sv.po: Update Swedish translation (2355t0f0u)
+      l10n: sv.po: Update Swedish translation (2359t0f0u)
+
+Ralf Thielow (4):
+      l10n: de.po: fix translation of "head nodes"
+      l10n: de.po: translate "index" as "Index"
+      l10n: de.po: translate 65 new messages
+      l10n: de.po: translate 9 new messages
+
+René Scharfe (1):
+      diff: parse ws-error-highlight option more strictly
+
+Stefan Beller (1):
+      revision.c: remove unneeded check for NULL
+
+Tony Finch (1):
+      gitweb: fix typo in man page
+
+Trần Ngọc Quân (2):
+      l10n: Updated Vietnamese translation (2355t)
+      l10n: Updated Vietnamese translation (2359t)
 
 
 Version v2.5.0-rc2; changes since v2.5.0-rc1:
@@ -339,7 +372,7 @@ Mike Edgar (1):
       fetch-pack: check for shallow if depth given
 
 
-Version v2.5.0-rc0; changes since v2.4.6:
+Version v2.5.0-rc0; changes since v2.4.7:
 -----------------------------------------
 
 Allen Hubbe (1):
@@ -388,7 +421,7 @@ Fredrik Medley (3):
       upload-pack: prepare to extend allow-tip-sha1-in-want
       upload-pack: optionally allow fetching reachable sha1
 
-Jeff King (30):
+Jeff King (29):
       strbuf_getwholeline: use getc macro
       git-compat-util: add fallbacks for unlocked stdio
       strbuf_getwholeline: use getc_unlocked
@@ -418,7 +451,6 @@ Jeff King (30):
       for-each-ref: accept "%(push)" format
       t7063: hide stderr from setup inside prereq
       index-pack: fix truncation of off_t in comparison
-      index-pack: avoid excessive re-reading of pack directory
 
 Johannes Sixt (5):
       compat/mingw: stubs for getpgid() and tcgetpgrp()
@@ -728,6 +760,47 @@ brian m. carlson (11):
       patch-id: convert to use struct object_id
       apply: convert threeway_stage to object_id
       refs: convert struct ref_entry to use struct object_id
+
+
+Version v2.4.7; changes since v2.4.6:
+-------------------------------------
+
+Clemens Buchacher (1):
+      rebase: return non-zero error code if format-patch fails
+
+Enrique Tobis (1):
+      http: always use any proxy auth method available
+
+Jeff King (4):
+      index-pack: avoid excessive re-reading of pack directory
+      docs: clarify that --encoding can produce invalid sequences
+      rev-list: disable --use-bitmap-index when pruning commits
+      check_and_freshen_file: fix reversed success-check
+
+Junio C Hamano (3):
+      fsck: it is OK for a tag and a commit to lack the body
+      pager: do not leak "GIT_PAGER_IN_USE" to the pager
+      Git 2.4.7
+
+Karsten Blees (1):
+      config.c: fix writing config files on Windows network shares
+
+Lawrence Siebert (1):
+      rev-list: add --count to usage guide
+
+Matthieu Moy (2):
+      Documentation/branch: document -d --force and -m --force
+      Documentation/branch: document -M and -D in terms of --force
+
+Michael Haggerty (1):
+      strbuf: strbuf_read_file() should return ssize_t
+
+Richard Hansen (2):
+      Revert "test-lib.sh: do tests for color support after changing HOME"
+      test-lib.sh: fix color support when tput needs ~/.terminfo
+
+Torsten Bögershausen (1):
+      git-checkout.txt: document "git checkout <pathspec>" better
 
 
 Version v2.4.6; changes since v2.4.5:
