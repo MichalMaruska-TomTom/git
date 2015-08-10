@@ -46,11 +46,12 @@ Documentation for older releases are available here:
 * link:v2.5.0/git.html[documentation for release 2.5]
 
 * release notes for
-  link:RelNotes/2.5.0.txt[2.5],
+  link:RelNotes/2.5.0.txt[2.5].
 
-* link:v2.4.7/git.html[documentation for release 2.4.7]
+* link:v2.4.8/git.html[documentation for release 2.4.8]
 
 * release notes for
+  link:RelNotes/2.4.8.txt[2.4.8],
   link:RelNotes/2.4.7.txt[2.4.7],
   link:RelNotes/2.4.6.txt[2.4.6],
   link:RelNotes/2.4.5.txt[2.4.5],
@@ -780,7 +781,7 @@ The Git Repository
 ~~~~~~~~~~~~~~~~~~
 These environment variables apply to 'all' core Git commands. Nb: it
 is worth noting that they may be used/overridden by SCMS sitting above
-Git so take care if using Cogito etc.
+Git so take care if using a foreign front-end.
 
 'GIT_INDEX_FILE'::
 	This environment allows the specification of an alternate
