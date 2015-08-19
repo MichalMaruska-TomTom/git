@@ -14,10 +14,13 @@ Charles Bailey (3):
       parse-options: move unsigned long option parsing out of pack-objects.c
       untracked: fix detection of uname(2) failure
 
+Clemens Buchacher (1):
+      git_open_noatime: return with errno=0 on success
+
 David Aguilar (1):
       contrib/subtree: ignore log.date configuration
 
-David Turner (16):
+David Turner (20):
       log: add "log.follow" configuration variable
       unpack-trees: don't update files with CE_WT_REMOVE set
       refs.c: add err arguments to reflog functions
@@ -34,14 +37,42 @@ David Turner (16):
       pseudorefs: create and use pseudoref update and delete functions
       bisect: use update_ref
       sequencer: replace write_cherry_pick_head with update_ref
+      untracked-cache: support sparse checkout
+      worktrees: add find_shared_symref
+      notes: handle multiple worktrees
+      pseudoref: check return values from read_ref()
 
-Eric Sunshine (6):
+Eric Sunshine (30):
       config: rename "gc.pruneWorktreesExpire" to "gc.worktreePruneExpire"
+      checkout: avoid resolving HEAD unnecessarily
+      checkout: name check_linked_checkouts() more meaningfully
+      checkout: improve die_if_checked_out() robustness
+      checkout: die_if_checked_out: simplify strbuf management
+      checkout: generalize die_if_checked_out() branch name argument
+      checkout: check_linked_checkout: improve "already checked out" aesthetic
+      checkout: check_linked_checkout: simplify symref parsing
+      checkout: teach check_linked_checkout() about symbolic link HEAD
+      branch: publish die_if_checked_out()
+      worktree: improve worktree setup message
+      worktree: simplify new branch (-b/-B) option checking
+      worktree: introduce options container
+      worktree: make --detach mutually exclusive with -b/-B
+      worktree: add: suppress auto-vivication with --detach and no <branch>
+      worktree: make branch creation distinct from worktree population
+      worktree: elucidate environment variables intended for child processes
+      worktree: add_worktree: construct worktree-population command locally
+      worktree: detect branch-name/detached and error conditions locally
+      worktree: make setup of new HEAD distinct from worktree population
+      worktree: avoid resolving HEAD unnecessarily
+      worktree: populate via "git reset --hard" rather than "git checkout"
+      checkout: drop intimate knowledge of newly created worktree
+      Documentation/git-worktree: fix broken 'linkgit' invocation
       Documentation/git: drop outdated Cogito reference
       Documentation/git-tools: improve discoverability of Git wiki
       Documentation/git-tools: fix item text formatting
       Documentation/git-tools: drop references to defunct tools
       Documentation/git-tools: retire manually-maintained list
+      Documentation/config: mention "now" and "never" for 'expire' settings
 
 Erik Elfström (5):
       setup: add gentle version of read_gitfile
@@ -68,7 +99,7 @@ Jacob Keller (2):
       refs: cleanup comments regarding check_refname_component()
       refs: loosen restriction on wildcard "*" refspecs
 
-Jeff King (15):
+Jeff King (39):
       pkt-line: simplify starts_with checks in packet tracing
       pkt-line: tighten sideband PACK check when tracing
       pkt-line: support tracing verbatim pack contents
@@ -84,9 +115,36 @@ Jeff King (15):
       convert "enum date_mode" into a struct
       introduce "format" date-mode
       strbuf: make strbuf_addftime more robust
+      docs/config.txt: reorder hideRefs config
+      refs: support negative transfer.hideRefs
+      test-lib: turn off "-x" tracing during chain-lint check
+      test-lib: disable trace when test is not verbose
+      clone: add tests for output directory
+      clone: use computed length in guess_dir_name
+      cache.h: clarify documentation for git_path, et al
+      cache.h: complete set of git_path_submodule helpers
+      t5700: modernize style
+      add_to_alternates_file: don't add duplicate entries
+      prefer git_pathdup to git_path in some possibly-dangerous cases
+      prefer mkpathdup to mkpath in assignments
+      remote.c: drop extraneous local variable from migrate_file
+      refs.c: remove extra git_path calls from read_loose_refs
+      path.c: drop git_path_submodule
+      refs.c: simplify strbufs in reflog setup and writing
+      refs.c: avoid repeated git_path calls in rename_tmp_log
+      refs.c: avoid git_path assignment in lock_ref_sha1_basic
+      refs.c: remove_empty_directories can take a strbuf
+      find_hook: keep our own static buffer
+      get_repo_path: refactor path-allocation
+      memoize common git-path "constant" files
+      vreportf: report to arbitrary filehandles
+      vreportf: avoid intermediate buffer
 
 Jiang Xin (1):
       receive-pack: crash when checking with non-exist HEAD
+
+Jim Hill (1):
+      strbuf_read(): skip unnecessary strbuf_grow() at eof
 
 Johannes Schindelin (19):
       fsck: introduce fsck options
@@ -109,12 +167,19 @@ Johannes Schindelin (19):
       fsck: git receive-pack: support excluding objects from fsck'ing
       fsck: support ignoring objects in `git fsck` via fsck.skiplist
 
-Junio C Hamano (5):
+Johannes Sixt (2):
+      t7300-clean: require POSIXPERM for chmod 0 test
+      t2019: skip test requiring '*' in a file name non Windows
+
+Junio C Hamano (8):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       commit-slab: introduce slabname##_peek() function
       builtin/send-pack.c: respect user.signingkey
       Git 2.4.8
       First batch for 2.6
+      sha1_file.c: rename move_temp_to_file() to finalize_object_file()
+      Second batch for 2.6
+      Third batch for 2.6
 
 Karsten Blees (1):
       Documentation/i18n.txt: clarify character encoding support
@@ -144,11 +209,15 @@ Karthik Nayak (23):
       ref-filter: implement '--contains' option
       for-each-ref: add '--contains' option
 
-Matthieu Moy (2):
+Kevin Daudt (1):
+      pull: allow dirty tree when rebase.autostash enabled
+
+Matthieu Moy (3):
       Documentation/bisect: move getting help section to the end
+      pull.sh: quote $upload_pack when passing it to git-fetch
       bisect: don't mix option parsing and non-trivial code
 
-Michael Haggerty (25):
+Michael Haggerty (45):
       delete_ref(): move declaration to refs.h
       remove_branches(): remove temporary
       delete_ref(): handle special case more explicitly
@@ -174,6 +243,26 @@ Michael Haggerty (25):
       Documentation/git-worktree: fix incorrect reference to file "locked"
       Documentation/config: fix stale "git prune --worktree" reference
       Documentation/git-worktree: wordsmith worktree-related manpages
+      get_remote_group(): handle remotes with single-character names
+      get_remote_group(): rename local variable "space" to "wordlen"
+      get_remote_group(): eliminate superfluous call to strcspn()
+      get_remote_group(): use skip_prefix()
+      lockfile: move documentation to lockfile.h and lockfile.c
+      create_bundle(): duplicate file descriptor to avoid closing it twice
+      lockfile: add accessors get_lock_file_fd() and get_lock_file_fp()
+      lockfile: add accessor get_lock_file_path()
+      commit_lock_file(): use get_locked_file_path()
+      tempfile: a new module for handling temporary files
+      prepare_tempfile_object(): new function, extracted from create_tempfile()
+      tempfile: add several functions for creating temporary files
+      register_tempfile(): new function to handle an existing temporary file
+      write_shared_index(): use tempfile module
+      setup_temporary_shallow(): use tempfile module
+      diff: use tempfile module
+      lock_repo_for_gc(): compute the path to "gc.pid" only once
+      gc: use tempfile module to handle gc.pid file
+      credential-cache--daemon: delete socket from main()
+      credential-cache--daemon: use tempfile module
 
 Michael Rappazzo (1):
       git-rebase--interactive.sh: add config option for custom instruction format
@@ -185,7 +274,15 @@ Mike Hommey (2):
 Nguyễn Thái Ngọc Duy (1):
       setup: set env $GIT_WORK_TREE when work tree is set, like $GIT_DIR
 
-Paul Tan (36):
+Patrick Steinhardt (6):
+      Documentation/git-worktree: fix duplicated 'from'
+      tests: fix broken && chains in t1509-root-worktree
+      tests: fix cleanup after tests in t1509-root-worktree
+      clone: do not include authentication data in guessed dir
+      clone: do not use port number as dir name
+      clone: abort if no dir name could be guessed
+
+Paul Tan (84):
       t4150: test applying StGit patch
       am: teach StGit patch parser how to read from stdin
       t4150: test applying StGit series
@@ -222,8 +319,56 @@ Paul Tan (36):
       t4150: tests for am --[no-]scissors
       t3418: non-interactive rebase --continue with rerere enabled
       t3901: test git-am encoding conversion
+      wrapper: implement xopen()
+      wrapper: implement xfopen()
+      builtin-am: implement skeletal builtin am
+      builtin-am: implement patch queue mechanism
+      builtin-am: split out mbox/maildir patches with git-mailsplit
+      builtin-am: auto-detect mbox patches
+      builtin-am: extract patch and commit info with git-mailinfo
+      builtin-am: apply patch with git-apply
+      builtin-am: implement committing applied patch
+      builtin-am: refuse to apply patches if index is dirty
+      builtin-am: implement --resolved/--continue
+      builtin-am: don't parse mail when resuming
+      builtin-am: implement --skip
+      builtin-am: implement --abort
+      builtin-am: reject patches when there's a session in progress
+      builtin-am: implement -q/--quiet
+      builtin-am: exit with user friendly message on failure
+      builtin-am: implement -s/--signoff
+      cache-tree: introduce write_index_as_tree()
+      builtin-am: implement --3way
+      builtin-am: implement --rebasing mode
+      builtin-am: bypass git-mailinfo when --rebasing
+      builtin-am: handle stray state directory
+      builtin-am: implement -u/--utf8
+      builtin-am: implement -k/--keep, --keep-non-patch
+      builtin-am: implement --[no-]message-id, am.messageid
+      builtin-am: support --keep-cr, am.keepcr
+      builtin-am: implement --[no-]scissors
+      builtin-am: pass git-apply's options to git-apply
+      builtin-am: implement --ignore-date
+      builtin-am: implement --committer-date-is-author-date
+      builtin-am: implement -S/--gpg-sign, commit.gpgsign
+      builtin-am: invoke post-rewrite hook
+      builtin-am: support automatic notes copying
+      builtin-am: invoke applypatch-msg hook
+      builtin-am: invoke pre-applypatch hook
+      builtin-am: invoke post-applypatch hook
+      builtin-am: rerere support
+      builtin-am: support and auto-detect StGit patches
+      builtin-am: support and auto-detect StGit series files
+      builtin-am: support and auto-detect mercurial patches
+      builtin-am: implement -i/--interactive
+      builtin-am: implement legacy -b/--binary option
+      builtin-am: check for valid committer ident
+      builtin-am: remove redirection to git-am.sh
+      test_terminal: redirect child process' stdin to a pty
+      am: let command-line options override saved options
+      am: let --signoff override --no-signoff
 
-Remi Lespinet (10):
+Remi Lespinet (11):
       t9001-send-email: move script creation in a setup test
       send-email: allow aliases in patch header and command script outputs
       t9001-send-email: refactor header variable fields replacement
@@ -234,17 +379,27 @@ Remi Lespinet (10):
       send-email: consider quote as delimiter instead of character
       send-email: allow multiple emails using --cc, --to and --bcc
       send-email: suppress meaningless whitespaces in from field
+      git-am: add am.threeWay config variable
 
-SZEDER Gábor (2):
+SZEDER Gábor (4):
       bash prompt: test untracked files status indicator with untracked dirs
       bash prompt: faster untracked status indicator with untracked directories
+      config: add '--name-only' option to list only variable names
+      completion: list variable names reliably with 'git config --name-only'
 
 Simon A. Eugster (1):
       checkout: document subtlety around --ours/--theirs
 
-Stefan Beller (2):
+Stefan Beller (3):
       parse-options: align curly braces for all options
       add: remove dead code
+      transport-helper: die on errors reading refs.
+
+Thomas Ackermann (1):
+      typofix for index-format.txt
+
+Thomas Braun (1):
+      completion: offer '--edit-todo' during interactive rebase
 
 Zoë Blade (1):
       userdiff: add support for Fountain documents

@@ -1,4 +1,4 @@
-From b6d88663130f5d9d9f5a4e640ad45bdf01da0a53 Mon Sep 17 00:00:00 2001
+From 1b4bd9f17e07ee5e3664b8288d9ddb48a2d09809 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Wed, 13 Jun 2012 18:50:10 +0200
 Subject: Teach checkout to recursively checkout submodules
@@ -44,7 +44,7 @@ index e269fb1..000cca8 100644
  	Branch to checkout; if it refers to a branch (i.e., a name that,
  	when prepended with "refs/heads/", is a valid ref), then that
 diff --git a/builtin/checkout.c b/builtin/checkout.c
-index 9ff5ca4..ddd1d4c 100644
+index e1403be..6ea86a4 100644
 --- a/builtin/checkout.c
 +++ b/builtin/checkout.c
 @@ -20,6 +20,9 @@
@@ -57,7 +57,7 @@ index 9ff5ca4..ddd1d4c 100644
  static const char * const checkout_usage[] = {
  	N_("git checkout [<options>] <branch>"),
  	N_("git checkout [<options>] [<branch>] -- <file>..."),
-@@ -1223,6 +1226,12 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
+@@ -1155,6 +1158,12 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
  				N_("second guess 'git checkout <no-such-branch>'")),
  		OPT_BOOL(0, "ignore-other-worktrees", &opts.ignore_other_worktrees,
  			 N_("do not check if another worktree is holding the given ref")),
@@ -70,7 +70,7 @@ index 9ff5ca4..ddd1d4c 100644
  		OPT_END(),
  	};
  
-@@ -1246,6 +1255,11 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
+@@ -1176,6 +1185,11 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
  		git_xmerge_config("merge.conflictstyle", conflict_style, NULL);
  	}
  
@@ -539,5 +539,5 @@ index d1e9fcc..39ff7b3 100755
  
  test_done
 -- 
-2.5.0.rc2.392.g76e840b
+2.5.0.276.gf5e568e
 
