@@ -1,4 +1,4 @@
-Version next; changes since v2.5.0:
+Version next; changes since v2.5.1:
 -----------------------------------
 
 Antoine Delaite (3):
@@ -9,20 +9,15 @@ Antoine Delaite (3):
 Brian Degenhardt (1):
       unpack-trees: populate cache-tree on successful merge
 
-Charles Bailey (3):
+Charles Bailey (2):
       test-parse-options: update to handle negative ints
       parse-options: move unsigned long option parsing out of pack-objects.c
-      untracked: fix detection of uname(2) failure
 
 Clemens Buchacher (1):
       git_open_noatime: return with errno=0 on success
 
-David Aguilar (1):
-      contrib/subtree: ignore log.date configuration
-
-David Turner (20):
+David Turner (19):
       log: add "log.follow" configuration variable
-      unpack-trees: don't update files with CE_WT_REMOVE set
       refs.c: add err arguments to reflog functions
       refs: break out check for reflog autocreation
       refs: new public ref function: safe_create_reflog
@@ -42,7 +37,7 @@ David Turner (20):
       notes: handle multiple worktrees
       pseudoref: check return values from read_ref()
 
-Eric Sunshine (30):
+Eric Sunshine (25):
       config: rename "gc.pruneWorktreesExpire" to "gc.worktreePruneExpire"
       checkout: avoid resolving HEAD unnecessarily
       checkout: name check_linked_checkouts() more meaningfully
@@ -67,11 +62,6 @@ Eric Sunshine (30):
       worktree: populate via "git reset --hard" rather than "git checkout"
       checkout: drop intimate knowledge of newly created worktree
       Documentation/git-worktree: fix broken 'linkgit' invocation
-      Documentation/git: drop outdated Cogito reference
-      Documentation/git-tools: improve discoverability of Git wiki
-      Documentation/git-tools: fix item text formatting
-      Documentation/git-tools: drop references to defunct tools
-      Documentation/git-tools: retire manually-maintained list
       Documentation/config: mention "now" and "never" for 'expire' settings
 
 Erik Elfström (5):
@@ -92,14 +82,11 @@ Guillaume Pagès (4):
       status: give more information during rebase -i
       status: add new tests for status during rebase -i
 
-Ilya Bobyr (1):
-      rev-parse --parseopt: allow [*=?!] in argument hints
-
 Jacob Keller (2):
       refs: cleanup comments regarding check_refname_component()
       refs: loosen restriction on wildcard "*" refspecs
 
-Jeff King (39):
+Jeff King (35):
       pkt-line: simplify starts_with checks in packet tracing
       pkt-line: tighten sideband PACK check when tracing
       pkt-line: support tracing verbatim pack contents
@@ -117,10 +104,6 @@ Jeff King (39):
       strbuf: make strbuf_addftime more robust
       docs/config.txt: reorder hideRefs config
       refs: support negative transfer.hideRefs
-      test-lib: turn off "-x" tracing during chain-lint check
-      test-lib: disable trace when test is not verbose
-      clone: add tests for output directory
-      clone: use computed length in guess_dir_name
       cache.h: clarify documentation for git_path, et al
       cache.h: complete set of git_path_submodule helpers
       t5700: modernize style
@@ -139,9 +122,6 @@ Jeff King (39):
       memoize common git-path "constant" files
       vreportf: report to arbitrary filehandles
       vreportf: avoid intermediate buffer
-
-Jiang Xin (1):
-      receive-pack: crash when checking with non-exist HEAD
 
 Jim Hill (1):
       strbuf_read(): skip unnecessary strbuf_grow() at eof
@@ -171,11 +151,9 @@ Johannes Sixt (2):
       t7300-clean: require POSIXPERM for chmod 0 test
       t2019: skip test requiring '*' in a file name non Windows
 
-Junio C Hamano (8):
+Junio C Hamano (6):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       commit-slab: introduce slabname##_peek() function
-      builtin/send-pack.c: respect user.signingkey
-      Git 2.4.8
       First batch for 2.6
       sha1_file.c: rename move_temp_to_file() to finalize_object_file()
       Second batch for 2.6
@@ -184,7 +162,7 @@ Junio C Hamano (8):
 Karsten Blees (1):
       Documentation/i18n.txt: clarify character encoding support
 
-Karthik Nayak (23):
+Karthik Nayak (22):
       for-each-ref: extract helper functions out of grab_single_ref()
       for-each-ref: clean up code
       for-each-ref: rename 'refinfo' to 'ref_array_item'
@@ -193,7 +171,6 @@ Karthik Nayak (23):
       for-each-ref: rename some functions and make them public
       for-each-ref: rename variables called sort to sorting
       ref-filter: add 'ref-filter.h'
-      Documentation/tag: remove double occurance of "<pattern>"
       ref-filter: move code from 'for-each-ref'
       for-each-ref: introduce filter_refs()
       ref-filter: make 'ref_array_item' use a FLEX_ARRAY for refname
@@ -212,9 +189,8 @@ Karthik Nayak (23):
 Kevin Daudt (1):
       pull: allow dirty tree when rebase.autostash enabled
 
-Matthieu Moy (3):
+Matthieu Moy (2):
       Documentation/bisect: move getting help section to the end
-      pull.sh: quote $upload_pack when passing it to git-fetch
       bisect: don't mix option parsing and non-trivial code
 
 Michael Haggerty (45):
@@ -267,12 +243,8 @@ Michael Haggerty (45):
 Michael Rappazzo (1):
       git-rebase--interactive.sh: add config option for custom instruction format
 
-Mike Hommey (2):
+Mike Hommey (1):
       Allow to control where the replace refs are looked for
-      fast-import: do less work when given "from" matches current branch head
-
-Nguyễn Thái Ngọc Duy (1):
-      setup: set env $GIT_WORK_TREE when work tree is set, like $GIT_DIR
 
 Patrick Steinhardt (6):
       Documentation/git-worktree: fix duplicated 'from'
@@ -387,17 +359,6 @@ SZEDER Gábor (4):
       config: add '--name-only' option to list only variable names
       completion: list variable names reliably with 'git config --name-only'
 
-Simon A. Eugster (1):
-      checkout: document subtlety around --ours/--theirs
-
-Stefan Beller (3):
-      parse-options: align curly braces for all options
-      add: remove dead code
-      transport-helper: die on errors reading refs.
-
-Thomas Ackermann (1):
-      typofix for index-format.txt
-
 Thomas Braun (1):
       completion: offer '--edit-todo' during interactive rebase
 
@@ -412,6 +373,71 @@ brian m. carlson (7):
       gpg: centralize printing signature buffers
       verify-commit: add option to print raw gpg status information
       verify-tag: add option to print raw gpg status information
+
+
+Version v2.5.1; changes since v2.5.0:
+-------------------------------------
+
+Charles Bailey (1):
+      untracked: fix detection of uname(2) failure
+
+David Aguilar (1):
+      contrib/subtree: ignore log.date configuration
+
+David Turner (1):
+      unpack-trees: don't update files with CE_WT_REMOVE set
+
+Eric Sunshine (5):
+      Documentation/git: drop outdated Cogito reference
+      Documentation/git-tools: improve discoverability of Git wiki
+      Documentation/git-tools: fix item text formatting
+      Documentation/git-tools: drop references to defunct tools
+      Documentation/git-tools: retire manually-maintained list
+
+Ilya Bobyr (1):
+      rev-parse --parseopt: allow [*=?!] in argument hints
+
+Jeff King (4):
+      test-lib: turn off "-x" tracing during chain-lint check
+      test-lib: disable trace when test is not verbose
+      clone: add tests for output directory
+      clone: use computed length in guess_dir_name
+
+Jiang Xin (1):
+      receive-pack: crash when checking with non-exist HEAD
+
+Jose F. Morales (1):
+      Mingw: verify both ends of the pipe () call
+
+Junio C Hamano (5):
+      builtin/send-pack.c: respect user.signingkey
+      Git 2.4.8
+      Start preparing for 2.5.1
+      pull: pass upload_pack only when it was given
+      Git 2.5.1
+
+Karthik Nayak (1):
+      Documentation/tag: remove double occurance of "<pattern>"
+
+Matthieu Moy (1):
+      pull.sh: quote $upload_pack when passing it to git-fetch
+
+Mike Hommey (1):
+      fast-import: do less work when given "from" matches current branch head
+
+Nguyễn Thái Ngọc Duy (1):
+      setup: set env $GIT_WORK_TREE when work tree is set, like $GIT_DIR
+
+Simon A. Eugster (1):
+      checkout: document subtlety around --ours/--theirs
+
+Stefan Beller (3):
+      parse-options: align curly braces for all options
+      add: remove dead code
+      transport-helper: die on errors reading refs.
+
+Thomas Ackermann (1):
+      typofix for index-format.txt
 
 
 Version v2.5.0; changes since v2.5.0-rc3:
@@ -591,7 +617,7 @@ Mike Edgar (1):
       fetch-pack: check for shallow if depth given
 
 
-Version v2.5.0-rc0; changes since v2.4.7:
+Version v2.5.0-rc0; changes since v2.4.8:
 -----------------------------------------
 
 Allen Hubbe (1):
@@ -762,7 +788,7 @@ Max Kirillov (3):
       git-common-dir: make "modules/" per-working-directory directory
       prune --worktrees: fix expire vs worktree existence condition
 
-Michael Haggerty (66):
+Michael Haggerty (62):
       lockfile: allow file locking to be retried with a timeout
       lock_packed_refs(): allow retries when acquiring the packed-refs lock
       each_ref_fn: change to take an object_id parameter
@@ -825,10 +851,6 @@ Michael Haggerty (66):
       verify_lock(): report errors via a strbuf
       verify_lock(): do not capitalize error messages
       ref_transaction_commit(): do not capitalize error messages
-      t6301: new tests of for-each-ref error handling
-      for-each-ref: report broken references correctly
-      read_loose_refs(): simplify function logic
-      read_loose_refs(): treat NULL_SHA1 loose references as broken
 
 Miguel Torroja (1):
       p4: retrieve the right revision of the file in UTF-16 codepath
@@ -901,7 +923,7 @@ Nguyễn Thái Ngọc Duy (63):
       pathspec: avoid the need of "--" when wildcard is used
       read-cache: fix untracked cache invalidation when split-index is used
 
-Paul Tan (16):
+Paul Tan (10):
       t5520: prevent field splitting in content comparisons
       t5520: test no merge candidates cases
       t5520: test for failure if index has unresolved entries
@@ -912,12 +934,6 @@ Paul Tan (16):
       t5520: check reflog action in fast-forward merge
       pull: handle git-fetch's options as well
       pull: use git-rev-parse --parseopt for option parsing
-      am --skip: revert changes introduced by failed 3way merge
-      am -3: support 3way merge on unborn branch
-      am --skip: support skipping while on unborn branch
-      am --abort: revert changes introduced by failed 3way merge
-      am --abort: support aborting to unborn branch
-      am --abort: keep unrelated commits on unborn branch
 
 Quentin Neill (1):
       blame: add blame.showEmail configuration
@@ -930,13 +946,11 @@ Remi Lespinet (3):
       t4150-am: refactor am -3 tests
       git-am: add am.threeWay config variable
 
-SZEDER Gábor (6):
+SZEDER Gábor (4):
       completion: remove redundant __git_compute_all_commands() call
       completion: remove credential helpers from porcelain commands
       completion: add a helper function to get config variables
       completion: simplify query for config variables
-      completion: teach 'scissors' mode to 'git commit --cleanup='
-      commit: cope with scissors lines in commit message
 
 Stefan Beller (2):
       prefix_path(): unconditionally free results in the callers
@@ -979,6 +993,38 @@ brian m. carlson (11):
       patch-id: convert to use struct object_id
       apply: convert threeway_stage to object_id
       refs: convert struct ref_entry to use struct object_id
+
+
+Version v2.4.8; changes since v2.4.7:
+-------------------------------------
+
+Johannes Schindelin (2):
+      t3404: demonstrate CHERRY_PICK_HEAD bug
+      rebase -i: do not leave a CHERRY_PICK_HEAD file behind
+
+Junio C Hamano (1):
+      Git 2.4.8
+
+Michael Haggerty (4):
+      t6301: new tests of for-each-ref error handling
+      for-each-ref: report broken references correctly
+      read_loose_refs(): simplify function logic
+      read_loose_refs(): treat NULL_SHA1 loose references as broken
+
+Paul Tan (6):
+      am --skip: revert changes introduced by failed 3way merge
+      am -3: support 3way merge on unborn branch
+      am --skip: support skipping while on unborn branch
+      am --abort: revert changes introduced by failed 3way merge
+      am --abort: support aborting to unborn branch
+      am --abort: keep unrelated commits on unborn branch
+
+SZEDER Gábor (2):
+      completion: teach 'scissors' mode to 'git commit --cleanup='
+      commit: cope with scissors lines in commit message
+
+Sebastian Schuberth (1):
+      clone: simplify string handling in guess_dir_name()
 
 
 Version v2.4.7; changes since v2.4.6:
