@@ -1,10 +1,84 @@
-Version next; changes since v2.5.1:
------------------------------------
+Version next; changes since v2.6.0-rc0:
+---------------------------------------
+
+Antoine Delaite (1):
+      bisect: add the terms old/new
+
+Jeff King (3):
+      run-command: provide in_async query function
+      pkt-line: show packets in async processes as "sideband"
+      rerere: release lockfile in non-writing functions
+
+Juerg Haefliger (1):
+      git-quiltimport: add commandline option --series <file>
+
+Junio C Hamano (22):
+      merge: drop 'git merge <message> HEAD <commit>' syntax
+      rerere: fix an off-by-one non-bug
+      rerere: handle conflicts with multiple stage #1 entries
+      rerere: plug conflict ID leaks
+      rerere: lift PATH_MAX limitation
+      rerere: write out each record of MERGE_RR in one go
+      rerere: report autoupdated paths only after actually updating them
+      rerere: drop want_sp parameter from is_cmarker()
+      rerere: stop looping unnecessarily
+      rerere: do not leak mmfile[] for a path with multiple stage #1 entries
+      rerere: explain the rerere I/O abstraction
+      rerere: fix benign off-by-one non-bug and clarify code
+      rerere: explain MERGE_RR management helpers
+      rerere: explain the primary codepath
+      rerere: explain "rerere forget" codepath
+      rerere: explain the remainder
+      rerere: refactor "replay" part of do_plain_rerere()
+      rerere: further de-dent do_plain_rerere()
+      rerere: further clarify do_rerere_one_path()
+      rerere: call conflict-ids IDs
+      rerere: use "struct rerere_id" instead of "char *" for conflict ID
+      rerere: un-nest merge() further
+
+Karthik Nayak (11):
+      t6302: for-each-ref tests for ref-filter APIs
+      tag: libify parse_opt_points_at()
+      ref-filter: implement '--points-at' option
+      for-each-ref: add '--points-at' option
+      ref-filter: add parse_opt_merge_filter()
+      ref-filter: implement '--merged' and '--no-merged' options
+      for-each-ref: add '--merged' and '--no-merged' options
+      parse-option: rename parse_opt_with_commit()
+      parse-options.h: add macros for '--contains' option
+      ref-filter: implement '--contains' option
+      for-each-ref: add '--contains' option
+
+Luke Diamand (3):
+      git-p4: failing test for ignoring invalid p4 labels
+      git-p4: do not terminate creating tag for unknown commit
+      git-p4: fix P4 label import for unprocessed commits
+
+Matthieu Moy (3):
+      bisect: sanity check on terms
+      bisect: add 'git bisect terms' to view the current terms
+      bisect: allow setting any user-specified in 'git bisect start'
+
+
+Version v2.6.0-rc0; changes since v2.5.1:
+-----------------------------------------
+
+Alex Henrie (4):
+      reflog: add missing single quote to error message
+      git-submodule: remove extraneous space from error message
+      pack-objects: place angle brackets around placeholders in usage strings
+      read-tree: replace bracket set with parentheses to clarify usage
+
+Andreas Schwab (1):
+      Documentation/config: fix inconsistent label on gc.*.reflogExpireUnreachable
 
 Antoine Delaite (3):
       bisect: correction of typo
       bisect: replace hardcoded "bad|good" by variables
       bisect: simplify the addition of new bisect terms
+
+Brett Randall (1):
+      git-svn doc: mention "svn-remote.<name>.include-paths"
 
 Brian Degenhardt (1):
       unpack-trees: populate cache-tree on successful merge
@@ -13,10 +87,26 @@ Charles Bailey (2):
       test-parse-options: update to handle negative ints
       parse-options: move unsigned long option parsing out of pack-objects.c
 
+Christian Couder (3):
+      trailer: ignore first line of message
+      trailer: retitle a test and correct an in-comment message
+      trailer: support multiline title
+
 Clemens Buchacher (1):
       git_open_noatime: return with errno=0 on success
 
-David Turner (19):
+Dave Borowitz (9):
+      Documentation/git-push.txt: document when --signed may fail
+      Documentation/git-send-pack.txt: wrap long synopsis line
+      Documentation/git-send-pack.txt: document --signed
+      gitremote-helpers.txt: document pushcert option
+      transport: remove git_transport_options.push_cert
+      config.c: rename git_config_maybe_bool_text and export it as git_parse_maybe_bool
+      builtin/send-pack.c: use parse_options API
+      push: support signing pushes iff the server supports it
+      push: add a config option push.gpgSign for default signed pushes
+
+David Turner (21):
       log: add "log.follow" configuration variable
       refs.c: add err arguments to reflog functions
       refs: break out check for reflog autocreation
@@ -36,8 +126,13 @@ David Turner (19):
       worktrees: add find_shared_symref
       notes: handle multiple worktrees
       pseudoref: check return values from read_ref()
+      untracked-cache: fix subdirectory handling
+      commit: don't rewrite shared index unnecessarily
 
-Eric Sunshine (25):
+Elia Pinto (1):
+      http: add support for specifying the SSL version
+
+Eric Sunshine (26):
       config: rename "gc.pruneWorktreesExpire" to "gc.worktreePruneExpire"
       checkout: avoid resolving HEAD unnecessarily
       checkout: name check_linked_checkouts() more meaningfully
@@ -63,13 +158,15 @@ Eric Sunshine (25):
       checkout: drop intimate knowledge of newly created worktree
       Documentation/git-worktree: fix broken 'linkgit' invocation
       Documentation/config: mention "now" and "never" for 'expire' settings
+      generate-cmdlist: re-implement as shell script
 
-Erik Elfström (5):
+Erik Elfström (6):
       setup: add gentle version of read_gitfile
       setup: sanity check file size in read_gitfile_gently
       t7300: add tests to document behavior of clean and nested git
       p7300: add performance tests for clean
       clean: improve performance when removing lots of directories
+      t7300: fix broken && chains
 
 Galan Rémi (3):
       git-rebase -i: add command "drop" to remove a commit
@@ -82,11 +179,26 @@ Guillaume Pagès (4):
       status: give more information during rebase -i
       status: add new tests for status during rebase -i
 
-Jacob Keller (2):
+Heiko Voigt (4):
+      submodule: implement a config API for lookup of .gitmodules values
+      submodule: extract functions for config set and lookup
+      submodule: use new config API for worktree configurations
+      submodule: allow erroneous values for the fetchRecurseSubmodules option
+
+Jacob Keller (8):
       refs: cleanup comments regarding check_refname_component()
       refs: loosen restriction on wildcard "*" refspecs
+      notes: document cat_sort_uniq rewriteMode
+      notes: extract enum notes_merge_strategy to notes-utils.h
+      notes: extract parse_notes_merge_strategy to notes-utils
+      notes: add tests for --commit/--abort/--strategy exclusivity
+      notes: add notes.mergeStrategy option to select default strategy
+      notes: teach git-notes about notes.<name>.mergeStrategy option
 
-Jeff King (35):
+Jan Viktorin (1):
+      send-email: provide whitelist of SMTP AUTH mechanisms
+
+Jeff King (41):
       pkt-line: simplify starts_with checks in packet tracing
       pkt-line: tighten sideband PACK check when tracing
       pkt-line: support tracing verbatim pack contents
@@ -122,6 +234,15 @@ Jeff King (35):
       memoize common git-path "constant" files
       vreportf: report to arbitrary filehandles
       vreportf: avoid intermediate buffer
+      format_config: don't init strbuf
+      format_config: simplify buffer handling
+      get_urlmatch: avoid useless strbuf write
+      config: silence warnings for command names with invalid keys
+      rev-list: make it obvious that we do not support notes
+      log: diagnose empty HEAD more clearly
+
+Jiang Xin (1):
+      i18n: am: fix typo in description of -b option
 
 Jim Hill (1):
       strbuf_read(): skip unnecessary strbuf_grow() at eof
@@ -151,18 +272,34 @@ Johannes Sixt (2):
       t7300-clean: require POSIXPERM for chmod 0 test
       t2019: skip test requiring '*' in a file name non Windows
 
-Junio C Hamano (6):
-      merge: drop 'git merge <message> HEAD <commit>' syntax
+Junio C Hamano (22):
       commit-slab: introduce slabname##_peek() function
       First batch for 2.6
       sha1_file.c: rename move_temp_to_file() to finalize_object_file()
       Second batch for 2.6
       Third batch for 2.6
+      Fourth batch for 2.6
+      ps_matched: xcalloc() takes nmemb and then element size
+      log: rename "tweak" helpers
+      log: when --cc is given, default to -p unless told otherwise
+      log: show merge commit when --cc is given
+      builtin/am: introduce write_state_*() helper functions
+      builtin/am: make sure state files are text
+      write_file(): drop "fatal" parameter
+      write_file_v(): do not leave incomplete line at the end
+      write_file(): drop caller-supplied LF from calls to create a one-liner file
+      builtin/log.c: minor reformat
+      Fifth batch for 2.6
+      Sixth batch for 2.6
+      Seventh batch for 2.6
+      Eighth batch for 2.6
+      Ninth batch for 2.6
+      Git 2.6-rc0
 
 Karsten Blees (1):
       Documentation/i18n.txt: clarify character encoding support
 
-Karthik Nayak (22):
+Karthik Nayak (11):
       for-each-ref: extract helper functions out of grab_single_ref()
       for-each-ref: clean up code
       for-each-ref: rename 'refinfo' to 'ref_array_item'
@@ -174,20 +311,12 @@ Karthik Nayak (22):
       ref-filter: move code from 'for-each-ref'
       for-each-ref: introduce filter_refs()
       ref-filter: make 'ref_array_item' use a FLEX_ARRAY for refname
-      t6302: for-each-ref tests for ref-filter APIs
-      tag: libify parse_opt_points_at()
-      ref-filter: implement '--points-at' option
-      for-each-ref: add '--points-at' option
-      ref-filter: add parse_opt_merge_filter()
-      ref-filter: implement '--merged' and '--no-merged' options
-      for-each-ref: add '--merged' and '--no-merged' options
-      parse-option: rename parse_opt_with_commit()
-      parse-options.h: add macros for '--contains' option
-      ref-filter: implement '--contains' option
-      for-each-ref: add '--contains' option
 
 Kevin Daudt (1):
       pull: allow dirty tree when rebase.autostash enabled
+
+Lars Schneider (1):
+      git-p4: honor core.ignorecase when using P4 client specs
 
 Matthieu Moy (2):
       Documentation/bisect: move getting help section to the end
@@ -246,6 +375,11 @@ Michael Rappazzo (1):
 Mike Hommey (1):
       Allow to control where the replace refs are looked for
 
+Nguyễn Thái Ngọc Duy (3):
+      t7063: use --force-untracked-cache to speed up a bit
+      untracked cache: fix entry invalidation
+      setup: update the right file in multiple checkouts
+
 Patrick Steinhardt (6):
       Documentation/git-worktree: fix duplicated 'from'
       tests: fix broken && chains in t1509-root-worktree
@@ -254,7 +388,7 @@ Patrick Steinhardt (6):
       clone: do not use port number as dir name
       clone: abort if no dir name could be guessed
 
-Paul Tan (84):
+Paul Tan (85):
       t4150: test applying StGit patch
       am: teach StGit patch parser how to read from stdin
       t4150: test applying StGit series
@@ -339,6 +473,13 @@ Paul Tan (84):
       test_terminal: redirect child process' stdin to a pty
       am: let command-line options override saved options
       am: let --signoff override --no-signoff
+      am --skip/--abort: merge HEAD/ORIG_HEAD tree into index
+
+Philip Oakley (1):
+      po/README: Update directions for l10n contributors
+
+Ralf Thielow (1):
+      lockfile: remove function "hold_lock_file_for_append"
 
 Remi Lespinet (11):
       t9001-send-email: move script creation in a setup test
@@ -353,11 +494,26 @@ Remi Lespinet (11):
       send-email: suppress meaningless whitespaces in from field
       git-am: add am.threeWay config variable
 
-SZEDER Gábor (4):
+René Scharfe (3):
+      t5004: test ZIP archives with many entries
+      archive-zip: use a local variable to store the creator version
+      archive-zip: support more than 65535 entries
+
+SZEDER Gábor (8):
       bash prompt: test untracked files status indicator with untracked dirs
       bash prompt: faster untracked status indicator with untracked directories
       config: add '--name-only' option to list only variable names
       completion: list variable names reliably with 'git config --name-only'
+      t3020: fix typo in test description
+      config: restructure format_config() for better control flow
+      wt-status: move #include "pathspec.h" to the header
+      describe --contains: default to HEAD when no commit-ish is given
+
+Stefan Beller (1):
+      read-cache: fix indentation in read_index_from
+
+Sven Strickroth (1):
+      config: close config file handle in case of error
 
 Thomas Braun (1):
       completion: offer '--edit-todo' during interactive rebase
