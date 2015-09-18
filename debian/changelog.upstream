@@ -1,18 +1,62 @@
-Version next; changes since v2.6.0-rc0:
+Version next; changes since v2.6.0-rc2:
 ---------------------------------------
+
+Alejandro R. Sedeño (1):
+      Makefile: use SHELL_PATH when running generate-cmdlist.sh
+
+Alex Henrie (1):
+      show-ref: place angle brackets around variables in usage string
+
+Alexey Shumkin (2):
+      t7900-subtree: test the "space in a subdirectory name" case
+      contrib/subtree: respect spaces in a repository path
+
+Andreas Schwab (1):
+      Documentation/config: fix formatting for branch.*.rebase and pull.rebase
 
 Antoine Delaite (1):
       bisect: add the terms old/new
 
-Jeff King (3):
+David Turner (3):
+      refs: clean up common_list
+      path: optimize common dir checking
+      refs: make refs/bisect/* per-worktree
+
+Edward Thomson (1):
+      poll: honor the timeout on Win32
+
+Jeff King (6):
       run-command: provide in_async query function
       pkt-line: show packets in async processes as "sideband"
-      rerere: release lockfile in non-writing functions
+      fast-import: switch crash-report date to iso8601
+      date: make "local" orthogonal to date format
+      git_connect: clear GIT_* environment for ssh
+      git_connect: clarify conn->use_shell flag
+
+Johannes Schindelin (1):
+      am --skip/--abort: merge HEAD/ORIG_HEAD tree into index
+
+John Keeping (15):
+      Documentation/blame-options: don't list date formats
+      Documentation/config: don't list date formats
+      Documentation/git-for-each-ref: don't list date formats
+      Documentation/rev-list: don't list date formats
+      t6300: introduce test_date() helper
+      t6300: add test for "raw" date format
+      date: check for "local" before anything else
+      t6300: make UTC and local dates different
+      t6300: add tests for "-local" date formats
+      t7610: don't use test_config in a subshell
+      t5801: don't use test_when_finished in a subshell
+      test-lib-functions: support "test_config -C <dir> ..."
+      t7800: don't use test_config in a subshell
+      test-lib-functions: detect test_when_finished in subshell
+      interpret-trailers: allow running outside a repository
 
 Juerg Haefliger (1):
       git-quiltimport: add commandline option --series <file>
 
-Junio C Hamano (22):
+Junio C Hamano (25):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       rerere: fix an off-by-one non-bug
       rerere: handle conflicts with multiple stage #1 entries
@@ -35,8 +79,11 @@ Junio C Hamano (22):
       rerere: call conflict-ids IDs
       rerere: use "struct rerere_id" instead of "char *" for conflict ID
       rerere: un-nest merge() further
+      Update RelNotes to 2.6 to describe leftover bits since -rc2
+      Git 2.5.3
+      Update RelNotes to 2.6
 
-Karthik Nayak (11):
+Karthik Nayak (25):
       t6302: for-each-ref tests for ref-filter APIs
       tag: libify parse_opt_points_at()
       ref-filter: implement '--points-at' option
@@ -48,37 +95,133 @@ Karthik Nayak (11):
       parse-options.h: add macros for '--contains' option
       ref-filter: implement '--contains' option
       for-each-ref: add '--contains' option
+      ref-filter: move `struct atom_value` to ref-filter.c
+      ref-filter: introduce ref_formatting_state and ref_formatting_stack
+      utf8: add function to align a string into given strbuf
+      ref-filter: introduce handler function for each atom
+      ref-filter: introduce match_atom_name()
+      ref-filter: implement an `align` atom
+      ref-filter: add option to filter out tags, branches and remotes
+      ref-filter: add support for %(contents:lines=X)
+      ref-filter: add support to sort by version
+      ref-filter: add option to match literal pattern
+      tag.c: use 'ref-filter' data structures
+      tag.c: use 'ref-filter' APIs
+      tag.c: implement '--format' option
+      tag.c: implement '--merged' and '--no-merged' options
+
+Lars Schneider (2):
+      git-p4: add config git-p4.pathEncoding
+      git-p4: improve path encoding verbose output
 
 Luke Diamand (3):
       git-p4: failing test for ignoring invalid p4 labels
       git-p4: do not terminate creating tag for unknown commit
       git-p4: fix P4 label import for unprocessed commits
 
-Matthieu Moy (3):
+Matthieu Moy (4):
       bisect: sanity check on terms
       bisect: add 'git bisect terms' to view the current terms
       bisect: allow setting any user-specified in 'git bisect start'
+      strtoul_ui: reject negative values
+
+Namhyung Kim (1):
+      stash: allow "stash show" diff output configurable
+
+Philip Oakley (1):
+      doc: show usage of branch description
+
+Ralf Thielow (2):
+      pull: don't mark values for option "rebase" for translation
+      tag, update-ref: improve description of option "create-reflog"
+
+Takashi Iwai (1):
+      pager: don't use unsafe functions in signal handlers
 
 
-Version v2.6.0-rc0; changes since v2.5.1:
+Version v2.6.0-rc2; changes since v2.6.0-rc1:
+---------------------------------------------
+
+Alex Henrie (2):
+      gitk: Fix bad English grammar "Matches none Commit Info"
+      gitk: Remove mc parameter from proc show_error
+
+Alexander Shopov (2):
+      gitk: Update Bulgarian translation (304t)
+      gitk: Update Bulgarian translation (307t)
+
+Beat Bolli (2):
+      gitk: Add a "Copy commit summary" command
+      gitk: Adjust the menu line numbers to compensate for the new entry
+
+Giuseppe Bilotta (2):
+      apply: comment grammar fix
+      gitk: Accelerators for the main menu
+
+Ismael Luceno (1):
+      gitk: Make it easier to go quickly to a specific commit
+
+Jeff King (5):
+      pack-protocol: clarify LF-handling in PKT-LINE()
+      verify_absent: allow filenames longer than PATH_MAX
+      notes: use a strbuf in add_non_note
+      read_info_alternates: handle paths larger than PATH_MAX
+      show-branch: use a strbuf for reflog descriptions
+
+Junio C Hamano (6):
+      Git 2.2.3
+      Git 2.3.9
+      Git 2.4.9
+      Git 2.5.2
+      Release Notes: typofix
+      Git 2.6-rc2
+
+Marc Branchaud (3):
+      gitk: Rearrange window title to be more conventional
+      gitk: Show the current view's name in the window title
+      gitk: Use translated version of "Command line" in getcommitlines
+
+Matthieu Prat (1):
+      t7060: actually test "git diff-index --cached -M"
+
+Michael J Gruber (1):
+      git-svn: parse authors file more leniently
+
+Michael Rappazzo (1):
+      gitk: Add mouse right-click options to copy path and branch name
+
+Paul Mackerras (3):
+      gitk: Replace catch {unset foo} with unset -nocomplain foo
+      gitk: Fix error when changing colors after closing "List references" window
+      gitk: Update .po files
+
+Peter Krefting (1):
+      gitk: sv.po: Update Swedish translation (305t0f0u)
+
+
+Version v2.6.0-rc1; changes since v2.6.0-rc0:
+---------------------------------------------
+
+Jeff King (1):
+      rerere: release lockfile in non-writing functions
+
+Junio C Hamano (2):
+      am: match --signoff to the original scripted version
+      Git 2.6-rc1
+
+
+Version v2.6.0-rc0; changes since v2.5.3:
 -----------------------------------------
 
-Alex Henrie (4):
+Alex Henrie (3):
       reflog: add missing single quote to error message
-      git-submodule: remove extraneous space from error message
       pack-objects: place angle brackets around placeholders in usage strings
       read-tree: replace bracket set with parentheses to clarify usage
-
-Andreas Schwab (1):
-      Documentation/config: fix inconsistent label on gc.*.reflogExpireUnreachable
 
 Antoine Delaite (3):
       bisect: correction of typo
       bisect: replace hardcoded "bad|good" by variables
       bisect: simplify the addition of new bisect terms
-
-Brett Randall (1):
-      git-svn doc: mention "svn-remote.<name>.include-paths"
 
 Brian Degenhardt (1):
       unpack-trees: populate cache-tree on successful merge
@@ -86,14 +229,6 @@ Brian Degenhardt (1):
 Charles Bailey (2):
       test-parse-options: update to handle negative ints
       parse-options: move unsigned long option parsing out of pack-objects.c
-
-Christian Couder (3):
-      trailer: ignore first line of message
-      trailer: retitle a test and correct an in-comment message
-      trailer: support multiline title
-
-Clemens Buchacher (1):
-      git_open_noatime: return with errno=0 on success
 
 Dave Borowitz (9):
       Documentation/git-push.txt: document when --signed may fail
@@ -106,7 +241,7 @@ Dave Borowitz (9):
       push: support signing pushes iff the server supports it
       push: add a config option push.gpgSign for default signed pushes
 
-David Turner (21):
+David Turner (18):
       log: add "log.follow" configuration variable
       refs.c: add err arguments to reflog functions
       refs: break out check for reflog autocreation
@@ -122,17 +257,14 @@ David Turner (21):
       pseudorefs: create and use pseudoref update and delete functions
       bisect: use update_ref
       sequencer: replace write_cherry_pick_head with update_ref
-      untracked-cache: support sparse checkout
       worktrees: add find_shared_symref
       notes: handle multiple worktrees
       pseudoref: check return values from read_ref()
-      untracked-cache: fix subdirectory handling
-      commit: don't rewrite shared index unnecessarily
 
 Elia Pinto (1):
       http: add support for specifying the SSL version
 
-Eric Sunshine (26):
+Eric Sunshine (25):
       config: rename "gc.pruneWorktreesExpire" to "gc.worktreePruneExpire"
       checkout: avoid resolving HEAD unnecessarily
       checkout: name check_linked_checkouts() more meaningfully
@@ -158,15 +290,13 @@ Eric Sunshine (26):
       checkout: drop intimate knowledge of newly created worktree
       Documentation/git-worktree: fix broken 'linkgit' invocation
       Documentation/config: mention "now" and "never" for 'expire' settings
-      generate-cmdlist: re-implement as shell script
 
-Erik Elfström (6):
+Erik Elfström (5):
       setup: add gentle version of read_gitfile
       setup: sanity check file size in read_gitfile_gently
       t7300: add tests to document behavior of clean and nested git
       p7300: add performance tests for clean
       clean: improve performance when removing lots of directories
-      t7300: fix broken && chains
 
 Galan Rémi (3):
       git-rebase -i: add command "drop" to remove a commit
@@ -198,7 +328,7 @@ Jacob Keller (8):
 Jan Viktorin (1):
       send-email: provide whitelist of SMTP AUTH mechanisms
 
-Jeff King (41):
+Jeff King (36):
       pkt-line: simplify starts_with checks in packet tracing
       pkt-line: tighten sideband PACK check when tracing
       pkt-line: support tracing verbatim pack contents
@@ -232,20 +362,12 @@ Jeff King (41):
       find_hook: keep our own static buffer
       get_repo_path: refactor path-allocation
       memoize common git-path "constant" files
-      vreportf: report to arbitrary filehandles
-      vreportf: avoid intermediate buffer
       format_config: don't init strbuf
       format_config: simplify buffer handling
       get_urlmatch: avoid useless strbuf write
-      config: silence warnings for command names with invalid keys
-      rev-list: make it obvious that we do not support notes
-      log: diagnose empty HEAD more clearly
 
 Jiang Xin (1):
       i18n: am: fix typo in description of -b option
-
-Jim Hill (1):
-      strbuf_read(): skip unnecessary strbuf_grow() at eof
 
 Johannes Schindelin (19):
       fsck: introduce fsck options
@@ -268,18 +390,16 @@ Johannes Schindelin (19):
       fsck: git receive-pack: support excluding objects from fsck'ing
       fsck: support ignoring objects in `git fsck` via fsck.skiplist
 
-Johannes Sixt (2):
+Johannes Sixt (1):
       t7300-clean: require POSIXPERM for chmod 0 test
-      t2019: skip test requiring '*' in a file name non Windows
 
-Junio C Hamano (22):
+Junio C Hamano (21):
       commit-slab: introduce slabname##_peek() function
       First batch for 2.6
       sha1_file.c: rename move_temp_to_file() to finalize_object_file()
       Second batch for 2.6
       Third batch for 2.6
       Fourth batch for 2.6
-      ps_matched: xcalloc() takes nmemb and then element size
       log: rename "tweak" helpers
       log: when --cc is given, default to -p unless told otherwise
       log: show merge commit when --cc is given
@@ -322,7 +442,7 @@ Matthieu Moy (2):
       Documentation/bisect: move getting help section to the end
       bisect: don't mix option parsing and non-trivial code
 
-Michael Haggerty (45):
+Michael Haggerty (41):
       delete_ref(): move declaration to refs.h
       remove_branches(): remove temporary
       delete_ref(): handle special case more explicitly
@@ -348,10 +468,6 @@ Michael Haggerty (45):
       Documentation/git-worktree: fix incorrect reference to file "locked"
       Documentation/config: fix stale "git prune --worktree" reference
       Documentation/git-worktree: wordsmith worktree-related manpages
-      get_remote_group(): handle remotes with single-character names
-      get_remote_group(): rename local variable "space" to "wordlen"
-      get_remote_group(): eliminate superfluous call to strcspn()
-      get_remote_group(): use skip_prefix()
       lockfile: move documentation to lockfile.h and lockfile.c
       create_bundle(): duplicate file descriptor to avoid closing it twice
       lockfile: add accessors get_lock_file_fd() and get_lock_file_fp()
@@ -375,15 +491,8 @@ Michael Rappazzo (1):
 Mike Hommey (1):
       Allow to control where the replace refs are looked for
 
-Nguyễn Thái Ngọc Duy (3):
-      t7063: use --force-untracked-cache to speed up a bit
-      untracked cache: fix entry invalidation
-      setup: update the right file in multiple checkouts
-
-Patrick Steinhardt (6):
+Patrick Steinhardt (4):
       Documentation/git-worktree: fix duplicated 'from'
-      tests: fix broken && chains in t1509-root-worktree
-      tests: fix cleanup after tests in t1509-root-worktree
       clone: do not include authentication data in guessed dir
       clone: do not use port number as dir name
       clone: abort if no dir name could be guessed
@@ -475,9 +584,6 @@ Paul Tan (85):
       am: let --signoff override --no-signoff
       am --skip/--abort: merge HEAD/ORIG_HEAD tree into index
 
-Philip Oakley (1):
-      po/README: Update directions for l10n contributors
-
 Ralf Thielow (1):
       lockfile: remove function "hold_lock_file_for_append"
 
@@ -494,26 +600,16 @@ Remi Lespinet (11):
       send-email: suppress meaningless whitespaces in from field
       git-am: add am.threeWay config variable
 
-René Scharfe (3):
-      t5004: test ZIP archives with many entries
-      archive-zip: use a local variable to store the creator version
-      archive-zip: support more than 65535 entries
-
-SZEDER Gábor (8):
+SZEDER Gábor (6):
       bash prompt: test untracked files status indicator with untracked dirs
       bash prompt: faster untracked status indicator with untracked directories
       config: add '--name-only' option to list only variable names
       completion: list variable names reliably with 'git config --name-only'
-      t3020: fix typo in test description
       config: restructure format_config() for better control flow
-      wt-status: move #include "pathspec.h" to the header
       describe --contains: default to HEAD when no commit-ish is given
 
 Stefan Beller (1):
       read-cache: fix indentation in read_index_from
-
-Sven Strickroth (1):
-      config: close config file handle in case of error
 
 Thomas Braun (1):
       completion: offer '--edit-todo' during interactive rebase
@@ -529,6 +625,106 @@ brian m. carlson (7):
       gpg: centralize printing signature buffers
       verify-commit: add option to print raw gpg status information
       verify-tag: add option to print raw gpg status information
+
+
+Version v2.5.3; changes since v2.5.2:
+-------------------------------------
+
+Alex Henrie (1):
+      git-submodule: remove extraneous space from error message
+
+Brett Randall (1):
+      git-svn doc: mention "svn-remote.<name>.include-paths"
+
+David Turner (2):
+      untracked-cache: support sparse checkout
+      untracked-cache: fix subdirectory handling
+
+Johannes Schindelin (1):
+      am --skip/--abort: merge HEAD/ORIG_HEAD tree into index
+
+Junio C Hamano (1):
+      Git 2.5.3
+
+Nguyễn Thái Ngọc Duy (2):
+      t7063: use --force-untracked-cache to speed up a bit
+      untracked cache: fix entry invalidation
+
+
+Version v2.5.2; changes since v2.5.1:
+-------------------------------------
+
+Andreas Schwab (1):
+      Documentation/config: fix inconsistent label on gc.*.reflogExpireUnreachable
+
+Christian Couder (3):
+      trailer: ignore first line of message
+      trailer: retitle a test and correct an in-comment message
+      trailer: support multiline title
+
+Clemens Buchacher (1):
+      git_open_noatime: return with errno=0 on success
+
+David Turner (1):
+      commit: don't rewrite shared index unnecessarily
+
+Eric Sunshine (1):
+      generate-cmdlist: re-implement as shell script
+
+Erik Elfström (1):
+      t7300: fix broken && chains
+
+Jeff King (9):
+      vreportf: report to arbitrary filehandles
+      vreportf: avoid intermediate buffer
+      config: silence warnings for command names with invalid keys
+      rev-list: make it obvious that we do not support notes
+      log: diagnose empty HEAD more clearly
+      verify_absent: allow filenames longer than PATH_MAX
+      notes: use a strbuf in add_non_note
+      read_info_alternates: handle paths larger than PATH_MAX
+      show-branch: use a strbuf for reflog descriptions
+
+Jim Hill (1):
+      strbuf_read(): skip unnecessary strbuf_grow() at eof
+
+Johannes Sixt (1):
+      t2019: skip test requiring '*' in a file name non Windows
+
+Junio C Hamano (5):
+      ps_matched: xcalloc() takes nmemb and then element size
+      Git 2.2.3
+      Git 2.3.9
+      Git 2.4.9
+      Git 2.5.2
+
+Michael Haggerty (4):
+      get_remote_group(): handle remotes with single-character names
+      get_remote_group(): rename local variable "space" to "wordlen"
+      get_remote_group(): eliminate superfluous call to strcspn()
+      get_remote_group(): use skip_prefix()
+
+Nguyễn Thái Ngọc Duy (1):
+      setup: update the right file in multiple checkouts
+
+Patrick Steinhardt (2):
+      tests: fix broken && chains in t1509-root-worktree
+      tests: fix cleanup after tests in t1509-root-worktree
+
+Philip Oakley (1):
+      po/README: Update directions for l10n contributors
+
+René Scharfe (3):
+      t5004: test ZIP archives with many entries
+      archive-zip: use a local variable to store the creator version
+      archive-zip: support more than 65535 entries
+
+SZEDER Gábor (2):
+      t3020: fix typo in test description
+      wt-status: move #include "pathspec.h" to the header
+
+Sven Strickroth (1):
+      config: close config file handle in case of error
 
 
 Version v2.5.1; changes since v2.5.0:
@@ -773,7 +969,7 @@ Mike Edgar (1):
       fetch-pack: check for shallow if depth given
 
 
-Version v2.5.0-rc0; changes since v2.4.8:
+Version v2.5.0-rc0; changes since v2.4.9:
 -----------------------------------------
 
 Allen Hubbe (1):
@@ -1149,6 +1345,21 @@ brian m. carlson (11):
       patch-id: convert to use struct object_id
       apply: convert threeway_stage to object_id
       refs: convert struct ref_entry to use struct object_id
+
+
+Version v2.4.9; changes since v2.4.8:
+-------------------------------------
+
+Jeff King (4):
+      verify_absent: allow filenames longer than PATH_MAX
+      notes: use a strbuf in add_non_note
+      read_info_alternates: handle paths larger than PATH_MAX
+      show-branch: use a strbuf for reflog descriptions
+
+Junio C Hamano (3):
+      Git 2.2.3
+      Git 2.3.9
+      Git 2.4.9
 
 
 Version v2.4.8; changes since v2.4.7:
@@ -1744,7 +1955,7 @@ Thomas Ackermann (2):
       2.3.2 release notes: typofix
 
 
-Version v2.4.0-rc0; changes since v2.3.8:
+Version v2.4.0-rc0; changes since v2.3.9:
 -----------------------------------------
 
 Alex Henrie (3):
@@ -1996,6 +2207,20 @@ Torsten Bögershausen (1):
 
 Yi EungJun (1):
       http: add Accept-Language header if possible
+
+
+Version v2.3.9; changes since v2.3.8:
+-------------------------------------
+
+Jeff King (4):
+      verify_absent: allow filenames longer than PATH_MAX
+      notes: use a strbuf in add_non_note
+      read_info_alternates: handle paths larger than PATH_MAX
+      show-branch: use a strbuf for reflog descriptions
+
+Junio C Hamano (2):
+      Git 2.2.3
+      Git 2.3.9
 
 
 Version v2.3.8; changes since v2.3.7:
@@ -2476,7 +2701,7 @@ Tony Finch (1):
       git-prompt: preserve value of $? in all cases
 
 
-Version v2.3.0-rc0; changes since v2.2.2:
+Version v2.3.0-rc0; changes since v2.2.3:
 -----------------------------------------
 
 Alfred Perlstein (1):
@@ -2702,6 +2927,19 @@ brian m. carlson (3):
 Роман Донченко (2):
       send-email: align RFC 2047 decoding more closely with the spec
       send-email: handle adjacent RFC 2047-encoded words properly
+
+
+Version v2.2.3; changes since v2.2.2:
+-------------------------------------
+
+Jeff King (4):
+      verify_absent: allow filenames longer than PATH_MAX
+      notes: use a strbuf in add_non_note
+      read_info_alternates: handle paths larger than PATH_MAX
+      show-branch: use a strbuf for reflog descriptions
+
+Junio C Hamano (1):
+      Git 2.2.3
 
 
 Version v2.2.2; changes since v2.2.1:

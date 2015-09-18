@@ -1,4 +1,4 @@
-From bc8e876202328ca713ee422139d92062d69b0e7e Mon Sep 17 00:00:00 2001
+From 05f7f1585573eaf648836efbae9a4093c1b24ae7 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Fri, 5 Apr 2013 18:35:27 +0200
 Subject: submodule: teach unpack_trees() to update submodules
@@ -180,7 +180,7 @@ index 566e918..1e4221e 100644
  		    const unsigned char a[20], const unsigned char b[20], int search);
  int find_unpushed_submodules(unsigned char new_sha1[20], const char *remotes_name,
 diff --git a/unpack-trees.c b/unpack-trees.c
-index 672b732..aacb2d0 100644
+index debfb93..ffc0c52 100644
 --- a/unpack-trees.c
 +++ b/unpack-trees.c
 @@ -29,6 +29,9 @@ static const char *unpack_plumbing_errors[NB_UNPACK_TREES_ERROR_TYPES] = {
@@ -266,7 +266,7 @@ index 672b732..aacb2d0 100644
  static void invalidate_ce_path(const struct cache_entry *ce,
  			       struct unpack_trees_options *o)
  {
-@@ -1550,9 +1583,17 @@ static int merged_entry(const struct cache_entry *ce,
+@@ -1553,9 +1586,17 @@ static int merged_entry(const struct cache_entry *ce,
  			copy_cache_entry(merge, old);
  			update = 0;
  		} else {
@@ -300,5 +300,5 @@ index 36a73a6..bee8740 100644
  	ERROR_WOULD_LOSE_UNTRACKED_REMOVED,
  	ERROR_BIND_OVERLAP,
 -- 
-2.5.0.457.gab17608
+2.6.0.rc0.131.gf624c3d
 
