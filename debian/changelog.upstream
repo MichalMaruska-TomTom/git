@@ -1,19 +1,9 @@
-Version next; changes since v2.6.0-rc2:
----------------------------------------
-
-Alejandro R. Sedeño (1):
-      Makefile: use SHELL_PATH when running generate-cmdlist.sh
-
-Alex Henrie (2):
-      show-ref: place angle brackets around variables in usage string
-      l10n: ca.po: update translation
+Version next; changes since v2.6.0:
+-----------------------------------
 
 Alexey Shumkin (2):
       t7900-subtree: test the "space in a subdirectory name" case
       contrib/subtree: respect spaces in a repository path
-
-Andreas Schwab (1):
-      Documentation/config: fix formatting for branch.*.rebase and pull.rebase
 
 Antoine Delaite (1):
       bisect: add the terms old/new
@@ -21,23 +11,13 @@ Antoine Delaite (1):
 Ben Boeckel (1):
       remote: add get-url subcommand
 
-Brian Norris (1):
-      send-email: fix uninitialized var warning for $smtp_auth
-
 David Turner (3):
       refs: clean up common_list
       path: optimize common dir checking
       refs: make refs/bisect/* per-worktree
 
-Edward Thomson (1):
-      poll: honor the timeout on Win32
-
 Gabor Bernat (1):
       filter-branch: add passed/remaining seconds on progress
-
-Jean-Noel Avila (2):
-      l10n: fr.po v2.6.0 round 1 (2441t)
-      l10n: fr.po v2.6.0 round 2 (2440t)
 
 Jeff King (7):
       run-command: provide in_async query function
@@ -47,17 +27,6 @@ Jeff King (7):
       git_connect: clear GIT_* environment for ssh
       git_connect: clarify conn->use_shell flag
       blame: handle --first-parent
-
-Jiang Xin (6):
-      l10n: TEAMS: stash inactive zh_CN team members
-      l10n: zh_CN: Add translations for Git glossary
-      l10n: git.pot: v2.6.0 round 1 (123 new, 41 removed)
-      l10n: zh_CN: for git v2.6.0 l10n round 1
-      l10n: git.pot: v2.6.0 round 2 (3 improvements)
-      l10n: zh_CN: for git v2.6.0 l10n round 2
-
-Johannes Schindelin (1):
-      am --skip/--abort: merge HEAD/ORIG_HEAD tree into index
 
 John Keeping (18):
       Documentation/blame-options: don't list date formats
@@ -82,7 +51,7 @@ John Keeping (18):
 Juerg Haefliger (1):
       git-quiltimport: add commandline option --series <file>
 
-Junio C Hamano (29):
+Junio C Hamano (24):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       rerere: fix an off-by-one non-bug
       rerere: handle conflicts with multiple stage #1 entries
@@ -106,12 +75,7 @@ Junio C Hamano (29):
       rerere: use "struct rerere_id" instead of "char *" for conflict ID
       rerere: un-nest merge() further
       Makefile: allow $(ARFLAGS) specified from the command line
-      Update RelNotes to 2.6 to describe leftover bits since -rc2
-      Git 2.5.3
-      Update RelNotes to 2.6
-      Git 2.6-rc3
       filter-branch: make report-progress more readable
-      Git 2.6
 
 Karthik Nayak (25):
       t6302: for-each-ref tests for ref-filter APIs
@@ -166,6 +130,62 @@ Nguyễn Thái Ngọc Duy (2):
       dir.c: make last_exclude_matching_from_list() run til the end
       dir.c: don't exclude whole dir prematurely if neg pattern may match
 
+Stefan Beller (3):
+      submodule: rewrite `module_list` shell function in C
+      submodule: rewrite `module_name` shell function in C
+      submodule: rewrite `module_clone` shell function in C
+
+Takashi Iwai (1):
+      pager: don't use unsafe functions in signal handlers
+
+
+Version v2.6.0; changes since v2.6.0-rc3:
+-----------------------------------------
+
+Junio C Hamano (1):
+      Git 2.6
+
+
+Version v2.6.0-rc3; changes since v2.6.0-rc2:
+---------------------------------------------
+
+Alejandro R. Sedeño (1):
+      Makefile: use SHELL_PATH when running generate-cmdlist.sh
+
+Alex Henrie (2):
+      show-ref: place angle brackets around variables in usage string
+      l10n: ca.po: update translation
+
+Andreas Schwab (1):
+      Documentation/config: fix formatting for branch.*.rebase and pull.rebase
+
+Brian Norris (1):
+      send-email: fix uninitialized var warning for $smtp_auth
+
+Edward Thomson (1):
+      poll: honor the timeout on Win32
+
+Jean-Noel Avila (2):
+      l10n: fr.po v2.6.0 round 1 (2441t)
+      l10n: fr.po v2.6.0 round 2 (2440t)
+
+Jiang Xin (6):
+      l10n: TEAMS: stash inactive zh_CN team members
+      l10n: zh_CN: Add translations for Git glossary
+      l10n: git.pot: v2.6.0 round 1 (123 new, 41 removed)
+      l10n: zh_CN: for git v2.6.0 l10n round 1
+      l10n: git.pot: v2.6.0 round 2 (3 improvements)
+      l10n: zh_CN: for git v2.6.0 l10n round 2
+
+Johannes Schindelin (1):
+      am --skip/--abort: merge HEAD/ORIG_HEAD tree into index
+
+Junio C Hamano (4):
+      Update RelNotes to 2.6 to describe leftover bits since -rc2
+      Git 2.5.3
+      Update RelNotes to 2.6
+      Git 2.6-rc3
+
 Peter Krefting (1):
       l10n: sv.po: Update Swedish translation (2441t0f0u)
 
@@ -195,14 +215,6 @@ Ray Chen (10):
       l10n: zh_CN: Update Git Glossary: fork
       l10n: zh_CN: Update Git Glossary: pickaxe
       l10n: zh_CN: Update Git Glossary: "commit message"
-
-Stefan Beller (3):
-      submodule: rewrite `module_list` shell function in C
-      submodule: rewrite `module_name` shell function in C
-      submodule: rewrite `module_clone` shell function in C
-
-Takashi Iwai (1):
-      pager: don't use unsafe functions in signal handlers
 
 Trần Ngọc Quân (2):
       l10n: Updated Vietnamese translation (2441t)
