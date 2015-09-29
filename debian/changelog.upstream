@@ -4,8 +4,9 @@ Version next; changes since v2.6.0-rc2:
 Alejandro R. Sedeño (1):
       Makefile: use SHELL_PATH when running generate-cmdlist.sh
 
-Alex Henrie (1):
+Alex Henrie (2):
       show-ref: place angle brackets around variables in usage string
+      l10n: ca.po: update translation
 
 Alexey Shumkin (2):
       t7900-subtree: test the "space in a subdirectory name" case
@@ -17,6 +18,12 @@ Andreas Schwab (1):
 Antoine Delaite (1):
       bisect: add the terms old/new
 
+Ben Boeckel (1):
+      remote: add get-url subcommand
+
+Brian Norris (1):
+      send-email: fix uninitialized var warning for $smtp_auth
+
 David Turner (3):
       refs: clean up common_list
       path: optimize common dir checking
@@ -25,18 +32,34 @@ David Turner (3):
 Edward Thomson (1):
       poll: honor the timeout on Win32
 
-Jeff King (6):
+Gabor Bernat (1):
+      filter-branch: add passed/remaining seconds on progress
+
+Jean-Noel Avila (2):
+      l10n: fr.po v2.6.0 round 1 (2441t)
+      l10n: fr.po v2.6.0 round 2 (2440t)
+
+Jeff King (7):
       run-command: provide in_async query function
       pkt-line: show packets in async processes as "sideband"
       fast-import: switch crash-report date to iso8601
       date: make "local" orthogonal to date format
       git_connect: clear GIT_* environment for ssh
       git_connect: clarify conn->use_shell flag
+      blame: handle --first-parent
+
+Jiang Xin (6):
+      l10n: TEAMS: stash inactive zh_CN team members
+      l10n: zh_CN: Add translations for Git glossary
+      l10n: git.pot: v2.6.0 round 1 (123 new, 41 removed)
+      l10n: zh_CN: for git v2.6.0 l10n round 1
+      l10n: git.pot: v2.6.0 round 2 (3 improvements)
+      l10n: zh_CN: for git v2.6.0 l10n round 2
 
 Johannes Schindelin (1):
       am --skip/--abort: merge HEAD/ORIG_HEAD tree into index
 
-John Keeping (15):
+John Keeping (18):
       Documentation/blame-options: don't list date formats
       Documentation/config: don't list date formats
       Documentation/git-for-each-ref: don't list date formats
@@ -52,11 +75,14 @@ John Keeping (15):
       t7800: don't use test_config in a subshell
       test-lib-functions: detect test_when_finished in subshell
       interpret-trailers: allow running outside a repository
+      Makefile: fix MAKEFLAGS tests with multiple flags
+      rebase: support --no-autostash
+      Documentation/git-rebase: fix --no-autostash formatting
 
 Juerg Haefliger (1):
       git-quiltimport: add commandline option --series <file>
 
-Junio C Hamano (25):
+Junio C Hamano (29):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       rerere: fix an off-by-one non-bug
       rerere: handle conflicts with multiple stage #1 entries
@@ -79,9 +105,13 @@ Junio C Hamano (25):
       rerere: call conflict-ids IDs
       rerere: use "struct rerere_id" instead of "char *" for conflict ID
       rerere: un-nest merge() further
+      Makefile: allow $(ARFLAGS) specified from the command line
       Update RelNotes to 2.6 to describe leftover bits since -rc2
       Git 2.5.3
       Update RelNotes to 2.6
+      Git 2.6-rc3
+      filter-branch: make report-progress more readable
+      Git 2.6
 
 Karthik Nayak (25):
       t6302: for-each-ref tests for ref-filter APIs
@@ -110,33 +140,73 @@ Karthik Nayak (25):
       tag.c: implement '--format' option
       tag.c: implement '--merged' and '--no-merged' options
 
-Lars Schneider (2):
+Lars Schneider (3):
       git-p4: add config git-p4.pathEncoding
       git-p4: improve path encoding verbose output
+      git-p4: use replacement character for non UTF-8 characters in paths
 
 Luke Diamand (3):
       git-p4: failing test for ignoring invalid p4 labels
       git-p4: do not terminate creating tag for unknown commit
       git-p4: fix P4 label import for unprocessed commits
 
-Matthieu Moy (4):
+Matthieu Moy (7):
       bisect: sanity check on terms
       bisect: add 'git bisect terms' to view the current terms
       bisect: allow setting any user-specified in 'git bisect start'
       strtoul_ui: reject negative values
+      Documentation: use 'keyid' consistently, not 'key-id'
+      Documentation/grep: fix documentation of -O
+      Documentation: explain optional arguments better
 
 Namhyung Kim (1):
       stash: allow "stash show" diff output configurable
 
+Nguyễn Thái Ngọc Duy (2):
+      dir.c: make last_exclude_matching_from_list() run til the end
+      dir.c: don't exclude whole dir prematurely if neg pattern may match
+
+Peter Krefting (1):
+      l10n: sv.po: Update Swedish translation (2441t0f0u)
+
 Philip Oakley (1):
       doc: show usage of branch description
 
-Ralf Thielow (2):
+Phillip Sz (1):
+      l10n: de.po: better language for one string
+
+Ralf Thielow (4):
       pull: don't mark values for option "rebase" for translation
       tag, update-ref: improve description of option "create-reflog"
+      l10n: de.po: translate 123 new messages
+      l10n: de.po: translate 2 messages
+
+Ramsay Jones (1):
+      mailmap: update my entry with new email address
+
+Ray Chen (10):
+      l10n: zh_CN: Update Translation: "tag object"
+      l10n: zh_CN: Unify Translation of "packfile"
+      l10n: zh_CN: Update Translation of "tag"
+      l10n: zh_CN: Add Surrounding Spaces
+      l10n: zh_CN: Update Git Glossary: SHA-1
+      l10n: zh_CN: Update Git Glossary: "dumb", "smart"
+      l10n: zh_CN: Update Git Glossary: tag
+      l10n: zh_CN: Update Git Glossary: fork
+      l10n: zh_CN: Update Git Glossary: pickaxe
+      l10n: zh_CN: Update Git Glossary: "commit message"
+
+Stefan Beller (3):
+      submodule: rewrite `module_list` shell function in C
+      submodule: rewrite `module_name` shell function in C
+      submodule: rewrite `module_clone` shell function in C
 
 Takashi Iwai (1):
       pager: don't use unsafe functions in signal handlers
+
+Trần Ngọc Quân (2):
+      l10n: Updated Vietnamese translation (2441t)
+      l10n: Update and review Vietnamese translation (2440t)
 
 
 Version v2.6.0-rc2; changes since v2.6.0-rc1:
@@ -1290,7 +1360,7 @@ Paul Tan (10):
 Quentin Neill (1):
       blame: add blame.showEmail configuration
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       t7502-commit.sh: fix a broken and-chain
 
 Remi Lespinet (3):
@@ -2498,7 +2568,7 @@ Mike Hommey (2):
 Patrick Steinhardt (1):
       git-submodule.sh: fix '/././' path normalization
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       git-compat-util.h: remove redundant code
 
 René Scharfe (4):
@@ -2882,7 +2952,7 @@ Ralf Thielow (3):
       for-each-ref: correct spelling of Tcl in option description
       completion: add git-tag options
 
-Ramsay Allan Jones (2):
+Ramsay Jones (2):
       git-compat-util.h: don't define _XOPEN_SOURCE on cygwin
       t0050-*.sh: mark the rename (case change) test as passing
 
@@ -3529,7 +3599,7 @@ Philip Oakley (4):
       doc: add 'everyday' to 'git help'
       doc: fix 'git status --help' character quoting
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       revision: remove definition of unused 'add_object' function
 
 René Scharfe (44):
@@ -3982,7 +4052,7 @@ Pat Thoyts (3):
       t4210: skip command-line encoding tests on mingw
       t9902: mingw-specific fix for gitfile link files
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       alloc.c: remove the alloc_raw_commit_node() function
 
 Tanay Abhra (1):
@@ -4531,7 +4601,7 @@ Pat Thoyts (2):
       wincred: add install target
       wincred: avoid overwriting configured variables
 
-Ramsay Allan Jones (2):
+Ramsay Jones (2):
       t0000-*.sh: fix the GIT_SKIP_TESTS sub-tests
       alloc.c: remove the alloc_raw_commit_node() function
 
@@ -4689,7 +4759,7 @@ Jeff King (8):
 Junio C Hamano (1):
       Git 2.0.4
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       alloc.c: remove the alloc_raw_commit_node() function
 
 
@@ -6195,7 +6265,7 @@ Ramkumar Ramachandra (11):
       completion: fix remote.pushdefault
       completion: complete format.coverLetter
 
-Ramsay Allan Jones (2):
+Ramsay Jones (2):
       send-pack.c: mark a file-local function static
       shallow: remove unused code
 
@@ -7004,7 +7074,7 @@ Ramkumar Ramachandra (3):
       tar-tree: remove dependency on sq_quote_print()
       quote: remove sq_quote_print()
 
-Ramsay Allan Jones (8):
+Ramsay Jones (8):
       howto/setup-git-server-over-http: fix unescaped '^'s
       howto/revert-a-faulty-merge: fix unescaped '^'s
       config.c: mark file-local function static
@@ -7192,7 +7262,7 @@ Matthieu Moy (2):
       checkout: allow dwim for branch creation for "git checkout $branch --"
       checkout: proper error message on 'git checkout foo bar --'
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       http.c: Spell the null pointer as NULL
 
 SZEDER Gábor (1):
@@ -7339,7 +7409,7 @@ Nguyễn Thái Ngọc Duy (1):
 Ralf Thielow (1):
       l10n: de.po: use "das Tag" instead of "der Tag"
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       builtin/fetch.c: Fix a sparse warning
 
 Sebastien Helleu (1):
@@ -7442,7 +7512,7 @@ Junio C Hamano (4):
       commit: typofix for xxFFF[EF] check
       Git 1.8.4-rc2
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       cygwin: Remove the Win32 l/stat() implementation
 
 René Scharfe (1):
@@ -7510,7 +7580,7 @@ Ralf Thielow (1):
 Ramkumar Ramachandra (1):
       config doc: quote paths, fixing tilde-interpretation
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       commit-slab.h: Fix memory allocation and addressing
 
 Stefan Beller (1):
@@ -8198,7 +8268,7 @@ Ramkumar Ramachandra (54):
       commit: make it work with status.short
       send-email: be explicit with SSL certificate verification
 
-Ramsay Allan Jones (14):
+Ramsay Jones (14):
       compat/regex/regexec.c: Fix some sparse warnings
       compat/fnmatch/fnmatch.c: Fix a sparse error
       compat/nedmalloc: Fix some sparse warnings
@@ -8807,7 +8877,7 @@ Ramkumar Ramachandra (5):
       git-completion.bash: add branch.*.pushremote to config list
       git-completion.bash: add remote.pushdefault to config list
 
-Ramsay Allan Jones (2):
+Ramsay Jones (2):
       clone: Make the 'junk_mode' symbol a file static
       pretty: Fix bug in truncation support for %>, %< and %><
 
@@ -9237,7 +9307,7 @@ Ramkumar Ramachandra (14):
       builtin/log.c: make usage string consistent with doc
       builtin/shortlog.c: make usage string consistent with log
 
-Ramsay Allan Jones (5):
+Ramsay Jones (5):
       msvc: Fix compilation errors caused by poll.h emulation
       msvc: git-daemon: Fix linker "unresolved external" errors
       msvc: Fix build by adding missing symbol defines
@@ -9669,7 +9739,7 @@ Phil Hord (1):
 Ramkumar Ramachandra (1):
       t4018,7810,7811: remove test_config() redefinition
 
-Ramsay Allan Jones (2):
+Ramsay Jones (2):
       fast-import: Fix an gcc -Wuninitialized warning
       cat-file: Fix an gcc -Wuninitialized warning
 
@@ -10302,7 +10372,7 @@ Ralf Thielow (6):
       l10n: de.po: translate "revision" consistently as "Revision"
       l10n: de.po: translate "reset" as "neu setzen"
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       t3070: Disable some failing fnmatch tests
 
 René Scharfe (3):
@@ -10625,7 +10695,7 @@ Nguyễn Thái Ngọc Duy (4):
 Phil Hord (1):
       rebase --preserve-merges: keep all merge commits including empty ones
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       Makefile: Replace merge-file.h with merge-blobs.h in LIB_H
 
 Stephen Boyd (1):
@@ -11240,7 +11310,7 @@ Ramkumar Ramachandra (4):
       diff: introduce diff.submodule configuration variable
       submodule: display summary header in bold
 
-Ramsay Allan Jones (2):
+Ramsay Jones (2):
       builtin/config.c: Fix a sparse warning
       remote-curl.c: Fix a compiler warning
 
@@ -11572,7 +11642,7 @@ Nguyễn Thái Ngọc Duy (2):
 Ramkumar Ramachandra (1):
       Git url doc: mark ftp/ftps as read-only and deprecate them
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       MALLOC_CHECK: Allow checking to be disabled from config.mak
 
 Simon Ruderich (1):
@@ -11936,7 +12006,7 @@ Philipp A. Hartmann (1):
 Ralf Thielow (1):
       l10n: de.po: translate 2 new messages
 
-Ramsay Allan Jones (12):
+Ramsay Jones (12):
       t3300-*.sh: Fix a TAP parse error
       t3902-*.sh: Skip all tests rather than each test
       t4016-*.sh: Skip all tests rather than each test
@@ -12277,7 +12347,7 @@ Philip Oakley (1):
 Ramkumar Ramachandra (1):
       t/perf: add "trash directory" to .gitignore
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       test-regex: Add a test to check for a bug in the regex routines
 
 Robin Rosenberg (1):
@@ -12458,7 +12528,7 @@ Michael G. Schwern (14):
       Move Git::IndexInfo into its own file.
       Extract Git::SVN::GlobSpec from git-svn.
 
-Ramsay Allan Jones (2):
+Ramsay Jones (2):
       t1100-*.sh: Fix an intermittent test failure
       t7810-*.sh: Remove redundant test
 
@@ -12727,7 +12797,7 @@ Peter Krefting (1):
 Ralf Thielow (1):
       l10n: de.po: translate 29 new messages
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       vcs-svn: rename check_overflow and its arguments for clarity
 
 SZEDER Gábor (3):
@@ -12802,7 +12872,7 @@ Kacper Kornet (2):
       t6300: test sort with multiple keys
       for-each-ref: Fix sort with multiple keys
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       test-regex: Add a test to check for a bug in the regex routines
 
 
@@ -12927,7 +12997,7 @@ Michael Schubert (1):
 Ramkumar Ramachandra (1):
       commit: document a couple of options
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       t7810-*.sh: Remove redundant test
 
 René Scharfe (1):
@@ -13091,7 +13161,7 @@ Junio C Hamano (2):
 Marco Paolone (1):
       l10n: it.po: translate 212 new messages
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       gitweb: Skip 'modification times' tests when no date parser available
 
 SZEDER Gábor (2):
@@ -13658,7 +13728,7 @@ Ralf Thielow (2):
       l10n: Update German translation
       remote: fix typo
 
-Ramsay Allan Jones (5):
+Ramsay Jones (5):
       compat/win32/pthread.h: Add an pthread_key_delete() implementation
       compat/mingw.h: Set S_ISUID to prevent a fast-import test failure
       git-submodule.sh: Don't use $path variable in eval_gettext string
@@ -14061,7 +14131,7 @@ Ralf Thielow (2):
       l10n: Add the German translation team and initialize de.po
       l10n: Initial German translation
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       compat/mingw.[ch]: Change return type of exec functions to int
 
 René Scharfe (3):
@@ -14496,7 +14566,7 @@ Ramkumar Ramachandra (2):
       revert: prepare to move replay_action to header
       sequencer: factor code out of revert builtin
 
-Ramsay Allan Jones (3):
+Ramsay Jones (3):
       vcs-svn: rename check_overflow arguments for clarity
       builtin/tag.c: Fix a sparse warning
       ctype.c: Fix a sparse warning
@@ -15245,7 +15315,7 @@ Ramkumar Ramachandra (11):
       t3510 (cherry-pick-sequencer): use exit status
       t3502, t3510: clarify cherry-pick -m failure
 
-Ramsay Allan Jones (3):
+Ramsay Jones (3):
       builtin/log.c: Fix an "Using plain integer as NULL pointer" warning
       environment.c: Fix an sparse "symbol not declared" warning
       fmt-merge-msg.c: Fix an "dubious one-bit signed bitfield" sparse error
@@ -15642,7 +15712,7 @@ Ramkumar Ramachandra (4):
       sha1_file: don't mix enum with int
       git-compat-util: don't assume value for undefined variable
 
-Ramsay Allan Jones (3):
+Ramsay Jones (3):
       t5501-*.sh: Fix url passed to clone in setup test
       config.c: Fix a static buffer overwrite bug by avoiding mkpath()
       convert.c: Fix return type of git_path_check_eol()
@@ -16065,7 +16135,7 @@ Ramkumar Ramachandra (18):
       revert: Introduce --continue to continue the operation
       revert: Propagate errors upwards from do_pick_commit
 
-Ramsay Allan Jones (5):
+Ramsay Jones (5):
       Makefile: Make dependency directory creation less noisy
       sparse: Fix an "Using plain integer as NULL pointer" warning
       obstack.c: Fix some sparse warnings
@@ -16329,7 +16399,7 @@ Pat Thoyts (1):
 Peter Stuge (1):
       gitweb: Fix links to lines in blobs when javascript-actions are enabled
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       t9159-*.sh: skip for mergeinfo test for svn <= 1.4
 
 René Scharfe (1):
@@ -16925,7 +16995,7 @@ Pete Wyckoff (4):
       git-p4: one test missing config git-p4.skipSubmitEditCheck
       git-p4: commit time should be most recent p4 change time
 
-Ramsay Allan Jones (3):
+Ramsay Jones (3):
       help.c: Fix detection of custom merge strategy on cygwin
       t1301-*.sh: Fix the 'forced modes' test on cygwin
       config.c: Make git_config() work correctly when called recursively
@@ -17115,7 +17185,7 @@ Nguyễn Thái Ngọc Duy (2):
 Peter Stuge (1):
       gitweb: Fix links to lines in blobs when javascript-actions are enabled
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       t9159-*.sh: skip for mergeinfo test for svn <= 1.4
 
 Sebastian Morr (1):
@@ -17732,7 +17802,7 @@ Nicolas Morey-Chaisemartin (1):
 Rafael Gieschke (1):
       ident: add NO_GECOS_IN_PWENT for systems without pw_gecos in struct passwd
 
-Ramsay Allan Jones (9):
+Ramsay Jones (9):
       Makefile: Use cgcc rather than sparse in the check target
       sparse: Fix an "symbol 'cmd_index_pack' not declared" warning
       sparse: Fix some "Using plain integer as NULL pointer" warnings
@@ -18106,7 +18176,7 @@ Paul Mackerras (1):
 Ramkumar Ramachandra (1):
       revert: Hide '-r' option in default usage
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       i18n: avoid parenthesized string as array initializer
 
 Skip (1):
@@ -18994,7 +19064,7 @@ Junio C Hamano (2):
       Documentation updates for 'GIT_WORK_TREE without GIT_DIR' historical usecase
       Git 1.7.4-rc3
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       svndump.c: Fix a printf format compiler warning
 
 
@@ -19027,7 +19097,7 @@ Matthieu Moy (1):
 Michael J Gruber (1):
       RelNotes/1.7.4: minor fixes
 
-Ramsay Allan Jones (7):
+Ramsay Jones (7):
       lib-git-svn.sh: Move web-server handling code into separate function
       t9157-*.sh: Add an svn version check
       t6038-*.sh: Pass the -b (--binary) option to sed on cygwin
@@ -19589,7 +19659,7 @@ Ramkumar Ramachandra (10):
       Porcelain scripts: Rewrite cryptic "needs update" error message
       t9010 (svn-fe): Eliminate dependency on svn perl bindings
 
-Ramsay Allan Jones (10):
+Ramsay Jones (10):
       msvc: Fix compilation errors in compat/win32/sys/poll.c
       msvc: git-daemon.exe: Fix linker "unresolved externals" error
       msvc: Fix build by adding missing INTMAX_MAX define
@@ -19741,7 +19811,7 @@ Michael J Gruber (2):
       git-difftool.txt: correct the description of $BASE and describe $MERGED
       difftool: provide basename to external tools
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       t3419-*.sh: Fix arithmetic expansion syntax error
 
 René Scharfe (1):
@@ -20117,7 +20187,7 @@ Pat Notz (2):
       strbuf.h: fix comment typo
       dir.c: squelch false uninitialized memory warning
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       t1503: Fix arithmetic expansion syntax error when using dash
 
 Tomas Carnecky (1):
@@ -20187,7 +20257,7 @@ Pat Thoyts (6):
 Peter Krefting (1):
       git-gui: Update Swedish translation (521t).
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       vcs-svn: Fix some printf format compiler warnings
 
 René Scharfe (1):
@@ -21180,7 +21250,7 @@ Nazri Ramliy (5):
       Allow customizable commit decorations colors
       Add test for correct coloring of git log --decoration
 
-Ramsay Allan Jones (2):
+Ramsay Jones (2):
       msvc: Select the "fast" definition of the {get,put}_be32() macros
       notes: Initialise variable to appease gcc
 
@@ -21815,7 +21885,7 @@ Ping Yin (1):
 Ramkumar Ramachandra (1):
       SubmittingPatches: Add new section about what to base work on
 
-Ramsay Allan Jones (4):
+Ramsay Jones (4):
       Makefile: Fix 'clean' target to remove all gitweb build files
       msvc: Fix some "expr evaluates to function" compiler warnings
       msvc: Fix some compiler warnings
@@ -23502,7 +23572,7 @@ Phil Miller (1):
 Ramkumar Ramachandra (1):
       Documentation: Update git core tutorial clarifying reference to scripts
 
-Ramsay Allan Jones (5):
+Ramsay Jones (5):
       MSVC: Fix an "incompatible pointer types" compiler warning
       engine.pl: Fix a recent breakage of the buildsystem generator
       msvc: Fix an "unrecognized option" linker warning
@@ -24135,7 +24205,7 @@ Nanako Shiraishi (2):
 Nicolas Pitre (1):
       pack-objects: split implications of --all-progress from progress activation
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       git-count-objects: Fix a disk-space under-estimate on Cygwin
 
 René Scharfe (2):
@@ -24364,7 +24434,7 @@ Michael J Gruber (1):
 Nicolas Pitre (1):
       pack-objects: move thread autodetection closer to relevant code
 
-Ramsay Allan Jones (2):
+Ramsay Jones (2):
       Makefile: keep MSVC and Cygwin configuration separate
       MSVC: Add support for building with NO_MMAP
 
@@ -24657,7 +24727,7 @@ Philippe Bruhat (1):
 Raman Gupta (1):
       Add branch management for releases to gitworkflows
 
-Ramsay Allan Jones (3):
+Ramsay Jones (3):
       Makefile: merge two Cygwin configuration sections into one
       t9700-perl-git.sh: Fix a test failure on Cygwin
       git-count-objects: Fix a disk-space under-estimate on Cygwin
@@ -24935,7 +25005,7 @@ Junio C Hamano (2):
       Update draft release notes to 1.6.5
       GIT 1.6.5
 
-Ramsay Allan Jones (2):
+Ramsay Jones (2):
       Fix MSVC build on cygwin
       Fix the exit code of MSVC build scripts on cygwin
 
@@ -24991,7 +25061,7 @@ Miklos Vajna (1):
 Nicolas Pitre (1):
       make 'git clone' ask the remote only for objects it cares about
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       Fix some printf format warnings
 
 SZEDER Gábor (1):
@@ -27481,7 +27551,7 @@ Petr Kodl (2):
       MinGW: a helper function that translates Win32 API error codes
       MinGW: a hardlink implementation
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       git-instaweb: fix lighttpd configuration on cygwin
 
 René Scharfe (12):
@@ -30582,7 +30652,7 @@ Petr Baudis (1):
 Ralf Wildenhues (1):
       Fix some manual typos.
 
-Ramsay Allan Jones (2):
+Ramsay Jones (2):
       Fix a warning (on cygwin) to allow -Werror
       Suppress some bash redirection error messages
 
@@ -31573,7 +31643,7 @@ Pieter de Bie (1):
 Rafael Garcia-Suarez (1):
       gitweb: remove git_blame and rename git_blame2 to git_blame
 
-Ramsay Allan Jones (4):
+Ramsay Jones (4):
       Fix some warnings (on cygwin) to allow -Werror
       t9113-*.sh: provide user feedback when test skipped
       t9100-git-svn-basic.sh: Fix determination of utf-8 locale
@@ -36688,7 +36758,7 @@ Nicolas Pitre (1):
 Pierre Habouzit (1):
       Fix lapsus in builtin-apply.c
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       Fix a test failure (t9500-*.sh) on cygwin
 
 Shawn O. Pearce (17):
@@ -40778,7 +40848,7 @@ Michael Poole (1):
 Paolo Bonzini (1):
       git-archimport: support empty summaries, put summary on a single line.
 
-Ramsay Allan Jones (5):
+Ramsay Jones (5):
       Fix a "label defined but unreferenced" warning.
       Fix an "implicit function definition" warning.
       Fix some "comparison is always true/false" warnings.
@@ -44155,7 +44225,7 @@ Paul Mackerras (2):
       gitk: Allow the user to set some colors
       gitk: Show the currently checked-out head in bold font
 
-Ramsay Allan Jones (1):
+Ramsay Jones (1):
       Fix header breakage with _XOPEN_SOURCE.
 
 René Scharfe (9):
@@ -44204,7 +44274,7 @@ Junio C Hamano (13):
 Michael Krelin (1):
       handle https:// protocol in git-clone
 
-Ramsay Allan Jones (4):
+Ramsay Jones (4):
       Fixup command names in some usage strings.
       Replace some calls to die(usage_str) with usage(usage_str).
       Allow config file to specify Signed-off-by identity in format-patch.
@@ -44333,7 +44403,7 @@ Petr Baudis (5):
       Teach git-local-fetch the --stdin switch
       Teach git-http-fetch the --stdin switch
 
-Ramsay Allan Jones (7):
+Ramsay Jones (7):
       Ensure git-clone exits with error if perl script fails.
       Fix annotate test script; notice when git-annotate fails.
       Fix installation of templates on ancient systems.
