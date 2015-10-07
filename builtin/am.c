@@ -1866,7 +1866,27 @@ static void am_run(struct am_state *state, int resume)
 		if (run_applypatch_msg_hook(state))
 			exit(1);
 
-		say(state, stdout, _("Applying: %.*s"), linelen(state->msg), state->msg);
+// from /home/git/apt/apt-private/colors.h
+#define color_reset "\x1b[0m"
+#define info_color  "\x1b[41;37m"
+
+#define escape_sequence "\x1b"
+#define warn_color "\x1b[01;32;41m"
+#define install_color "\x1b[33;01m"
+#define remove_color "\x1b[38;5;160m"
+
+                {
+                        const char *fmt = _("Applying: %.*s");
+                        char *color_fmt;
+                        int len = strlen(fmt);
+                        color_fmt = malloc(len + sizeof(info_color) + sizeof(color_reset) - 1);
+                        memcpy(color_fmt, info_color, sizeof(info_color)-1);
+                        memcpy(color_fmt + sizeof(info_color) -1, fmt, len);
+                        strcpy(color_fmt + sizeof(info_color) -1 + len, color_reset);
+
+                        say(state, stdout, color_fmt, linelen(state->msg), state->msg);
+                        free(color_fmt);
+                }
 
 		apply_status = run_apply(state, NULL);
 
@@ -1938,7 +1958,20 @@ static void am_resolve(struct am_state *state)
 {
 	validate_resume_state(state);
 
-	say(state, stdout, _("Applying: %.*s"), linelen(state->msg), state->msg);
+        {
+                const char *fmt = _("Applying: %.*s");
+                char *color_fmt;
+                int len = strlen(fmt);
+
+                // color, string, reset sizeof(string) includes the null!
+                color_fmt = malloc(len + sizeof(info_color) + sizeof(color_reset) - 1);
+                memcpy(color_fmt, info_color, sizeof(info_color)-1);
+                memcpy(color_fmt + sizeof(info_color) -1, fmt, len);
+                strcpy(color_fmt + sizeof(info_color) -1 + len, color_reset);
+
+                say(state, stdout, color_fmt, linelen(state->msg), state->msg);
+                free(color_fmt);
+        }
 
 	if (!index_has_changes(NULL)) {
 		printf_ln(_("No changes - did you forget to use 'git add'?\n"
