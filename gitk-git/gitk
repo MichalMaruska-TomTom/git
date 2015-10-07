@@ -6635,6 +6635,7 @@ proc drawtags {id x xt y1} {
     set delta [expr {int(0.5 * ($linespc - $lthickness))}]
     set extra [expr {$delta + $lthickness + $linespc}]
 
+    # mmc: So marks starts with TAGS
     if {[info exists idtags($id)]} {
         set marks $idtags($id)
         set ntags [llength $marks]
@@ -6650,17 +6651,21 @@ proc drawtags {id x xt y1} {
             set ntags 1
         }
     }
+    # then HEADS ... including remotes
     if {[info exists idheads($id)]} {
         set marks [concat $marks $idheads($id)]
         set nheads [llength $idheads($id)]
     }
+    # other refs
     if {[info exists idotherrefs($id)]} {
         set marks [concat $marks $idotherrefs($id)]
     }
+    # nothing to draw!
     if {$marks eq {}} {
         return $xt
     }
 
+    # puts "drawtags: got $marks"
     set yt [expr {$y1 - 0.5 * $linespc}]
     set yb [expr {$yt + $linespc - 1}]
     set xvals {}
@@ -12527,7 +12532,9 @@ set ignorespace 0
 set worddiff ""
 set markbgcolor "#e0e0ff"
 
-set headbgcolor "#00ff00"
+# mmc: it's lime, but see ~/.gitk
+set headbgcolor lime
+
 set headfgcolor black
 set headoutlinecolor black
 set remotebgcolor #ffddaa
