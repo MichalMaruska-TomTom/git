@@ -1,4 +1,4 @@
-From 05f7f1585573eaf648836efbae9a4093c1b24ae7 Mon Sep 17 00:00:00 2001
+From 29430b0d26eb0fec5c3375925699d40299fd0b25 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Fri, 5 Apr 2013 18:35:27 +0200
 Subject: submodule: teach unpack_trees() to update submodules
@@ -48,10 +48,10 @@ index 5e18e46..eb2384b 100644
  				return error("%s is a directory", path.buf);
  			remove_subtree(&path);
 diff --git a/submodule.c b/submodule.c
-index dd32daf..b469da8 100644
+index 6d41c5f..a64a215 100644
 --- a/submodule.c
 +++ b/submodule.c
-@@ -363,6 +363,42 @@ int depopulate_submodule(const char *path)
+@@ -356,6 +356,42 @@ int depopulate_submodule(const char *path)
  	return 0;
  }
  
@@ -94,7 +94,7 @@ index dd32daf..b469da8 100644
  void show_submodule_summary(FILE *f, const char *path,
  		const char *line_prefix,
  		unsigned char one[20], unsigned char two[20],
-@@ -809,6 +845,17 @@ out:
+@@ -802,6 +838,17 @@ out:
  	return result;
  }
  
@@ -112,7 +112,7 @@ index dd32daf..b469da8 100644
  unsigned is_submodule_modified(const char *path, int ignore_untracked)
  {
  	ssize_t len;
-@@ -954,6 +1001,45 @@ int ok_to_remove_submodule(const char *path)
+@@ -947,6 +994,45 @@ int ok_to_remove_submodule(const char *path)
  	return ok_to_remove;
  }
  
@@ -300,5 +300,5 @@ index 36a73a6..bee8740 100644
  	ERROR_WOULD_LOSE_UNTRACKED_REMOVED,
  	ERROR_BIND_OVERLAP,
 -- 
-2.6.0.rc0.131.gf624c3d
+2.6.0.rc2.230.g3dd15c0
 

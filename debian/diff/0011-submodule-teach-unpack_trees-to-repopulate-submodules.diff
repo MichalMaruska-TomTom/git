@@ -1,4 +1,4 @@
-From e41535f390e9e5dec268f2beb0ae5d0ecd2275ee Mon Sep 17 00:00:00 2001
+From 8759bebc6d9d58a0b87b5f4d68253d7cf8bf34d7 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Mon, 18 Jun 2012 22:11:45 +0200
 Subject: submodule: teach unpack_trees() to repopulate submodules
@@ -36,10 +36,10 @@ index 1eda8e9..5e18e46 100644
  	default:
  		return error("unknown file mode for %s in index", path);
 diff --git a/submodule.c b/submodule.c
-index c149954..dd32daf 100644
+index 091b1b7..6d41c5f 100644
 --- a/submodule.c
 +++ b/submodule.c
-@@ -290,6 +290,42 @@ static void print_submodule_summary(struct rev_info *rev, FILE *f,
+@@ -283,6 +283,42 @@ static void print_submodule_summary(struct rev_info *rev, FILE *f,
  	strbuf_release(&sb);
  }
  
@@ -82,7 +82,7 @@ index c149954..dd32daf 100644
  int depopulate_submodule(const char *path)
  {
  	struct strbuf dot_git = STRBUF_INIT;
-@@ -1086,18 +1122,19 @@ void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir)
+@@ -1079,18 +1115,19 @@ void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir)
  {
  	struct strbuf file_name = STRBUF_INIT;
  	struct strbuf rel_path = STRBUF_INIT;
@@ -105,7 +105,7 @@ index c149954..dd32daf 100644
  						 &rel_path)))
  		die(_("Could not set core.worktree in %s"),
  		    file_name.buf);
-@@ -1105,4 +1142,5 @@ void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir)
+@@ -1098,4 +1135,5 @@ void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir)
  	strbuf_release(&file_name);
  	strbuf_release(&rel_path);
  	free((void *)real_work_tree);
@@ -155,7 +155,7 @@ index 79cdd34..711f55b 100755
  		reset_work_tree_to add_sub1 &&
  		(
 diff --git a/unpack-trees.c b/unpack-trees.c
-index 2d86216..672b732 100644
+index bd3b03f..debfb93 100644
 --- a/unpack-trees.c
 +++ b/unpack-trees.c
 @@ -1385,6 +1385,7 @@ static int check_ok_to_remove(const char *name, int len, int dtype,
@@ -192,5 +192,5 @@ index 2d86216..672b732 100644
  		add_rejected_path(o, error_type, name);
  }
 -- 
-2.5.0.457.gab17608
+2.6.0.rc2.230.g3dd15c0
 

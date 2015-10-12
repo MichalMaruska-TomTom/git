@@ -1,4 +1,4 @@
-From 4310eb3a9244a62998889ace3bf40b9701ebb163 Mon Sep 17 00:00:00 2001
+From 224763aefce08dc4cbd3c9da69eba97907daa017 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Tue, 19 Jun 2012 20:55:45 +0200
 Subject: submodule: teach unpack_trees() to remove submodule contents
@@ -28,10 +28,10 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  4 files changed, 43 insertions(+), 4 deletions(-)
 
 diff --git a/submodule.c b/submodule.c
-index a464cf3..c149954 100644
+index 23c36f2..091b1b7 100644
 --- a/submodule.c
 +++ b/submodule.c
-@@ -290,6 +290,43 @@ static void print_submodule_summary(struct rev_info *rev, FILE *f,
+@@ -283,6 +283,43 @@ static void print_submodule_summary(struct rev_info *rev, FILE *f,
  	strbuf_release(&sb);
  }
  
@@ -88,7 +88,7 @@ index d4ce105..a9d8d07 100644
  int fetch_populated_submodules(const struct argv_array *options,
  			       const char *prefix, int command_line_option,
 diff --git a/unpack-trees.c b/unpack-trees.c
-index bb09b1e..2d86216 100644
+index f932e80..bd3b03f 100644
 --- a/unpack-trees.c
 +++ b/unpack-trees.c
 @@ -9,6 +9,7 @@
@@ -138,5 +138,5 @@ index 0e22d43..8616820 100644
  }
  
 -- 
-2.5.0.457.gab17608
+2.6.0.rc2.230.g3dd15c0
 

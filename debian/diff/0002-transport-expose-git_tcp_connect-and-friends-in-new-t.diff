@@ -1,4 +1,4 @@
-From 58c6c9966ab91b5e6c2bee50d338093d1b684216 Mon Sep 17 00:00:00 2001
+From 6c57a3e182ef61ca408a8ce8e482534c64066607 Mon Sep 17 00:00:00 2001
 From: Jonathan Nieder <jrnieder@gmail.com>
 Date: Mon, 6 Jun 2011 04:37:14 -0500
 Subject: transport: expose git_tcp_connect() and friends in new tcp.h
@@ -34,7 +34,7 @@ index 36bc54c..a6c9c78 100644
  LIB_OBJS += trace.o
  LIB_OBJS += trailer.o
 diff --git a/connect.c b/connect.c
-index acd39d7..933d518 100644
+index d3283b8..16d76f1 100644
 --- a/connect.c
 +++ b/connect.c
 @@ -6,6 +6,7 @@
@@ -45,7 +45,7 @@ index acd39d7..933d518 100644
  #include "url.h"
  #include "string-list.h"
  #include "sha1-array.h"
-@@ -273,7 +274,7 @@ static enum protocol get_protocol(const char *name)
+@@ -274,7 +275,7 @@ static enum protocol get_protocol(const char *name)
  	die("I don't handle protocol '%s'", name);
  }
  
@@ -54,7 +54,7 @@ index acd39d7..933d518 100644
  {
  	char *host = *hoststart;
  	char *end;
-@@ -297,273 +298,6 @@ static char *host_end(char **hoststart, int removebrackets)
+@@ -298,273 +299,6 @@ static char *host_end(char **hoststart, int removebrackets)
  	return end;
  }
  

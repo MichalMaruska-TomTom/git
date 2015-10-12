@@ -1,6 +1,9 @@
 Version next; changes since v2.6.0:
 -----------------------------------
 
+Alex Henrie (1):
+      merge: grammofix in please-commit-before-merge message
+
 Alexey Shumkin (2):
       t7900-subtree: test the "space in a subdirectory name" case
       contrib/subtree: respect spaces in a repository path
@@ -11,15 +14,29 @@ Antoine Delaite (1):
 Ben Boeckel (1):
       remote: add get-url subcommand
 
+Blake Burkhart (2):
+      http: limit redirection to protocol-whitelist
+      http: limit redirection depth
+
+Christian Couder (2):
+      quote: fix broken sq_quote_buf() related comment
+      quote: move comment before sq_quote_buf()
+
 David Turner (3):
       refs: clean up common_list
       path: optimize common dir checking
       refs: make refs/bisect/* per-worktree
 
+Eric N. Vander Weele (1):
+      log: Update log.follow doc and add to config.txt
+
 Gabor Bernat (1):
       filter-branch: add passed/remaining seconds on progress
 
-Jeff King (7):
+Jacob Keller (1):
+      notes: correct documentation of DWIMery for notes references
+
+Jeff King (13):
       run-command: provide in_async query function
       pkt-line: show packets in async processes as "sideband"
       fast-import: switch crash-report date to iso8601
@@ -27,8 +44,23 @@ Jeff King (7):
       git_connect: clear GIT_* environment for ssh
       git_connect: clarify conn->use_shell flag
       blame: handle --first-parent
+      transport: add a protocol-whitelist environment variable
+      submodule: allow only certain protocols for submodule fetches
+      transport: refactor protocol whitelist code
+      react to errors in xdi_diff
+      xdiff: reject files larger than ~1GB
+      merge-file: enforce MAX_XDIFF_SIZE on incoming files
 
-John Keeping (18):
+Johannes Schindelin (7):
+      setup: fix "inside work tree" detection on case-insensitive filesystems
+      t5700: demonstrate a Windows file locking issue with `git clone --dissociate`
+      sha1_file: consolidate code to close a pack's file descriptor
+      gc: demonstrate failure with stale remote HEAD
+      sha1_file.c: add a function to release all packs
+      clone --dissociate: avoid locking pack files
+      pack-objects: do not get distracted by broken symrefs
+
+John Keeping (19):
       Documentation/blame-options: don't list date formats
       Documentation/config: don't list date formats
       Documentation/git-for-each-ref: don't list date formats
@@ -47,11 +79,12 @@ John Keeping (18):
       Makefile: fix MAKEFLAGS tests with multiple flags
       rebase: support --no-autostash
       Documentation/git-rebase: fix --no-autostash formatting
+      Documentation: fix section header mark-up
 
 Juerg Haefliger (1):
       git-quiltimport: add commandline option --series <file>
 
-Junio C Hamano (24):
+Junio C Hamano (31):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       rerere: fix an off-by-one non-bug
       rerere: handle conflicts with multiple stage #1 entries
@@ -76,8 +109,15 @@ Junio C Hamano (24):
       rerere: un-nest merge() further
       Makefile: allow $(ARFLAGS) specified from the command line
       filter-branch: make report-progress more readable
+      fsck: exit with non-zero when problems are found
+      Git 2.3.10
+      Git 2.4.10
+      Git 2.5.4
+      Git 2.6.1
+      Start cycle toward 2.7
+      Second batch for 2.7
 
-Karthik Nayak (25):
+Karthik Nayak (33):
       t6302: for-each-ref tests for ref-filter APIs
       tag: libify parse_opt_points_at()
       ref-filter: implement '--points-at' option
@@ -103,18 +143,28 @@ Karthik Nayak (25):
       tag.c: use 'ref-filter' APIs
       tag.c: implement '--format' option
       tag.c: implement '--merged' and '--no-merged' options
+      branch: refactor width computation
+      branch: bump get_head_description() to the top
+      branch: roll show_detached HEAD into regular ref_list
+      branch: move 'current' check down to the presentation layer
+      branch: drop non-commit error reporting
+      branch.c: use 'ref-filter' data structures
+      branch.c: use 'ref-filter' APIs
+      branch: add '--points-at' option
 
-Lars Schneider (3):
+Lars Schneider (5):
       git-p4: add config git-p4.pathEncoding
       git-p4: improve path encoding verbose output
       git-p4: use replacement character for non UTF-8 characters in paths
+      git-p4: add test case for "Translation of file content failed" error
+      git-p4: handle "Translation of file content failed"
 
 Luke Diamand (3):
       git-p4: failing test for ignoring invalid p4 labels
       git-p4: do not terminate creating tag for unknown commit
       git-p4: fix P4 label import for unprocessed commits
 
-Matthieu Moy (7):
+Matthieu Moy (11):
       bisect: sanity check on terms
       bisect: add 'git bisect terms' to view the current terms
       bisect: allow setting any user-specified in 'git bisect start'
@@ -122,21 +172,54 @@ Matthieu Moy (7):
       Documentation: use 'keyid' consistently, not 'key-id'
       Documentation/grep: fix documentation of -O
       Documentation: explain optional arguments better
+      t3203: test 'detached at' after checkout --detach
+      status: don't say 'HEAD detached at HEAD'
+      rebase-i: explicitly accept tab as separator in commands
+      rebase-i: loosen over-eager check_bad_cmd check
+
+Max Kirillov (2):
+      submodule refactor: use strbuf_git_path_submodule() in add_submodule_odb()
+      path: implement common_dir handling in git_pathdup_submodule()
+
+Michael J Gruber (1):
+      t2026: rename worktree prune test
 
 Namhyung Kim (1):
       stash: allow "stash show" diff output configurable
 
-Nguyễn Thái Ngọc Duy (2):
+Nguyễn Thái Ngọc Duy (10):
+      path.c: delete an extra space
+      gc: save log from daemonized gc --auto and print it next time
       dir.c: make last_exclude_matching_from_list() run til the end
       dir.c: don't exclude whole dir prematurely if neg pattern may match
+      t0002: add test for enter_repo(), non-strict mode
+      enter_repo: avoid duplicating logic, use is_git_directory() instead
+      enter_repo: allow .git files in strict mode
+      clone: allow --local from a linked checkout
+      clone: better error when --reference is a linked checkout
+      ls-remote.txt: delete unsupported option
+
+Renee Margaret McConahy (1):
+      am: configure gpg at startup
+
+Stefan Agner (1):
+      git-send-email.perl: Fixed sending of many/huge changes/patches
 
 Stefan Beller (3):
       submodule: rewrite `module_list` shell function in C
       submodule: rewrite `module_name` shell function in C
       submodule: rewrite `module_clone` shell function in C
 
+Stephan Beyer (2):
+      t5561: get rid of racy appending to logfile
+      t/perf: make runner work even if Git is not installed
+
 Takashi Iwai (1):
       pager: don't use unsafe functions in signal handlers
+
+Tobias Klauser (2):
+      connect: fix typo in result string of prot_name()
+      Documentation/interpret-trailers: Grammar fix
 
 
 Version v2.6.0; changes since v2.6.0-rc3:
