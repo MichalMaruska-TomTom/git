@@ -1,4 +1,4 @@
-Version next; changes since v2.6.0:
+Version next; changes since v2.6.1:
 -----------------------------------
 
 Alex Henrie (1):
@@ -13,10 +13,6 @@ Antoine Delaite (1):
 
 Ben Boeckel (1):
       remote: add get-url subcommand
-
-Blake Burkhart (2):
-      http: limit redirection to protocol-whitelist
-      http: limit redirection depth
 
 Christian Couder (2):
       quote: fix broken sq_quote_buf() related comment
@@ -36,7 +32,7 @@ Gabor Bernat (1):
 Jacob Keller (1):
       notes: correct documentation of DWIMery for notes references
 
-Jeff King (13):
+Jeff King (7):
       run-command: provide in_async query function
       pkt-line: show packets in async processes as "sideband"
       fast-import: switch crash-report date to iso8601
@@ -44,12 +40,6 @@ Jeff King (13):
       git_connect: clear GIT_* environment for ssh
       git_connect: clarify conn->use_shell flag
       blame: handle --first-parent
-      transport: add a protocol-whitelist environment variable
-      submodule: allow only certain protocols for submodule fetches
-      transport: refactor protocol whitelist code
-      react to errors in xdi_diff
-      xdiff: reject files larger than ~1GB
-      merge-file: enforce MAX_XDIFF_SIZE on incoming files
 
 Johannes Schindelin (7):
       setup: fix "inside work tree" detection on case-insensitive filesystems
@@ -84,7 +74,7 @@ John Keeping (19):
 Juerg Haefliger (1):
       git-quiltimport: add commandline option --series <file>
 
-Junio C Hamano (31):
+Junio C Hamano (27):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       rerere: fix an off-by-one non-bug
       rerere: handle conflicts with multiple stage #1 entries
@@ -110,10 +100,6 @@ Junio C Hamano (31):
       Makefile: allow $(ARFLAGS) specified from the command line
       filter-branch: make report-progress more readable
       fsck: exit with non-zero when problems are found
-      Git 2.3.10
-      Git 2.4.10
-      Git 2.5.4
-      Git 2.6.1
       Start cycle toward 2.7
       Second batch for 2.7
 
@@ -220,6 +206,28 @@ Takashi Iwai (1):
 Tobias Klauser (2):
       connect: fix typo in result string of prot_name()
       Documentation/interpret-trailers: Grammar fix
+
+
+Version v2.6.1; changes since v2.6.0:
+-------------------------------------
+
+Blake Burkhart (2):
+      http: limit redirection to protocol-whitelist
+      http: limit redirection depth
+
+Jeff King (6):
+      transport: add a protocol-whitelist environment variable
+      submodule: allow only certain protocols for submodule fetches
+      transport: refactor protocol whitelist code
+      react to errors in xdi_diff
+      xdiff: reject files larger than ~1GB
+      merge-file: enforce MAX_XDIFF_SIZE on incoming files
+
+Junio C Hamano (4):
+      Git 2.3.10
+      Git 2.4.10
+      Git 2.5.4
+      Git 2.6.1
 
 
 Version v2.6.0; changes since v2.6.0-rc3:
@@ -375,7 +383,7 @@ Junio C Hamano (2):
       Git 2.6-rc1
 
 
-Version v2.6.0-rc0; changes since v2.5.3:
+Version v2.6.0-rc0; changes since v2.5.4:
 -----------------------------------------
 
 Alex Henrie (3):
@@ -790,6 +798,27 @@ brian m. carlson (7):
       gpg: centralize printing signature buffers
       verify-commit: add option to print raw gpg status information
       verify-tag: add option to print raw gpg status information
+
+
+Version v2.5.4; changes since v2.5.3:
+-------------------------------------
+
+Blake Burkhart (2):
+      http: limit redirection to protocol-whitelist
+      http: limit redirection depth
+
+Jeff King (6):
+      transport: add a protocol-whitelist environment variable
+      submodule: allow only certain protocols for submodule fetches
+      transport: refactor protocol whitelist code
+      react to errors in xdi_diff
+      xdiff: reject files larger than ~1GB
+      merge-file: enforce MAX_XDIFF_SIZE on incoming files
+
+Junio C Hamano (3):
+      Git 2.3.10
+      Git 2.4.10
+      Git 2.5.4
 
 
 Version v2.5.3; changes since v2.5.2:
