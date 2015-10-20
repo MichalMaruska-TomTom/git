@@ -6647,29 +6647,46 @@ proc drawtags {id x xt y1} {
 
     # puts "drawtags: got $marks"
     set yt [expr {$y1 - 0.5 * $linespc}]
+    # top^  bottom v
     set yb [expr {$yt + $linespc - 1}]
     set xvals {}
     set wvals {}
     set i -1
+
+    # so, what is this? all the refs of this commit?
     foreach tag $marks {
         incr i
         if {$i >= $ntags && $i < $ntags + $nheads && $tag eq $mainhead} {
             set wid [font measure mainfontbold $tag]
+            # so this is for current branch!
         } else {
             set wid [font measure mainfont $tag]
         }
+        # left (or right) edges:
         lappend xvals $xt
+        # widths:
         lappend wvals $wid
+        # next one:
         set xt [expr {$xt + $wid + $extra}]
     }
+
+    # ?? this is the horizontal line!
     set t [$canv create line $x $y1 [lindex $xvals end] $y1 \
                -width $lthickness -fill $reflinecolor -tags tag.$id]
     $canv lower $t
+
+    # then above we draw the labels:
     foreach tag $marks x $xvals wid $wvals {
+        # x is the left ref point.
+        # wid is the width (allocated)
+
         set tag_quoted [string map {% %%} $tag]
         set xl [expr {$x + $delta}]
+        # here the width of the rectangle:
+        # note: how $extra ... in the xwals is composed of $lthickness!
         set xr [expr {$x + $delta + $wid + $lthickness}]
         set font mainfont
+        # mmc: first are tags, then heads, then the rest?
         if {[incr ntags -1] >= 0} {
             # draw a tag
             if {$be_verbose} {
@@ -6684,30 +6701,38 @@ proc drawtags {id x xt y1} {
             } else {
                 set tagclick [list showtag $tag_quoted 1]
             }
+            # callback for mouse-click?
+            # mmc: can is a canvas .tf.histframe.pwclist.canv
+            # so an object w/ bind method?
             $canv bind $t <1> $tagclick
             set rowtextx([rowofcommit $id]) [expr {$xr + $linespc}]
         } else {
             # draw a head or other ref
             if {[incr nheads -1] >= 0} {
+                # mmc: the only use of $headbgcolor:
                 set col $headbgcolor
                 if {$tag eq $mainhead} {
                     set font mainfontbold
                 }
             } else {
+                # non-tag, non-branch refs:
                 set col "Olive"
                 # "#ddddff"
                 #"black"
             }
             set xl [expr {$xl - $delta/2}]
 
+            # this is the original, over the whole label...... but why w/o it I see the horizontal line above the label?
             $canv create polygon $x $yt $xr $yt $xr $yb $x $yb \
                 -width 1 -outline black -fill $col -tags tag.$id
 
+            # so it this useless in the end, for the cases below?
             if {[regexp {^(remotes/.*/|remotes/)} $tag match remoteprefix]} {
                 set rwid [font measure mainfont $remoteprefix]
                 set xi [expr {$x + 1}]
                 set yti [expr {$yt + 1}]
                 set xri [expr {$x + $rwid}]
+                # note: the width 0 ... no black around.
                 $canv create polygon $xi $yti $xri $yti $xri $yb $xi $yb \
                         -width 0 -fill $remotebgcolor -tags tag.$id
             } elseif {[regexp {^(start/|base/|sums/)} $tag match remoteprefix]} {
