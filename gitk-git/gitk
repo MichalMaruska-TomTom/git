@@ -6643,10 +6643,12 @@ proc drawtags {id x xt y1} {
         # next one:
         set xt [expr {$xt + $wid + $extra}]
     }
+
     # ?? this is the horizontal line!
     set t [$canv create line $x $y1 [lindex $xvals end] $y1 \
                -width $lthickness -fill $reflinecolor -tags tag.$id]
     $canv lower $t
+
     # then above we draw the labels:
     foreach tag $marks x $xvals wid $wvals {
         # x is the left ref point.
