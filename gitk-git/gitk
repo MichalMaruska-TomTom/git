@@ -6695,7 +6695,44 @@ proc drawtags {id x xt y1} {
 		# note: the width 0 ... no black around.
 		$canv create polygon $xi $yti $xri $yti $xri $yb $xi $yb \
 			-width 0 -fill $remotebgcolor -tags tag.$id
+	    } elseif {[regexp {^(start/|base/|sums/)} $tag match remoteprefix]} {
+
+
+		# mmc: here I naively change the label:
+		# how to drop it?
+		set i [string last "/" $tag]
+		set tag [string range $tag [ expr {$i + 1}] end]
+		## changed. see below for "create text"
+
+		puts "drawtags: start/base !!!!  $remoteprefix"
+		# trying to DROP the prefix, and rely on distinction by color!
+		# set tag [string range $tag [string length $remoteprefix ] -1 ]
+	        set rwid [font measure mainfont $remoteprefix]
+		set xi [expr {$x + 1}]
+		set yti [expr {$yt + 1}]
+		set xri [expr {$x + $rwid}]
+
+
+		# I think  start:xx,yy,zz would be enough
+		if {[string equal $remoteprefix "start/"]} {
+		    set prefixbgcolor "#00ddbb"
+		    # "IndianRed"
+		} elseif {[string equal $remoteprefix "sums/"]} {
+		       set prefixbgcolor "#aadd00"
+		} else {
+		    set prefixbgcolor "#aaddbb"
+		    #
+		}
+		# mmc: ZERO boundary line, but FILLed with remote color!
+		# 
+		$canv create polygon $xi $yti $xri $yti $xri $yb $xi $yb \
+		    -width 0 -fill $prefixbgcolor -tags tag.$id
+
+		# the rest will be:
+		set col "#00ddff"
 	    }
+	    # elseif  sums/xxx/digit
+
 	}
 	set t [$canv create text $xl $y1 -anchor w -text $tag -fill $headfgcolor \
 		   -font $font -tags [list tag.$id text]]
