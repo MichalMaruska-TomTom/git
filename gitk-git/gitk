@@ -12705,6 +12705,6 @@ getcommits {}
 
 # Local variables:
 # mode: tcl
-# indent-tabs-mode: t
+# indent-tabs-mode: nil
 # tab-width: 8
 # End:
