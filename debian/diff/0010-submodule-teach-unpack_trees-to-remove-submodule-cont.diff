@@ -1,4 +1,4 @@
-From 224763aefce08dc4cbd3c9da69eba97907daa017 Mon Sep 17 00:00:00 2001
+From e8ede794a35ca89e9e07997e087617f1f1443503 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Tue, 19 Jun 2012 20:55:45 +0200
 Subject: submodule: teach unpack_trees() to remove submodule contents
@@ -28,10 +28,10 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  4 files changed, 43 insertions(+), 4 deletions(-)
 
 diff --git a/submodule.c b/submodule.c
-index 23c36f2..091b1b7 100644
+index 1fe2f6f..1281640 100644
 --- a/submodule.c
 +++ b/submodule.c
-@@ -283,6 +283,43 @@ static void print_submodule_summary(struct rev_info *rev, FILE *f,
+@@ -286,6 +286,43 @@ static void print_submodule_summary(struct rev_info *rev, FILE *f,
  	strbuf_release(&sb);
  }
  
@@ -76,7 +76,7 @@ index 23c36f2..091b1b7 100644
  		const char *line_prefix,
  		unsigned char one[20], unsigned char two[20],
 diff --git a/submodule.h b/submodule.h
-index d4ce105..a9d8d07 100644
+index 1e86052..7e37958 100644
 --- a/submodule.h
 +++ b/submodule.h
 @@ -30,6 +30,7 @@ void show_submodule_summary(FILE *f, const char *path,
@@ -88,7 +88,7 @@ index d4ce105..a9d8d07 100644
  int fetch_populated_submodules(const struct argv_array *options,
  			       const char *prefix, int command_line_option,
 diff --git a/unpack-trees.c b/unpack-trees.c
-index f932e80..bd3b03f 100644
+index 8e2032f..1777513 100644
 --- a/unpack-trees.c
 +++ b/unpack-trees.c
 @@ -9,6 +9,7 @@
@@ -117,7 +117,7 @@ index f932e80..bd3b03f 100644
  
  static int verify_clean_subdirectory(const struct cache_entry *ce,
 diff --git a/wrapper.c b/wrapper.c
-index 0e22d43..8616820 100644
+index f71237c..aa3620f 100644
 --- a/wrapper.c
 +++ b/wrapper.c
 @@ -2,6 +2,7 @@
@@ -128,7 +128,7 @@ index 0e22d43..8616820 100644
  
  static void do_nothing(size_t size)
  {
-@@ -566,6 +567,8 @@ int unlink_or_warn(const char *file)
+@@ -597,6 +598,8 @@ int unlink_or_warn(const char *file)
  
  int rmdir_or_warn(const char *file)
  {

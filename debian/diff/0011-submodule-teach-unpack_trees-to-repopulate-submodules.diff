@@ -1,4 +1,4 @@
-From 8759bebc6d9d58a0b87b5f4d68253d7cf8bf34d7 Mon Sep 17 00:00:00 2001
+From e027136d4dfc567d15c74c33e74e9b8242f2c0ff Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Mon, 18 Jun 2012 22:11:45 +0200
 Subject: submodule: teach unpack_trees() to repopulate submodules
@@ -14,7 +14,7 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  5 files changed, 67 insertions(+), 14 deletions(-)
 
 diff --git a/entry.c b/entry.c
-index 1eda8e9..5e18e46 100644
+index 582c400..f259206 100644
 --- a/entry.c
 +++ b/entry.c
 @@ -2,6 +2,7 @@
@@ -36,10 +36,10 @@ index 1eda8e9..5e18e46 100644
  	default:
  		return error("unknown file mode for %s in index", path);
 diff --git a/submodule.c b/submodule.c
-index 091b1b7..6d41c5f 100644
+index 1281640..e10c76e 100644
 --- a/submodule.c
 +++ b/submodule.c
-@@ -283,6 +283,42 @@ static void print_submodule_summary(struct rev_info *rev, FILE *f,
+@@ -286,6 +286,42 @@ static void print_submodule_summary(struct rev_info *rev, FILE *f,
  	strbuf_release(&sb);
  }
  
@@ -82,7 +82,7 @@ index 091b1b7..6d41c5f 100644
  int depopulate_submodule(const char *path)
  {
  	struct strbuf dot_git = STRBUF_INIT;
-@@ -1079,18 +1115,19 @@ void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir)
+@@ -1137,18 +1173,19 @@ void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir)
  {
  	struct strbuf file_name = STRBUF_INIT;
  	struct strbuf rel_path = STRBUF_INIT;
@@ -105,14 +105,14 @@ index 091b1b7..6d41c5f 100644
  						 &rel_path)))
  		die(_("Could not set core.worktree in %s"),
  		    file_name.buf);
-@@ -1098,4 +1135,5 @@ void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir)
+@@ -1156,4 +1193,5 @@ void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir)
  	strbuf_release(&file_name);
  	strbuf_release(&rel_path);
  	free((void *)real_work_tree);
 +	free((void *)real_git_dir);
  }
 diff --git a/submodule.h b/submodule.h
-index a9d8d07..566e918 100644
+index 7e37958..0e43a53 100644
 --- a/submodule.h
 +++ b/submodule.h
 @@ -30,6 +30,7 @@ void show_submodule_summary(FILE *f, const char *path,
@@ -155,10 +155,10 @@ index 79cdd34..711f55b 100755
  		reset_work_tree_to add_sub1 &&
  		(
 diff --git a/unpack-trees.c b/unpack-trees.c
-index bd3b03f..debfb93 100644
+index 1777513..9855438 100644
 --- a/unpack-trees.c
 +++ b/unpack-trees.c
-@@ -1385,6 +1385,7 @@ static int check_ok_to_remove(const char *name, int len, int dtype,
+@@ -1383,6 +1383,7 @@ static int check_ok_to_remove(const char *name, int len, int dtype,
  			      struct unpack_trees_options *o)
  {
  	const struct cache_entry *result;
@@ -166,7 +166,7 @@ index bd3b03f..debfb93 100644
  
  	/*
  	 * It may be that the 'lstat()' succeeded even though
-@@ -1427,6 +1428,24 @@ static int check_ok_to_remove(const char *name, int len, int dtype,
+@@ -1425,6 +1426,24 @@ static int check_ok_to_remove(const char *name, int len, int dtype,
  			return 0;
  	}
  

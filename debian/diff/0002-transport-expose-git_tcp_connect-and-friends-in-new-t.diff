@@ -1,4 +1,4 @@
-From 6c57a3e182ef61ca408a8ce8e482534c64066607 Mon Sep 17 00:00:00 2001
+From 9d0b3fb1d2d1945dd03debe2ed2d74fc68ce3af4 Mon Sep 17 00:00:00 2001
 From: Jonathan Nieder <jrnieder@gmail.com>
 Date: Mon, 6 Jun 2011 04:37:14 -0500
 Subject: transport: expose git_tcp_connect() and friends in new tcp.h
@@ -22,10 +22,10 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  create mode 100644 tcp.h
 
 diff --git a/Makefile b/Makefile
-index 36bc54c..a6c9c78 100644
+index 43ceeb9..774186e 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -791,6 +791,7 @@ LIB_OBJS += submodule.o
+@@ -794,6 +794,7 @@ LIB_OBJS += submodule.o
  LIB_OBJS += submodule-config.o
  LIB_OBJS += symlinks.o
  LIB_OBJS += tag.o
@@ -34,7 +34,7 @@ index 36bc54c..a6c9c78 100644
  LIB_OBJS += trace.o
  LIB_OBJS += trailer.o
 diff --git a/connect.c b/connect.c
-index d3283b8..16d76f1 100644
+index 108f5ab..16d76f1 100644
 --- a/connect.c
 +++ b/connect.c
 @@ -6,6 +6,7 @@
@@ -93,7 +93,7 @@ index d3283b8..16d76f1 100644
 -	static char addr[NI_MAXHOST];
 -	if (getnameinfo(ai->ai_addr, ai->ai_addrlen, addr, sizeof(addr), NULL, 0,
 -			NI_NUMERICHOST) != 0)
--		strcpy(addr, "(unknown)");
+-		xsnprintf(addr, sizeof(addr), "(unknown)");
 -
 -	return addr;
 -}
@@ -341,7 +341,7 @@ index c41a685..e97a835 100644
  #endif
 diff --git a/tcp.c b/tcp.c
 new file mode 100644
-index 0000000..a4ece54
+index 0000000..c8e3a9d
 --- /dev/null
 +++ b/tcp.c
 @@ -0,0 +1,271 @@
@@ -385,7 +385,7 @@ index 0000000..a4ece54
 +	static char addr[NI_MAXHOST];
 +	if (getnameinfo(ai->ai_addr, ai->ai_addrlen, addr, sizeof(addr), NULL, 0,
 +			NI_NUMERICHOST) != 0)
-+		strcpy(addr, "(unknown)");
++		xsnprintf(addr, sizeof(addr), "(unknown)");
 +
 +	return addr;
 +}

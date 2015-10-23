@@ -1,4 +1,4 @@
-From 29430b0d26eb0fec5c3375925699d40299fd0b25 Mon Sep 17 00:00:00 2001
+From d33dc1696479f693c933e738a68eff92103223b8 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Fri, 5 Apr 2013 18:35:27 +0200
 Subject: submodule: teach unpack_trees() to update submodules
@@ -14,7 +14,7 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  5 files changed, 157 insertions(+), 17 deletions(-)
 
 diff --git a/entry.c b/entry.c
-index 5e18e46..eb2384b 100644
+index f259206..d83d6e6 100644
 --- a/entry.c
 +++ b/entry.c
 @@ -264,7 +264,7 @@ int checkout_entry(struct cache_entry *ce,
@@ -48,10 +48,10 @@ index 5e18e46..eb2384b 100644
  				return error("%s is a directory", path.buf);
  			remove_subtree(&path);
 diff --git a/submodule.c b/submodule.c
-index 6d41c5f..a64a215 100644
+index e10c76e..ead7e20 100644
 --- a/submodule.c
 +++ b/submodule.c
-@@ -356,6 +356,42 @@ int depopulate_submodule(const char *path)
+@@ -359,6 +359,42 @@ int depopulate_submodule(const char *path)
  	return 0;
  }
  
@@ -94,8 +94,8 @@ index 6d41c5f..a64a215 100644
  void show_submodule_summary(FILE *f, const char *path,
  		const char *line_prefix,
  		unsigned char one[20], unsigned char two[20],
-@@ -802,6 +838,17 @@ out:
- 	return result;
+@@ -860,6 +896,17 @@ out:
+ 	return spf.result;
  }
  
 +int is_submodule_populated(const char *path)
@@ -112,7 +112,7 @@ index 6d41c5f..a64a215 100644
  unsigned is_submodule_modified(const char *path, int ignore_untracked)
  {
  	ssize_t len;
-@@ -947,6 +994,45 @@ int ok_to_remove_submodule(const char *path)
+@@ -1005,6 +1052,45 @@ int ok_to_remove_submodule(const char *path)
  	return ok_to_remove;
  }
  
@@ -159,7 +159,7 @@ index 6d41c5f..a64a215 100644
  		struct commit *a, struct commit *b)
  {
 diff --git a/submodule.h b/submodule.h
-index 566e918..1e4221e 100644
+index 0e43a53..aca9cd6 100644
 --- a/submodule.h
 +++ b/submodule.h
 @@ -32,13 +32,16 @@ void set_config_update_recurse_submodules(int default_value, int option_value);
@@ -170,7 +170,7 @@ index 566e918..1e4221e 100644
  void check_for_new_submodule_commits(unsigned char new_sha1[20]);
  int fetch_populated_submodules(const struct argv_array *options,
  			       const char *prefix, int command_line_option,
- 			       int quiet);
+ 			       int quiet, int max_parallel_jobs);
 +int is_submodule_populated(const char *path);
  unsigned is_submodule_modified(const char *path, int ignore_untracked);
  int submodule_uses_gitfile(const char *path);
@@ -180,7 +180,7 @@ index 566e918..1e4221e 100644
  		    const unsigned char a[20], const unsigned char b[20], int search);
  int find_unpushed_submodules(unsigned char new_sha1[20], const char *remotes_name,
 diff --git a/unpack-trees.c b/unpack-trees.c
-index debfb93..ffc0c52 100644
+index 9855438..d6b80c3 100644
 --- a/unpack-trees.c
 +++ b/unpack-trees.c
 @@ -29,6 +29,9 @@ static const char *unpack_plumbing_errors[NB_UNPACK_TREES_ERROR_TYPES] = {
@@ -266,7 +266,7 @@ index debfb93..ffc0c52 100644
  static void invalidate_ce_path(const struct cache_entry *ce,
  			       struct unpack_trees_options *o)
  {
-@@ -1553,9 +1586,17 @@ static int merged_entry(const struct cache_entry *ce,
+@@ -1551,9 +1584,17 @@ static int merged_entry(const struct cache_entry *ce,
  			copy_cache_entry(merge, old);
  			update = 0;
  		} else {

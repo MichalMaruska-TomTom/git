@@ -1,4 +1,4 @@
-From 2c2ab19fcd0c57dba2dd7e8ab48357b8c065eea7 Mon Sep 17 00:00:00 2001
+From a81e14a6225dc26b78facf463b74e23d2971fd6c Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Mon, 18 Jun 2012 22:17:59 +0200
 Subject: submodule: prepare for recursive checkout of submodules
@@ -17,7 +17,7 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  4 files changed, 45 insertions(+)
 
 diff --git a/submodule-config.c b/submodule-config.c
-index 393de53..d85b2c1 100644
+index afe0ea8..c279ffc 100644
 --- a/submodule-config.c
 +++ b/submodule-config.c
 @@ -228,6 +228,28 @@ int parse_fetch_recurse_submodules_arg(const char *opt, const char *arg)
@@ -62,11 +62,11 @@ index 9061e4e..7187dd6 100644
  const struct submodule *submodule_from_name(const unsigned char *commit_sha1,
  		const char *name);
 diff --git a/submodule.c b/submodule.c
-index 5e5a46f..23c36f2 100644
+index 536ca29..1fe2f6f 100644
 --- a/submodule.c
 +++ b/submodule.c
-@@ -14,6 +14,8 @@
- #include "blob.h"
+@@ -15,6 +15,8 @@
+ #include "thread-utils.h"
  
  static int config_fetch_recurse_submodules = RECURSE_SUBMODULES_ON_DEMAND;
 +static int config_update_recurse_submodules = RECURSE_SUBMODULES_OFF;
@@ -74,7 +74,7 @@ index 5e5a46f..23c36f2 100644
  static struct string_list changed_submodule_paths;
  static int initialized_fetch_ref_tips;
  static struct sha1_array ref_tips_before_fetch;
-@@ -344,6 +346,24 @@ void set_config_fetch_recurse_submodules(int value)
+@@ -347,6 +349,24 @@ void set_config_fetch_recurse_submodules(int value)
  	config_fetch_recurse_submodules = value;
  }
  
@@ -100,7 +100,7 @@ index 5e5a46f..23c36f2 100644
  		      int flags, void *cb_data)
  {
 diff --git a/submodule.h b/submodule.h
-index 5507c3d..d4ce105 100644
+index cbc0003..1e86052 100644
 --- a/submodule.h
 +++ b/submodule.h
 @@ -28,6 +28,8 @@ void show_submodule_summary(FILE *f, const char *path,

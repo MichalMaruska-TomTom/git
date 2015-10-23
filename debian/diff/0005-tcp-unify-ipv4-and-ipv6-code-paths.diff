@@ -1,4 +1,4 @@
-From cba727bfeecdd323a9061b712d434e1ab532c132 Mon Sep 17 00:00:00 2001
+From fbea338c81290d5483a75e2ef4bbbea5009c37f2 Mon Sep 17 00:00:00 2001
 From: Jonathan Nieder <jrnieder@gmail.com>
 Date: Mon, 6 Jun 2011 04:41:28 -0500
 Subject: tcp: unify ipv4 and ipv6 code paths
@@ -95,10 +95,10 @@ Improved-by: Erik Faye-Lund <kusmabite@gmail.com>
  create mode 100644 dns-ipv6.h
 
 diff --git a/Makefile b/Makefile
-index a6c9c78..038d890 100644
+index 774186e..48bd02d 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -1293,6 +1293,9 @@ ifdef NEEDS_MODE_TRANSLATION
+@@ -1295,6 +1295,9 @@ ifdef NEEDS_MODE_TRANSLATION
  endif
  ifdef NO_IPV6
  	BASIC_CFLAGS += -DNO_IPV6
@@ -234,7 +234,7 @@ index 0000000..63d18cc
 +#endif
 diff --git a/dns-ipv6.c b/dns-ipv6.c
 new file mode 100644
-index 0000000..e1ddf51
+index 0000000..acf058a
 --- /dev/null
 +++ b/dns-ipv6.c
 @@ -0,0 +1,52 @@
@@ -252,7 +252,7 @@ index 0000000..e1ddf51
 +	static char addr[NI_MAXHOST];
 +	if (getnameinfo(ai->ai_addr, ai->ai_addrlen, addr, sizeof(addr), NULL, 0,
 +			NI_NUMERICHOST) != 0)
-+		strcpy(addr, "(unknown)");
++		xsnprintf(addr, sizeof(addr), "(unknown)");
 +
 +	return addr;
 +}
@@ -329,7 +329,7 @@ index 0000000..7021912
 +
 +#endif
 diff --git a/tcp.c b/tcp.c
-index 8579b2a..f81e98a 100644
+index 07ac5a2..f81e98a 100644
 --- a/tcp.c
 +++ b/tcp.c
 @@ -3,8 +3,10 @@
@@ -356,7 +356,7 @@ index 8579b2a..f81e98a 100644
 -	static char addr[NI_MAXHOST];
 -	if (getnameinfo(ai->ai_addr, ai->ai_addrlen, addr, sizeof(addr), NULL, 0,
 -			NI_NUMERICHOST) != 0)
--		strcpy(addr, "(unknown)");
+-		xsnprintf(addr, sizeof(addr), "(unknown)");
 -
 -	return addr;
 -}

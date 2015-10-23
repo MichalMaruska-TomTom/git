@@ -1,8 +1,9 @@
 Version next; changes since v2.6.1:
 -----------------------------------
 
-Alex Henrie (1):
+Alex Henrie (2):
       merge: grammofix in please-commit-before-merge message
+      pull: enclose <options> in brackets in the usage string
 
 Alexey Shumkin (2):
       t7900-subtree: test the "space in a subdirectory name" case
@@ -18,10 +19,18 @@ Christian Couder (2):
       quote: fix broken sq_quote_buf() related comment
       quote: move comment before sq_quote_buf()
 
-David Turner (3):
+David Turner (5):
       refs: clean up common_list
       path: optimize common dir checking
       refs: make refs/bisect/* per-worktree
+      t7063: fix flaky untracked-cache test
+      name-hash: don't reuse cache_entry in dir_entry
+
+Dennis Kaarsemaker (1):
+      git-p4: import the ctypes module
+
+Dimitriy Ryazantcev (1):
+      l10n: ru.po: update Russian translation
 
 Eric N. Vander Weele (1):
       log: Update log.follow doc and add to config.txt
@@ -32,7 +41,12 @@ Gabor Bernat (1):
 Jacob Keller (1):
       notes: correct documentation of DWIMery for notes references
 
-Jeff King (7):
+James McCoy (1):
+      filter-branch: remove multi-line headers in msg filter
+
+Jeff King (79):
+      introduce "extensions" form of core.repositoryformatversion
+      introduce "preciousObjects" repository extension
       run-command: provide in_async query function
       pkt-line: show packets in async processes as "sideband"
       fast-import: switch crash-report date to iso8601
@@ -40,6 +54,76 @@ Jeff King (7):
       git_connect: clear GIT_* environment for ssh
       git_connect: clarify conn->use_shell flag
       blame: handle --first-parent
+      show-branch: avoid segfault with --reflog of unborn branch
+      mailsplit: fix FILE* leak in split_maildir
+      archive-tar: fix minor indentation violation
+      fsck: don't fsck alternates for connectivity-only check
+      add xsnprintf helper function
+      add git_path_buf helper function
+      strbuf: make strbuf_complete_line more generic
+      add reentrant variants of sha1_to_hex and find_unique_abbrev
+      fsck: use strbuf to generate alternate directories
+      mailsplit: make PATH_MAX buffers dynamic
+      trace: use strbuf for quote_crnl output
+      progress: store throughput display in a strbuf
+      test-dump-cache-tree: avoid overflow of cache-tree name
+      compat/inet_ntop: fix off-by-one in inet_ntop4
+      convert trivial sprintf / strcpy calls to xsnprintf
+      archive-tar: use xsnprintf for trivial formatting
+      use xsnprintf for generating git object headers
+      find_short_object_filename: convert sprintf to xsnprintf
+      stop_progress_msg: convert sprintf to xsnprintf
+      compat/hstrerror: convert sprintf to snprintf
+      grep: use xsnprintf to format failure message
+      entry.c: convert strcpy to xsnprintf
+      add_packed_git: convert strcpy into xsnprintf
+      http-push: replace strcat with xsnprintf
+      receive-pack: convert strncpy to xsnprintf
+      replace trivial malloc + sprintf / strcpy calls with xstrfmt
+      config: use xstrfmt in normalize_value
+      fetch: replace static buffer with xstrfmt
+      use strip_suffix and xstrfmt to replace suffix
+      ref-filter: drop sprintf and strcpy calls
+      help: drop prepend function in favor of xstrfmt
+      mailmap: replace strcpy with xstrdup
+      read_branches_file: simplify string handling
+      read_remotes_file: simplify string handling
+      resolve_ref: use strbufs for internal buffers
+      upload-archive: convert sprintf to strbuf
+      remote-ext: simplify git pkt-line generation
+      http-push: use strbuf instead of fwrite_buffer
+      http-walker: store url in a strbuf
+      sha1_get_pack_name: use a strbuf
+      precompose_utf8: drop unused variable
+      probe_utf8_pathname_composition: use internal strbuf
+      init: use strbufs to store paths
+      apply: convert root string to strbuf
+      transport: use strbufs for status table "quickref" strings
+      merge-recursive: convert malloc / strcpy to strbuf
+      enter_repo: convert fixed-size buffers to strbufs
+      remove_leading_path: use a strbuf for internal storage
+      write_loose_object: convert to strbuf
+      diagnose_invalid_index_path: use strbuf to avoid strcpy/strcat
+      fetch-pack: use argv_array for index-pack / unpack-objects
+      http-push: use an argv_array for setup_revisions
+      stat_tracking_info: convert to argv_array
+      daemon: use cld->env_array when re-spawning
+      use sha1_to_hex_r() instead of strcpy
+      drop strcpy in favor of raw sha1_to_hex
+      color: add overflow checks for parsing colors
+      use alloc_ref rather than hand-allocating "struct ref"
+      avoid sprintf and strcpy with flex arrays
+      receive-pack: simplify keep_arg computation
+      help: clean up kfmclient munging
+      prefer memcpy to strcpy
+      color: add color_set helper for copying raw colors
+      notes: document length of fanout path with a constant
+      convert strncpy to memcpy
+      fsck: drop inode-sorting code
+      Makefile: drop D_INO_IN_DIRENT build knob
+      fsck: use for_each_loose_file_in_objdir
+      use strbuf_complete to conditionally append slash
+      name-rev: use strip_suffix to avoid magic numbers
 
 Johannes Schindelin (7):
       setup: fix "inside work tree" detection on case-insensitive filesystems
@@ -71,10 +155,13 @@ John Keeping (19):
       Documentation/git-rebase: fix --no-autostash formatting
       Documentation: fix section header mark-up
 
+Jonathan Nieder (1):
+      submodule.c: write "Fetching submodule <foo>" to stderr
+
 Juerg Haefliger (1):
       git-quiltimport: add commandline option --series <file>
 
-Junio C Hamano (27):
+Junio C Hamano (73):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       rerere: fix an off-by-one non-bug
       rerere: handle conflicts with multiple stage #1 entries
@@ -102,8 +189,54 @@ Junio C Hamano (27):
       fsck: exit with non-zero when problems are found
       Start cycle toward 2.7
       Second batch for 2.7
+      am -3: do not let failed merge from completing the error codepath
+      Documentation/gc: warn against --prune=<now>
+      Third batch for 2.7
+      Fourth batch for 2.7
+      Git 2.6.2
+      Fifth batch for 2.7
+      usage: do not insist that standard input must come from a file
+      mailinfo: remove a no-op call convert_to_utf8(it, "")
+      mailinfo: fold decode_header_bq() into decode_header()
+      mailinfo: fix an off-by-one error in the boundary stack
+      mailinfo: explicitly close file handle to the patch output
+      Sixth batch for 2.7
+      mailinfo: plug strbuf leak during continuation line handling
+      mailinfo: move handle_boundary() lower
+      mailinfo: move read_one_header_line() closer to its callers
+      mailinfo: move check_header() after the helpers it uses
+      mailinfo: move cleanup_space() before its users
+      mailinfo: move definition of MAX_HDR_PARSED closer to its use
+      mailinfo: get rid of function-local static states
+      mailinfo: do not let handle_body() touch global "line" directly
+      mailinfo: do not let handle_boundary() touch global "line" directly
+      mailinfo: do not let find_boundary() touch global "line" directly
+      mailinfo: move global "line" into mailinfo() function
+      mailinfo: introduce "struct mailinfo" to hold globals
+      mailinfo: move keep_subject & keep_non_patch_bracket to struct mailinfo
+      mailinfo: move global "FILE *fin, *fout" to struct mailinfo
+      mailinfo: move filter/header stage to struct mailinfo
+      mailinfo: move patch_lines to struct mailinfo
+      mailinfo: move add_message_id and message_id to struct mailinfo
+      mailinfo: move use_scissors and use_inbody_headers to struct mailinfo
+      mailinfo: move metainfo_charset to struct mailinfo
+      mailinfo: move check for metainfo_charset to convert_to_utf8()
+      mailinfo: move transfer_encoding to struct mailinfo
+      mailinfo: move charset to struct mailinfo
+      mailinfo: move cmitmsg and patchfile to struct mailinfo
+      mailinfo: move [ps]_hdr_data to struct mailinfo
+      mailinfo: move content/content_top to struct mailinfo
+      mailinfo: handle_commit_msg() shouldn't be called after finding patchbreak
+      mailinfo: keep the parsed log message in a strbuf
+      mailinfo: libify
+      mailinfo: handle charset conversion errors in the caller
+      mailinfo: remove calls to exit() and die() deep in the callchain
+      am: make direct call to mailinfo
+      Documentation/everyday: match undefline with the text
+      Documentation: match underline with the text
+      Documentation: match undefline with the text in old release notes
 
-Karthik Nayak (33):
+Karthik Nayak (34):
       t6302: for-each-ref tests for ref-filter APIs
       tag: libify parse_opt_points_at()
       ref-filter: implement '--points-at' option
@@ -137,20 +270,30 @@ Karthik Nayak (33):
       branch.c: use 'ref-filter' data structures
       branch.c: use 'ref-filter' APIs
       branch: add '--points-at' option
+      tag.c: use the correct algorithm for the '--contains' option
 
-Lars Schneider (5):
+Lars Schneider (14):
       git-p4: add config git-p4.pathEncoding
       git-p4: improve path encoding verbose output
       git-p4: use replacement character for non UTF-8 characters in paths
       git-p4: add test case for "Translation of file content failed" error
       git-p4: handle "Translation of file content failed"
+      git-p4: add optional type specifier to gitConfig reader
+      git-p4: add gitConfigInt reader
+      git-p4: return an empty list if a list config has no values
+      git-p4: add file streaming progress in verbose mode
+      git-p4: check free space during streaming
+      git-p4: add support for large file systems
+      git-p4: add Git LFS backend for large file system
+      git-p4: avoid "stat" command in t9815 git-p4-submit-fail
+      git-p4: skip t9819 test case on case insensitive file systems
 
 Luke Diamand (3):
       git-p4: failing test for ignoring invalid p4 labels
       git-p4: do not terminate creating tag for unknown commit
       git-p4: fix P4 label import for unprocessed commits
 
-Matthieu Moy (11):
+Matthieu Moy (12):
       bisect: sanity check on terms
       bisect: add 'git bisect terms' to view the current terms
       bisect: allow setting any user-specified in 'git bisect start'
@@ -162,6 +305,7 @@ Matthieu Moy (11):
       status: don't say 'HEAD detached at HEAD'
       rebase-i: explicitly accept tab as separator in commands
       rebase-i: loosen over-eager check_bad_cmd check
+      git-multimail: update to release 1.2.0
 
 Max Kirillov (2):
       submodule refactor: use strbuf_git_path_submodule() in add_submodule_odb()
@@ -169,6 +313,13 @@ Max Kirillov (2):
 
 Michael J Gruber (1):
       t2026: rename worktree prune test
+
+Michael Rappazzo (5):
+      worktree: add top-level worktree.c
+      worktree: refactor find_linked_symref function
+      worktree: add a function to get worktree details
+      worktree: add details to the worktree struct
+      worktree: add 'list' command
 
 Namhyung Kim (1):
       stash: allow "stash show" diff output configurable
@@ -185,16 +336,38 @@ Nguyễn Thái Ngọc Duy (10):
       clone: better error when --reference is a linked checkout
       ls-remote.txt: delete unsupported option
 
+Ralf Thielow (1):
+      am, credential-cache: add angle brackets to usage string
+
+Ray Donnelly (1):
+      test-path-utils.c: remove incorrect assumption
+
+Remi Pommarel (3):
+      Makefile: link libcurl before zlib
+      Makefile: make curl-config path configurable
+      configure.ac: detect ssl need with libcurl
+
 Renee Margaret McConahy (1):
       am: configure gpg at startup
+
+Sidhant Sharma (1):
+      worktree: usage: denote <branch> as optional with 'add'
 
 Stefan Agner (1):
       git-send-email.perl: Fixed sending of many/huge changes/patches
 
-Stefan Beller (3):
+Stefan Beller (11):
       submodule: rewrite `module_list` shell function in C
       submodule: rewrite `module_name` shell function in C
       submodule: rewrite `module_clone` shell function in C
+      xread: poll on non blocking fds
+      xread_nonblock: add functionality to read from fds without blocking
+      strbuf: add strbuf_read_once to read without blocking
+      sigchain: add command to pop all common signals
+      run-command: add an asynchronous parallel child processor
+      fetch_populated_submodules: use new parallel job processing
+      submodules: allow parallel fetching, add tests and documentation
+      submodule-config: "goto" removal in parse_config()
 
 Stephan Beyer (2):
       t5561: get rid of racy appending to logfile
@@ -203,9 +376,21 @@ Stephan Beyer (2):
 Takashi Iwai (1):
       pager: don't use unsafe functions in signal handlers
 
-Tobias Klauser (2):
+Tobias Klauser (8):
       connect: fix typo in result string of prot_name()
       Documentation/interpret-trailers: Grammar fix
+      strbuf: make stripspace() part of strbuf
+      stripspace: use parse-options for command-line parsing
+      credential-cache--daemon: remove unused #include "sigchain.h"
+      diff: remove unused #include "sigchain.h"
+      read-cache: remove unused #include "sigchain.h"
+      shallow: remove unused #include "sigchain.h"
+
+Torsten Bögershausen (1):
+      t0027: improve test for not-normalized files
+
+Xue Fuqiao (1):
+      Documentation: fix header markup
 
 
 Version v2.6.1; changes since v2.6.0:
