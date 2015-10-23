@@ -1,8 +1,15 @@
-git (1:2.6.1+next.20151022-0.1) experimental; urgency=low
+git (1:2.6.2+next.20151022-1) experimental; urgency=low
 
   * new snapshot, taken from upstream commit b049f0a3.
+  * merge branch debian-sid.
 
- -- Jonathan Nieder <jrnieder@gmail.com>  Fri, 23 Oct 2015 11:49:39 -0700
+ -- Jonathan Nieder <jrnieder@gmail.com>  Fri, 23 Oct 2015 12:03:54 -0700
+
+git (1:2.6.2-1) unstable; urgency=low
+
+  * new upstream point release (see RelNotes/2.6.2.txt).
+
+ -- Jonathan Nieder <jrnieder@gmail.com>  Fri, 23 Oct 2015 11:52:44 -0700
 
 git (1:2.6.1+next.20151009-1) experimental; urgency=low
 

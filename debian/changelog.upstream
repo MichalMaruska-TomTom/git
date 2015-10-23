@@ -1,9 +1,5 @@
-Version next; changes since v2.6.1:
+Version next; changes since v2.6.2:
 -----------------------------------
-
-Alex Henrie (2):
-      merge: grammofix in please-commit-before-merge message
-      pull: enclose <options> in brackets in the usage string
 
 Alexey Shumkin (2):
       t7900-subtree: test the "space in a subdirectory name" case
@@ -14,10 +10,6 @@ Antoine Delaite (1):
 
 Ben Boeckel (1):
       remote: add get-url subcommand
-
-Christian Couder (2):
-      quote: fix broken sq_quote_buf() related comment
-      quote: move comment before sq_quote_buf()
 
 David Turner (5):
       refs: clean up common_list
@@ -32,28 +24,19 @@ Dennis Kaarsemaker (1):
 Dimitriy Ryazantcev (1):
       l10n: ru.po: update Russian translation
 
-Eric N. Vander Weele (1):
-      log: Update log.follow doc and add to config.txt
-
 Gabor Bernat (1):
       filter-branch: add passed/remaining seconds on progress
-
-Jacob Keller (1):
-      notes: correct documentation of DWIMery for notes references
 
 James McCoy (1):
       filter-branch: remove multi-line headers in msg filter
 
-Jeff King (79):
+Jeff King (76):
       introduce "extensions" form of core.repositoryformatversion
       introduce "preciousObjects" repository extension
       run-command: provide in_async query function
       pkt-line: show packets in async processes as "sideband"
       fast-import: switch crash-report date to iso8601
       date: make "local" orthogonal to date format
-      git_connect: clear GIT_* environment for ssh
-      git_connect: clarify conn->use_shell flag
-      blame: handle --first-parent
       show-branch: avoid segfault with --reflog of unborn branch
       mailsplit: fix FILE* leak in split_maildir
       archive-tar: fix minor indentation violation
@@ -125,8 +108,7 @@ Jeff King (79):
       use strbuf_complete to conditionally append slash
       name-rev: use strip_suffix to avoid magic numbers
 
-Johannes Schindelin (7):
-      setup: fix "inside work tree" detection on case-insensitive filesystems
+Johannes Schindelin (6):
       t5700: demonstrate a Windows file locking issue with `git clone --dissociate`
       sha1_file: consolidate code to close a pack's file descriptor
       gc: demonstrate failure with stale remote HEAD
@@ -134,7 +116,7 @@ Johannes Schindelin (7):
       clone --dissociate: avoid locking pack files
       pack-objects: do not get distracted by broken symrefs
 
-John Keeping (19):
+John Keeping (17):
       Documentation/blame-options: don't list date formats
       Documentation/config: don't list date formats
       Documentation/git-for-each-ref: don't list date formats
@@ -150,10 +132,8 @@ John Keeping (19):
       t7800: don't use test_config in a subshell
       test-lib-functions: detect test_when_finished in subshell
       interpret-trailers: allow running outside a repository
-      Makefile: fix MAKEFLAGS tests with multiple flags
       rebase: support --no-autostash
       Documentation/git-rebase: fix --no-autostash formatting
-      Documentation: fix section header mark-up
 
 Jonathan Nieder (1):
       submodule.c: write "Fetching submodule <foo>" to stderr
@@ -161,7 +141,7 @@ Jonathan Nieder (1):
 Juerg Haefliger (1):
       git-quiltimport: add commandline option --series <file>
 
-Junio C Hamano (73):
+Junio C Hamano (70):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       rerere: fix an off-by-one non-bug
       rerere: handle conflicts with multiple stage #1 entries
@@ -184,16 +164,13 @@ Junio C Hamano (73):
       rerere: call conflict-ids IDs
       rerere: use "struct rerere_id" instead of "char *" for conflict ID
       rerere: un-nest merge() further
-      Makefile: allow $(ARFLAGS) specified from the command line
       filter-branch: make report-progress more readable
-      fsck: exit with non-zero when problems are found
       Start cycle toward 2.7
       Second batch for 2.7
       am -3: do not let failed merge from completing the error codepath
       Documentation/gc: warn against --prune=<now>
       Third batch for 2.7
       Fourth batch for 2.7
-      Git 2.6.2
       Fifth batch for 2.7
       usage: do not insist that standard input must come from a file
       mailinfo: remove a no-op call convert_to_utf8(it, "")
@@ -293,26 +270,16 @@ Luke Diamand (3):
       git-p4: do not terminate creating tag for unknown commit
       git-p4: fix P4 label import for unprocessed commits
 
-Matthieu Moy (12):
+Matthieu Moy (5):
       bisect: sanity check on terms
       bisect: add 'git bisect terms' to view the current terms
       bisect: allow setting any user-specified in 'git bisect start'
       strtoul_ui: reject negative values
-      Documentation: use 'keyid' consistently, not 'key-id'
-      Documentation/grep: fix documentation of -O
-      Documentation: explain optional arguments better
-      t3203: test 'detached at' after checkout --detach
-      status: don't say 'HEAD detached at HEAD'
-      rebase-i: explicitly accept tab as separator in commands
-      rebase-i: loosen over-eager check_bad_cmd check
       git-multimail: update to release 1.2.0
 
 Max Kirillov (2):
       submodule refactor: use strbuf_git_path_submodule() in add_submodule_odb()
       path: implement common_dir handling in git_pathdup_submodule()
-
-Michael J Gruber (1):
-      t2026: rename worktree prune test
 
 Michael Rappazzo (5):
       worktree: add top-level worktree.c
@@ -324,7 +291,7 @@ Michael Rappazzo (5):
 Namhyung Kim (1):
       stash: allow "stash show" diff output configurable
 
-Nguyễn Thái Ngọc Duy (10):
+Nguyễn Thái Ngọc Duy (9):
       path.c: delete an extra space
       gc: save log from daemonized gc --auto and print it next time
       dir.c: make last_exclude_matching_from_list() run til the end
@@ -334,7 +301,6 @@ Nguyễn Thái Ngọc Duy (10):
       enter_repo: allow .git files in strict mode
       clone: allow --local from a linked checkout
       clone: better error when --reference is a linked checkout
-      ls-remote.txt: delete unsupported option
 
 Ralf Thielow (1):
       am, credential-cache: add angle brackets to usage string
@@ -346,9 +312,6 @@ Remi Pommarel (3):
       Makefile: link libcurl before zlib
       Makefile: make curl-config path configurable
       configure.ac: detect ssl need with libcurl
-
-Renee Margaret McConahy (1):
-      am: configure gpg at startup
 
 Sidhant Sharma (1):
       worktree: usage: denote <branch> as optional with 'add'
@@ -369,16 +332,7 @@ Stefan Beller (11):
       submodules: allow parallel fetching, add tests and documentation
       submodule-config: "goto" removal in parse_config()
 
-Stephan Beyer (2):
-      t5561: get rid of racy appending to logfile
-      t/perf: make runner work even if Git is not installed
-
-Takashi Iwai (1):
-      pager: don't use unsafe functions in signal handlers
-
-Tobias Klauser (8):
-      connect: fix typo in result string of prot_name()
-      Documentation/interpret-trailers: Grammar fix
+Tobias Klauser (6):
       strbuf: make stripspace() part of strbuf
       stripspace: use parse-options for command-line parsing
       credential-cache--daemon: remove unused #include "sigchain.h"
@@ -391,6 +345,70 @@ Torsten Bögershausen (1):
 
 Xue Fuqiao (1):
       Documentation: fix header markup
+
+
+Version v2.6.2; changes since v2.6.1:
+-------------------------------------
+
+Alex Henrie (2):
+      merge: grammofix in please-commit-before-merge message
+      pull: enclose <options> in brackets in the usage string
+
+Christian Couder (2):
+      quote: fix broken sq_quote_buf() related comment
+      quote: move comment before sq_quote_buf()
+
+Eric N. Vander Weele (1):
+      log: Update log.follow doc and add to config.txt
+
+Jacob Keller (1):
+      notes: correct documentation of DWIMery for notes references
+
+Jeff King (3):
+      git_connect: clear GIT_* environment for ssh
+      git_connect: clarify conn->use_shell flag
+      blame: handle --first-parent
+
+Johannes Schindelin (1):
+      setup: fix "inside work tree" detection on case-insensitive filesystems
+
+John Keeping (2):
+      Makefile: fix MAKEFLAGS tests with multiple flags
+      Documentation: fix section header mark-up
+
+Junio C Hamano (3):
+      Makefile: allow $(ARFLAGS) specified from the command line
+      fsck: exit with non-zero when problems are found
+      Git 2.6.2
+
+Matthieu Moy (7):
+      Documentation: use 'keyid' consistently, not 'key-id'
+      Documentation/grep: fix documentation of -O
+      Documentation: explain optional arguments better
+      t3203: test 'detached at' after checkout --detach
+      status: don't say 'HEAD detached at HEAD'
+      rebase-i: explicitly accept tab as separator in commands
+      rebase-i: loosen over-eager check_bad_cmd check
+
+Michael J Gruber (1):
+      t2026: rename worktree prune test
+
+Nguyễn Thái Ngọc Duy (1):
+      ls-remote.txt: delete unsupported option
+
+Renee Margaret McConahy (1):
+      am: configure gpg at startup
+
+Stephan Beyer (2):
+      t5561: get rid of racy appending to logfile
+      t/perf: make runner work even if Git is not installed
+
+Takashi Iwai (1):
+      pager: don't use unsafe functions in signal handlers
+
+Tobias Klauser (2):
+      connect: fix typo in result string of prot_name()
+      Documentation/interpret-trailers: Grammar fix
 
 
 Version v2.6.1; changes since v2.6.0:
