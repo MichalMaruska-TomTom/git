@@ -236,8 +236,39 @@ ssize_t xread(int fd, void *buf, size_t len)
 	    len = MAX_IO_SIZE;
 	while (1) {
 		nr = read(fd, buf, len);
-		if ((nr < 0) && (errno == EAGAIN || errno == EINTR))
-			continue;
+		if (nr < 0) {
+			if (errno == EINTR)
+				continue;
+			if (errno == EAGAIN || errno == EWOULDBLOCK) {
+				struct pollfd pfd;
+				pfd.events = POLLIN;
+				pfd.fd = fd;
+				/* We deliberately ignore the return value */
+				poll(&pfd, 1, -1);
+			}
+		}
+		return nr;
+	}
+}
+
+/*
+ * xread_nonblock() is the same a read(), but it automatically restarts read()
+ * interrupted operations (EINTR). xread_nonblock() DOES NOT GUARANTEE that
+ * "len" bytes is read. EWOULDBLOCK is turned into EAGAIN.
+ */
+ssize_t xread_nonblock(int fd, void *buf, size_t len)
+{
+	ssize_t nr;
+	if (len > MAX_IO_SIZE)
+		len = MAX_IO_SIZE;
+	while (1) {
+		nr = read(fd, buf, len);
+		if (nr < 0) {
+			if (errno == EINTR)
+				continue;
+			if (errno == EWOULDBLOCK)
+				errno = EAGAIN;
+		}
 		return nr;
 	}
 }
@@ -619,6 +650,22 @@ char *xgetcwd(void)
 	if (strbuf_getcwd(&sb))
 		die_errno(_("unable to get current working directory"));
 	return strbuf_detach(&sb, NULL);
+}
+
+int xsnprintf(char *dst, size_t max, const char *fmt, ...)
+{
+	va_list ap;
+	int len;
+
+	va_start(ap, fmt);
+	len = vsnprintf(dst, max, fmt, ap);
+	va_end(ap);
+
+	if (len < 0)
+		die("BUG: your snprintf is broken");
+	if (len >= max)
+		die("BUG: attempt to snprintf into too-small buffer");
+	return len;
 }
 
 static int write_file_v(const char *path, int fatal,

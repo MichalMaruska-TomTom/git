@@ -217,7 +217,7 @@ static const char *lock_repo_for_gc(int force, pid_t* ret_pid)
 		return NULL;
 
 	if (gethostname(my_host, sizeof(my_host)))
-		strcpy(my_host, "unknown");
+		xsnprintf(my_host, sizeof(my_host), "unknown");
 
 	pidfile_path = git_pathdup("gc.pid");
 	fd = hold_lock_file_for_update(&lock, pidfile_path,
@@ -394,15 +394,17 @@ int cmd_gc(int argc, const char **argv, const char *prefix)
 	if (gc_before_repack())
 		return -1;
 
-	if (run_command_v_opt(repack.argv, RUN_GIT_CMD))
-		return error(FAILED_RUN, repack.argv[0]);
+	if (!repository_format_precious_objects) {
+		if (run_command_v_opt(repack.argv, RUN_GIT_CMD))
+			return error(FAILED_RUN, repack.argv[0]);
 
-	if (prune_expire) {
-		argv_array_push(&prune, prune_expire);
-		if (quiet)
-			argv_array_push(&prune, "--no-progress");
-		if (run_command_v_opt(prune.argv, RUN_GIT_CMD))
-			return error(FAILED_RUN, prune.argv[0]);
+		if (prune_expire) {
+			argv_array_push(&prune, prune_expire);
+			if (quiet)
+				argv_array_push(&prune, "--no-progress");
+			if (run_command_v_opt(prune.argv, RUN_GIT_CMD))
+				return error(FAILED_RUN, prune.argv[0]);
+		}
 	}
 
 	if (prune_worktrees_expire) {

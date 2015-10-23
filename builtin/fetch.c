@@ -37,6 +37,7 @@ static int prune = -1; /* unspecified */
 static int all, append, dry_run, force, keep, multiple, update_head_ok, verbosity;
 static int progress = -1, recurse_submodules = RECURSE_SUBMODULES_DEFAULT;
 static int tags = TAGS_DEFAULT, unshallow, update_shallow;
+static int max_children = 1;
 static const char *depth;
 static const char *upload_pack;
 static struct strbuf default_rla = STRBUF_INIT;
@@ -99,6 +100,8 @@ static struct option builtin_fetch_options[] = {
 		    N_("fetch all tags and associated objects"), TAGS_SET),
 	OPT_SET_INT('n', NULL, &tags,
 		    N_("do not fetch all tags (--no-tags)"), TAGS_UNSET),
+	OPT_INTEGER('j', "jobs", &max_children,
+		    N_("number of submodules fetched in parallel")),
 	OPT_BOOL('p', "prune", &prune,
 		 N_("prune remote-tracking branches no longer on remote")),
 	{ OPTION_CALLBACK, 0, "recurse-submodules", NULL, N_("on-demand"),
@@ -528,36 +531,38 @@ static int update_local_ref(struct ref *ref,
 	}
 
 	if (in_merge_bases(current, updated)) {
-		char quickref[83];
+		struct strbuf quickref = STRBUF_INIT;
 		int r;
-		strcpy(quickref, find_unique_abbrev(current->object.sha1, DEFAULT_ABBREV));
-		strcat(quickref, "..");
-		strcat(quickref, find_unique_abbrev(ref->new_sha1, DEFAULT_ABBREV));
+		strbuf_add_unique_abbrev(&quickref, current->object.sha1, DEFAULT_ABBREV);
+		strbuf_addstr(&quickref, "..");
+		strbuf_add_unique_abbrev(&quickref, ref->new_sha1, DEFAULT_ABBREV);
 		if ((recurse_submodules != RECURSE_SUBMODULES_OFF) &&
 		    (recurse_submodules != RECURSE_SUBMODULES_ON))
 			check_for_new_submodule_commits(ref->new_sha1);
 		r = s_update_ref("fast-forward", ref, 1);
 		strbuf_addf(display, "%c %-*s %-*s -> %s%s",
 			    r ? '!' : ' ',
-			    TRANSPORT_SUMMARY_WIDTH, quickref,
+			    TRANSPORT_SUMMARY_WIDTH, quickref.buf,
 			    REFCOL_WIDTH, remote, pretty_ref,
 			    r ? _("  (unable to update local ref)") : "");
+		strbuf_release(&quickref);
 		return r;
 	} else if (force || ref->force) {
-		char quickref[84];
+		struct strbuf quickref = STRBUF_INIT;
 		int r;
-		strcpy(quickref, find_unique_abbrev(current->object.sha1, DEFAULT_ABBREV));
-		strcat(quickref, "...");
-		strcat(quickref, find_unique_abbrev(ref->new_sha1, DEFAULT_ABBREV));
+		strbuf_add_unique_abbrev(&quickref, current->object.sha1, DEFAULT_ABBREV);
+		strbuf_addstr(&quickref, "...");
+		strbuf_add_unique_abbrev(&quickref, ref->new_sha1, DEFAULT_ABBREV);
 		if ((recurse_submodules != RECURSE_SUBMODULES_OFF) &&
 		    (recurse_submodules != RECURSE_SUBMODULES_ON))
 			check_for_new_submodule_commits(ref->new_sha1);
 		r = s_update_ref("forced-update", ref, 1);
 		strbuf_addf(display, "%c %-*s %-*s -> %s  (%s)",
 			    r ? '!' : '+',
-			    TRANSPORT_SUMMARY_WIDTH, quickref,
+			    TRANSPORT_SUMMARY_WIDTH, quickref.buf,
 			    REFCOL_WIDTH, remote, pretty_ref,
 			    r ? _("unable to update local ref") : _("forced update"));
+		strbuf_release(&quickref);
 		return r;
 	} else {
 		strbuf_addf(display, "! %-*s %-*s -> %s  %s",
@@ -637,8 +642,7 @@ static int store_updated_refs(const char *raw_url, const char *remote_name,
 				continue;
 
 			if (rm->peer_ref) {
-				ref = xcalloc(1, sizeof(*ref) + strlen(rm->peer_ref->name) + 1);
-				strcpy(ref->name, rm->peer_ref->name);
+				ref = alloc_ref(rm->peer_ref->name);
 				hashcpy(ref->old_sha1, rm->peer_ref->old_sha1);
 				hashcpy(ref->new_sha1, rm->old_sha1);
 				ref->force = rm->peer_ref->force;
@@ -1156,11 +1160,8 @@ int cmd_fetch(int argc, const char **argv, const char *prefix)
 			die(_("--depth and --unshallow cannot be used together"));
 		else if (!is_repository_shallow())
 			die(_("--unshallow on a complete repository does not make sense"));
-		else {
-			static char inf_depth[12];
-			sprintf(inf_depth, "%d", INFINITE_DEPTH);
-			depth = inf_depth;
-		}
+		else
+			depth = xstrfmt("%d", INFINITE_DEPTH);
 	}
 
 	/* no need to be strict, transport_set_option() will validate it again */
@@ -1215,7 +1216,8 @@ int cmd_fetch(int argc, const char **argv, const char *prefix)
 		result = fetch_populated_submodules(&options,
 						    submodule_prefix,
 						    recurse_submodules,
-						    verbosity < 0);
+						    verbosity < 0,
+						    max_children);
 		argv_array_clear(&options);
 	}
 

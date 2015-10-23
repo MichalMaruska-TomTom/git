@@ -806,7 +806,7 @@ static void prepare_to_commit(struct commit_list *remoteheads)
 			abort_commit(remoteheads, NULL);
 	}
 	read_merge_msg(&msg);
-	stripspace(&msg, 0 < option_edit);
+	strbuf_stripspace(&msg, 0 < option_edit);
 	if (!msg.len)
 		abort_commit(remoteheads, _("Empty commit message."));
 	strbuf_release(&merge_msg);
@@ -1278,13 +1278,13 @@ int cmd_merge(int argc, const char **argv, const char *prefix)
 	if (verify_signatures) {
 		for (p = remoteheads; p; p = p->next) {
 			struct commit *commit = p->item;
-			char hex[41];
+			char hex[GIT_SHA1_HEXSZ + 1];
 			struct signature_check signature_check;
 			memset(&signature_check, 0, sizeof(signature_check));
 
 			check_commit_signature(commit, &signature_check);
 
-			strcpy(hex, find_unique_abbrev(commit->object.sha1, DEFAULT_ABBREV));
+			find_unique_abbrev_r(hex, commit->object.sha1, DEFAULT_ABBREV);
 			switch (signature_check.result) {
 			case 'G':
 				break;
@@ -1374,15 +1374,15 @@ int cmd_merge(int argc, const char **argv, const char *prefix)
 		/* Again the most common case of merging one remote. */
 		struct strbuf msg = STRBUF_INIT;
 		struct commit *commit;
-		char hex[41];
 
-		strcpy(hex, find_unique_abbrev(head_commit->object.sha1, DEFAULT_ABBREV));
-
-		if (verbosity >= 0)
-			printf(_("Updating %s..%s\n"),
-				hex,
-				find_unique_abbrev(remoteheads->item->object.sha1,
-				DEFAULT_ABBREV));
+		if (verbosity >= 0) {
+			char from[GIT_SHA1_HEXSZ + 1], to[GIT_SHA1_HEXSZ + 1];
+			find_unique_abbrev_r(from, head_commit->object.sha1,
+					      DEFAULT_ABBREV);
+			find_unique_abbrev_r(to, remoteheads->item->object.sha1,
+					      DEFAULT_ABBREV);
+			printf(_("Updating %s..%s\n"), from, to);
+		}
 		strbuf_addstr(&msg, "Fast-forward");
 		if (have_message)
 			strbuf_addstr(&msg,
