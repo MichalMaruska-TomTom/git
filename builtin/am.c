@@ -1761,7 +1761,24 @@ static void am_run(struct am_state *state, int resume)
 		if (run_applypatch_msg_hook(state))
 			exit(1);
 
-		say(state, stdout, _("Applying: %.*s"), linelen(state->msg), state->msg);
+// from /home/git/apt/apt-private/colors.h
+#define color_reset "\x1b[0m"
+#define info_color  "\x1b[41;37m"
+
+		if (getenv("GIT_USE_COLOR") != NULL) {
+			const char *fmt = _("Applying: %.*s");
+			// decorate the format with constant color prefix/suffix:
+			int len = strlen(fmt);
+			char *color_fmt = malloc(len + sizeof(info_color) + sizeof(color_reset) - 1);
+			memcpy(color_fmt, info_color, sizeof(info_color)-1);
+			memcpy(color_fmt + sizeof(info_color) -1, fmt, len);
+			memcpy(color_fmt + sizeof(info_color) -1 + len, color_reset, sizeof(color_reset));
+
+			say(state, stdout, color_fmt, linelen(state->msg), state->msg);
+			free(color_fmt);
+		} else {
+			say(state, stdout, _("Applying: %.*s"), linelen(state->msg), state->msg);
+		}
 
 		apply_status = run_apply(state, NULL);
 
@@ -1829,7 +1846,21 @@ static void am_resolve(struct am_state *state)
 {
 	validate_resume_state(state);
 
-	say(state, stdout, _("Applying: %.*s"), linelen(state->msg), state->msg);
+	if (getenv("GIT_USE_COLOR") != NULL) {
+		const char *fmt = _("Applying: %.*s");
+		int len = strlen(fmt);
+
+		// color, string, reset sizeof(string) includes the null!
+		char *color_fmt = malloc(len + sizeof(info_color) + sizeof(color_reset) - 1);
+		memcpy(color_fmt, info_color, sizeof(info_color)-1);
+		memcpy(color_fmt + sizeof(info_color) -1, fmt, len);
+		memcpy(color_fmt + sizeof(info_color) -1 + len, color_reset, sizeof(color_reset));
+
+		say(state, stdout, color_fmt, linelen(state->msg), state->msg);
+		free(color_fmt);
+	} else {
+		say(state, stdout, _("Applying: %.*s"), linelen(state->msg), state->msg);
+	}
 
 	if (!index_has_changes(&the_index, NULL, NULL)) {
 		printf_ln(_("No changes - did you forget to use 'git add'?\n"
