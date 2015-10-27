@@ -1876,7 +1876,7 @@ static void am_run(struct am_state *state, int resume)
 #define install_color "\x1b[33;01m"
 #define remove_color "\x1b[38;5;160m"
 
-                {
+                if (getenv("GIT_USE_COLOR") != NULL) {
                         const char *fmt = _("Applying: %.*s");
                         char *color_fmt;
                         int len = strlen(fmt);
@@ -1887,8 +1887,9 @@ static void am_run(struct am_state *state, int resume)
 
                         say(state, stdout, color_fmt, linelen(state->msg), state->msg);
                         free(color_fmt);
+                } else {
+                        say(state, stdout, _("Applying: %.*s"), linelen(state->msg), state->msg);
                 }
-
 		apply_status = run_apply(state, NULL);
 
 		if (apply_status && state->threeway) {
@@ -1959,7 +1960,7 @@ static void am_resolve(struct am_state *state)
 {
 	validate_resume_state(state);
 
-        {
+        if (getenv("GIT_USE_COLOR") != NULL) {
                 const char *fmt = _("Applying: %.*s");
                 char *color_fmt;
                 int len = strlen(fmt);
@@ -1972,6 +1973,8 @@ static void am_resolve(struct am_state *state)
 
                 say(state, stdout, color_fmt, linelen(state->msg), state->msg);
                 free(color_fmt);
+        } else {
+                say(state, stdout, _("Applying: %.*s"), linelen(state->msg), state->msg);
         }
 
 	if (!index_has_changes(NULL)) {
