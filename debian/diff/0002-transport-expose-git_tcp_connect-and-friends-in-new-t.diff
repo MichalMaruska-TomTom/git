@@ -1,4 +1,4 @@
-From 9d0b3fb1d2d1945dd03debe2ed2d74fc68ce3af4 Mon Sep 17 00:00:00 2001
+From dd58038c1efede95204f9e23b09c4322b8ea0e6b Mon Sep 17 00:00:00 2001
 From: Jonathan Nieder <jrnieder@gmail.com>
 Date: Mon, 6 Jun 2011 04:37:14 -0500
 Subject: transport: expose git_tcp_connect() and friends in new tcp.h
@@ -22,10 +22,10 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  create mode 100644 tcp.h
 
 diff --git a/Makefile b/Makefile
-index 43ceeb9..774186e 100644
+index fd19b54..43aa8c7 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -794,6 +794,7 @@ LIB_OBJS += submodule.o
+@@ -799,6 +799,7 @@ LIB_OBJS += submodule.o
  LIB_OBJS += submodule-config.o
  LIB_OBJS += symlinks.o
  LIB_OBJS += tag.o
@@ -34,7 +34,7 @@ index 43ceeb9..774186e 100644
  LIB_OBJS += trace.o
  LIB_OBJS += trailer.o
 diff --git a/connect.c b/connect.c
-index 108f5ab..16d76f1 100644
+index fd7ffe1..9fbe198 100644
 --- a/connect.c
 +++ b/connect.c
 @@ -6,6 +6,7 @@
@@ -45,7 +45,7 @@ index 108f5ab..16d76f1 100644
  #include "url.h"
  #include "string-list.h"
  #include "sha1-array.h"
-@@ -274,7 +275,7 @@ static enum protocol get_protocol(const char *name)
+@@ -276,7 +277,7 @@ static enum protocol get_protocol(const char *name)
  	die("I don't handle protocol '%s'", name);
  }
  
@@ -54,7 +54,7 @@ index 108f5ab..16d76f1 100644
  {
  	char *host = *hoststart;
  	char *end;
-@@ -298,273 +299,6 @@ static char *host_end(char **hoststart, int removebrackets)
+@@ -300,273 +301,6 @@ static char *host_end(char **hoststart, int removebrackets)
  	return end;
  }
  

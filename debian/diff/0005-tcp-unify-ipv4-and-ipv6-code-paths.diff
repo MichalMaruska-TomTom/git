@@ -1,4 +1,4 @@
-From fbea338c81290d5483a75e2ef4bbbea5009c37f2 Mon Sep 17 00:00:00 2001
+From f15549a738f3791ab5f552b28ee418c81196045b Mon Sep 17 00:00:00 2001
 From: Jonathan Nieder <jrnieder@gmail.com>
 Date: Mon, 6 Jun 2011 04:41:28 -0500
 Subject: tcp: unify ipv4 and ipv6 code paths
@@ -95,10 +95,10 @@ Improved-by: Erik Faye-Lund <kusmabite@gmail.com>
  create mode 100644 dns-ipv6.h
 
 diff --git a/Makefile b/Makefile
-index 774186e..48bd02d 100644
+index 43aa8c7..a60888e 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -1295,6 +1295,9 @@ ifdef NEEDS_MODE_TRANSLATION
+@@ -1300,6 +1300,9 @@ ifdef NEEDS_MODE_TRANSLATION
  endif
  ifdef NO_IPV6
  	BASIC_CFLAGS += -DNO_IPV6

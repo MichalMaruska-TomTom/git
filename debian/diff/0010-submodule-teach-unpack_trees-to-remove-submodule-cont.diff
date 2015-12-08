@@ -1,4 +1,4 @@
-From e8ede794a35ca89e9e07997e087617f1f1443503 Mon Sep 17 00:00:00 2001
+From fa6f2cf010e8f9611b5d05d8fac8ddcb0a1b7a58 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Tue, 19 Jun 2012 20:55:45 +0200
 Subject: submodule: teach unpack_trees() to remove submodule contents
@@ -28,7 +28,7 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  4 files changed, 43 insertions(+), 4 deletions(-)
 
 diff --git a/submodule.c b/submodule.c
-index 1fe2f6f..1281640 100644
+index 5d54629..92644cb 100644
 --- a/submodule.c
 +++ b/submodule.c
 @@ -286,6 +286,43 @@ static void print_submodule_summary(struct rev_info *rev, FILE *f,
@@ -76,10 +76,10 @@ index 1fe2f6f..1281640 100644
  		const char *line_prefix,
  		unsigned char one[20], unsigned char two[20],
 diff --git a/submodule.h b/submodule.h
-index 1e86052..7e37958 100644
+index 56ae48f..634ab87 100644
 --- a/submodule.h
 +++ b/submodule.h
-@@ -30,6 +30,7 @@ void show_submodule_summary(FILE *f, const char *path,
+@@ -31,6 +31,7 @@ void show_submodule_summary(FILE *f, const char *path,
  void set_config_fetch_recurse_submodules(int value);
  void set_config_update_recurse_submodules(int default_value, int option_value);
  int submodule_needs_update(const char *path);

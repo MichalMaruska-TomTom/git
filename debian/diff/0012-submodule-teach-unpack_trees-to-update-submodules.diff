@@ -1,4 +1,4 @@
-From d33dc1696479f693c933e738a68eff92103223b8 Mon Sep 17 00:00:00 2001
+From 69916337d851f197fc2595b50b3270f3d4199f67 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Fri, 5 Apr 2013 18:35:27 +0200
 Subject: submodule: teach unpack_trees() to update submodules
@@ -48,7 +48,7 @@ index f259206..d83d6e6 100644
  				return error("%s is a directory", path.buf);
  			remove_subtree(&path);
 diff --git a/submodule.c b/submodule.c
-index e10c76e..ead7e20 100644
+index 0ed2911..d64c9f2 100644
 --- a/submodule.c
 +++ b/submodule.c
 @@ -359,6 +359,42 @@ int depopulate_submodule(const char *path)
@@ -94,7 +94,7 @@ index e10c76e..ead7e20 100644
  void show_submodule_summary(FILE *f, const char *path,
  		const char *line_prefix,
  		unsigned char one[20], unsigned char two[20],
-@@ -860,6 +896,17 @@ out:
+@@ -857,6 +893,17 @@ out:
  	return spf.result;
  }
  
@@ -112,7 +112,7 @@ index e10c76e..ead7e20 100644
  unsigned is_submodule_modified(const char *path, int ignore_untracked)
  {
  	ssize_t len;
-@@ -1005,6 +1052,45 @@ int ok_to_remove_submodule(const char *path)
+@@ -1002,6 +1049,45 @@ int ok_to_remove_submodule(const char *path)
  	return ok_to_remove;
  }
  
@@ -159,10 +159,10 @@ index e10c76e..ead7e20 100644
  		struct commit *a, struct commit *b)
  {
 diff --git a/submodule.h b/submodule.h
-index 0e43a53..aca9cd6 100644
+index 900531e..7aa8300 100644
 --- a/submodule.h
 +++ b/submodule.h
-@@ -32,13 +32,16 @@ void set_config_update_recurse_submodules(int default_value, int option_value);
+@@ -33,13 +33,16 @@ void set_config_update_recurse_submodules(int default_value, int option_value);
  int submodule_needs_update(const char *path);
  int populate_submodule(const char *path, unsigned char sha1[20], int force);
  int depopulate_submodule(const char *path);
