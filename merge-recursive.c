@@ -26,17 +26,17 @@
 static struct tree *shift_tree_object(struct tree *one, struct tree *two,
 				      const char *subtree_shift)
 {
-	unsigned char shifted[20];
+	struct object_id shifted;
 
 	if (!*subtree_shift) {
-		shift_tree(one->object.sha1, two->object.sha1, shifted, 0);
+		shift_tree(one->object.oid.hash, two->object.oid.hash, shifted.hash, 0);
 	} else {
-		shift_tree_by(one->object.sha1, two->object.sha1, shifted,
+		shift_tree_by(one->object.oid.hash, two->object.oid.hash, shifted.hash,
 			      subtree_shift);
 	}
-	if (!hashcmp(two->object.sha1, shifted))
+	if (!oidcmp(&two->object.oid, &shifted))
 		return two;
-	return lookup_tree(shifted);
+	return lookup_tree(shifted.hash);
 }
 
 static struct commit *make_virtual_commit(struct tree *tree, const char *comment)
@@ -184,7 +184,7 @@ static void output_commit_title(struct merge_options *o, struct commit *commit)
 	if (commit->util)
 		printf("virtual %s\n", merge_remote_util(commit)->name);
 	else {
-		printf("%s ", find_unique_abbrev(commit->object.sha1, DEFAULT_ABBREV));
+		printf("%s ", find_unique_abbrev(commit->object.oid.hash, DEFAULT_ABBREV));
 		if (parse_commit(commit) != 0)
 			printf(_("(bad commit)\n"));
 		else {
@@ -266,8 +266,12 @@ struct tree *write_tree_from_memory(struct merge_options *o)
 		active_cache_tree = cache_tree();
 
 	if (!cache_tree_fully_valid(active_cache_tree) &&
-	    cache_tree_update(&the_index, 0) < 0)
-		die(_("error building trees"));
+	    cache_tree_update(&the_index, 0) < 0) {
+		if (!o->gently)
+			die(_("error building trees"));
+		error(_("error building trees"));
+		return NULL;
+	}
 
 	result = lookup_tree(active_cache_tree->sha1);
 
@@ -313,11 +317,11 @@ static struct stage_data *insert_stage_data(const char *path,
 {
 	struct string_list_item *item;
 	struct stage_data *e = xcalloc(1, sizeof(struct stage_data));
-	get_tree_entry(o->object.sha1, path,
+	get_tree_entry(o->object.oid.hash, path,
 			e->stages[1].sha, &e->stages[1].mode);
-	get_tree_entry(a->object.sha1, path,
+	get_tree_entry(a->object.oid.hash, path,
 			e->stages[2].sha, &e->stages[2].mode);
-	get_tree_entry(b->object.sha1, path,
+	get_tree_entry(b->object.oid.hash, path,
 			e->stages[3].sha, &e->stages[3].mode);
 	item = string_list_insert(entries, path);
 	item->util = e;
@@ -493,7 +497,7 @@ static struct string_list *get_renames(struct merge_options *o,
 	opts.show_rename_progress = o->show_rename_progress;
 	opts.output_format = DIFF_FORMAT_NO_OUTPUT;
 	diff_setup_done(&opts);
-	diff_tree_sha1(o_tree->object.sha1, tree->object.sha1, "", &opts);
+	diff_tree_sha1(o_tree->object.oid.hash, tree->object.oid.hash, "", &opts);
 	diffcore_std(&opts);
 	if (opts.needed_rename_limit > o->needed_rename_limit)
 		o->needed_rename_limit = opts.needed_rename_limit;
@@ -711,6 +715,8 @@ static int make_room_for_path(struct merge_options *o, const char *path)
 			error(msg, path, _(": perhaps a D/F conflict?"));
 			return -1;
 		}
+		if (o->gently)
+			return error(msg, path, "");
 		die(msg, path, "");
 	}
 
@@ -1339,8 +1345,11 @@ static int process_renames(struct merge_options *o,
 			const char *ren2_src = ren2->pair->one->path;
 			const char *ren2_dst = ren2->pair->two->path;
 			enum rename_type rename_type;
-			if (strcmp(ren1_src, ren2_src) != 0)
+			if (strcmp(ren1_src, ren2_src) != 0) {
+				if (o->gently)
+					return error("ren1_src != ren2_src");
 				die("ren1_src != ren2_src");
+			}
 			ren2->dst_entry->processed = 1;
 			ren2->processed = 1;
 			if (strcmp(ren1_dst, ren2_dst) != 0) {
@@ -1373,8 +1382,11 @@ static int process_renames(struct merge_options *o,
 			char *ren2_dst;
 			ren2 = lookup->util;
 			ren2_dst = ren2->pair->two->path;
-			if (strcmp(ren1_dst, ren2_dst) != 0)
+			if (strcmp(ren1_dst, ren2_dst) != 0) {
+				if (o->gently)
+					return error("ren1_dst != ren2_dst");
 				die("ren1_dst != ren2_dst");
+			}
 
 			clean_merge = 0;
 			ren2->processed = 1;
@@ -1530,13 +1542,17 @@ static int read_sha1_strbuf(const unsigned char *sha1, struct strbuf *dst)
 }
 
 static int blob_unchanged(const unsigned char *o_sha,
+			  unsigned o_mode,
 			  const unsigned char *a_sha,
+			  unsigned a_mode,
 			  int renormalize, const char *path)
 {
 	struct strbuf o = STRBUF_INIT;
 	struct strbuf a = STRBUF_INIT;
 	int ret = 0; /* assume changed for safety */
 
+	if (a_mode != o_mode)
+		return 0;
 	if (sha_eq(o_sha, a_sha))
 		return 1;
 	if (!renormalize)
@@ -1722,8 +1738,8 @@ static int process_entry(struct merge_options *o,
 	} else if (o_sha && (!a_sha || !b_sha)) {
 		/* Case A: Deleted in one */
 		if ((!a_sha && !b_sha) ||
-		    (!b_sha && blob_unchanged(o_sha, a_sha, normalize, path)) ||
-		    (!a_sha && blob_unchanged(o_sha, b_sha, normalize, path))) {
+		    (!b_sha && blob_unchanged(o_sha, o_mode, a_sha, a_mode, normalize, path)) ||
+		    (!a_sha && blob_unchanged(o_sha, o_mode, b_sha, b_mode, normalize, path))) {
 			/* Deleted in both or deleted in one and
 			 * unchanged in the other */
 			if (a_sha)
@@ -1808,7 +1824,7 @@ int merge_trees(struct merge_options *o,
 		common = shift_tree_object(head, common, o->subtree_shift);
 	}
 
-	if (sha_eq(common->object.sha1, merge->object.sha1)) {
+	if (sha_eq(common->object.oid.hash, merge->object.oid.hash)) {
 		output(o, 0, _("Already up-to-date!"));
 		*result = head;
 		return 1;
@@ -1817,10 +1833,15 @@ int merge_trees(struct merge_options *o,
 	code = git_merge_trees(o->call_depth, common, head, merge);
 
 	if (code != 0) {
+		if (o->gently)
+			return error(_("merging of trees %s and %s failed"),
+			    oid_to_hex(&head->object.oid),
+			    oid_to_hex(&merge->object.oid));
+
 		if (show(o, 4) || o->call_depth)
 			die(_("merging of trees %s and %s failed"),
-			    sha1_to_hex(head->object.sha1),
-			    sha1_to_hex(merge->object.sha1));
+			    oid_to_hex(&head->object.oid),
+			    oid_to_hex(&merge->object.oid));
 		else
 			exit(128);
 	}
@@ -1863,8 +1884,8 @@ int merge_trees(struct merge_options *o,
 	else
 		clean = 1;
 
-	if (o->call_depth)
-		*result = write_tree_from_memory(o);
+	if (o->call_depth && !(*result = write_tree_from_memory(o)))
+		return -1;
 
 	return clean;
 }
@@ -1939,14 +1960,18 @@ int merge_recursive(struct merge_options *o,
 		saved_b2 = o->branch2;
 		o->branch1 = "Temporary merge branch 1";
 		o->branch2 = "Temporary merge branch 2";
-		merge_recursive(o, merged_common_ancestors, iter->item,
-				NULL, &merged_common_ancestors);
+		if (merge_recursive(o, merged_common_ancestors, iter->item,
+				NULL, &merged_common_ancestors) < 0)
+			return -1;
 		o->branch1 = saved_b1;
 		o->branch2 = saved_b2;
 		o->call_depth--;
 
-		if (!merged_common_ancestors)
+		if (!merged_common_ancestors) {
+			if (o->gently)
+				return error(_("merge returned no commit"));
 			die(_("merge returned no commit"));
+		}
 	}
 
 	discard_cache();
@@ -1956,6 +1981,8 @@ int merge_recursive(struct merge_options *o,
 	o->ancestor = "merged common ancestors";
 	clean = merge_trees(o, h1->tree, h2->tree, merged_common_ancestors->tree,
 			    &mrtree);
+	if (clean < 0)
+		return clean;
 
 	if (o->call_depth) {
 		*result = make_virtual_commit(mrtree, "merged tree");
@@ -2012,6 +2039,9 @@ int merge_recursive_generic(struct merge_options *o,
 	hold_locked_index(lock, 1);
 	clean = merge_recursive(o, head_commit, next_commit, ca,
 			result);
+	if (clean < 0)
+		return clean;
+
 	if (active_cache_changed &&
 	    write_locked_index(&the_index, lock, COMMIT_LOCK))
 		return error(_("Unable to write index."));
