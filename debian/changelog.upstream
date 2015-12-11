@@ -1,5 +1,60 @@
-Version next; changes since v2.6.4:
------------------------------------
+Version next; changes since v2.7.0-rc0:
+---------------------------------------
+
+Charles Bailey (1):
+      t3404: fix quoting of redirect for some versions of bash
+
+Johannes Schindelin (1):
+      merge_recursive_options: introduce the "gently" flag
+
+Jonathan Nieder (1):
+      submodule.c: write "Fetching submodule <foo>" to stderr
+
+Junio C Hamano (2):
+      merge: drop 'git merge <message> HEAD <commit>' syntax
+      am: make a direct call to merge_recursive
+
+Mike Crowe (3):
+      push: add recurseSubmodules config option
+      push: test that --recurse-submodules on command line overrides config
+      push: follow the "last one wins" convention for --recurse-submodules
+
+Mike Hommey (1):
+      notes: allow treeish expressions as notes ref
+
+René Scharfe (3):
+      run-command: name the cleanup function child_process_clear()
+      run-command: export child_process_clear()
+      daemon: plug memory leak
+
+SZEDER Gábor (1):
+      Make error message after failing commit_lock_file() less confusing
+
+Stefan Beller (17):
+      xread: poll on non blocking fds
+      xread_nonblock: add functionality to read from fds without blocking
+      strbuf: add strbuf_read_once to read without blocking
+      sigchain: add command to pop all common signals
+      run-command: add an asynchronous parallel child processor
+      fetch_populated_submodules: use new parallel job processing
+      submodules: allow parallel fetching, add tests and documentation
+      run-command: fix early shutdown
+      run-command: clear leftover state from child_process structure
+      run-command: initialize the shutdown flag
+      test-run-command: test for gracefully aborting
+      test-run-command: increase test coverage
+      run-command: fix missing output from late callbacks
+      run-command: remove set_nonblocking()
+      strbuf: update documentation for strbuf_read_once()
+      run-command: detect finished children by closed pipe rather than waitpid
+      document submodule sync --recursive
+
+Stefan Naewe (1):
+      revision.c: fix possible null pointer arithmetic
+
+
+Version v2.7.0-rc0; changes since v2.6.4:
+-----------------------------------------
 
 Alex Henrie (1):
       gitk: l10n: Update Catalan translation
@@ -19,9 +74,6 @@ Beat Bolli (1):
 
 Ben Boeckel (1):
       remote: add get-url subcommand
-
-Charles Bailey (1):
-      t3404: fix quoting of redirect for some versions of bash
 
 Christian Couder (1):
       Documentation/git-update-index: add missing opts to synopsis
@@ -141,8 +193,7 @@ Jeff King (77):
       filter-branch: skip index read/write when possible
       blame: fix object casting regression
 
-Johannes Schindelin (2):
-      merge_recursive_options: introduce the "gently" flag
+Johannes Schindelin (1):
       test: facilitate debugging Git executables in tests with gdb
 
 Johannes Sixt (9):
@@ -174,14 +225,10 @@ John Keeping (16):
       send-email: expand path in sendemail.smtpsslcertpath config
       send-email: die if CA path doesn't exist
 
-Jonathan Nieder (1):
-      submodule.c: write "Fetching submodule <foo>" to stderr
-
 Juerg Haefliger (1):
       git-quiltimport: add commandline option --series <file>
 
-Junio C Hamano (73):
-      merge: drop 'git merge <message> HEAD <commit>' syntax
+Junio C Hamano (71):
       rerere: fix an off-by-one non-bug
       rerere: handle conflicts with multiple stage #1 entries
       rerere: plug conflict ID leaks
@@ -206,7 +253,6 @@ Junio C Hamano (73):
       filter-branch: make report-progress more readable
       Start cycle toward 2.7
       Second batch for 2.7
-      am: make a direct call to merge_recursive
       Third batch for 2.7
       Fourth batch for 2.7
       Fifth batch for 2.7
@@ -343,14 +389,6 @@ Michael Rappazzo (5):
       worktree: add details to the worktree struct
       worktree: add 'list' command
 
-Mike Crowe (3):
-      push: add recurseSubmodules config option
-      push: test that --recurse-submodules on command line overrides config
-      push: follow the "last one wins" convention for --recurse-submodules
-
-Mike Hommey (1):
-      notes: allow treeish expressions as notes ref
-
 Namhyung Kim (1):
       stash: allow "stash show" diff output configurable
 
@@ -366,11 +404,8 @@ Noam Postavsky (1):
 Ramsay Jones (1):
       http: fix some printf format warnings
 
-René Scharfe (12):
+René Scharfe (9):
       use pop_commit() for consuming the first entry of a struct commit_list
-      run-command: name the cleanup function child_process_clear()
-      run-command: export child_process_clear()
-      daemon: plug memory leak
       show-branch: use argv_array for default arguments
       parse-options: deduplicate parse_options_usage() calls
       parse-options: inline parse_options_usage() at its only remaining caller
@@ -384,34 +419,11 @@ Ronnie Sahlberg (2):
       verify_refname_available(): rename function
       verify_refname_available(): new function
 
-SZEDER Gábor (1):
-      Make error message after failing commit_lock_file() less confusing
-
-Stefan Beller (21):
+Stefan Beller (4):
       submodule: rewrite `module_list` shell function in C
       submodule: rewrite `module_name` shell function in C
       submodule: rewrite `module_clone` shell function in C
-      xread: poll on non blocking fds
-      xread_nonblock: add functionality to read from fds without blocking
-      strbuf: add strbuf_read_once to read without blocking
-      sigchain: add command to pop all common signals
-      run-command: add an asynchronous parallel child processor
-      fetch_populated_submodules: use new parallel job processing
-      submodules: allow parallel fetching, add tests and documentation
       submodule-config: "goto" removal in parse_config()
-      run-command: fix early shutdown
-      run-command: clear leftover state from child_process structure
-      run-command: initialize the shutdown flag
-      test-run-command: test for gracefully aborting
-      test-run-command: increase test coverage
-      run-command: fix missing output from late callbacks
-      run-command: remove set_nonblocking()
-      strbuf: update documentation for strbuf_read_once()
-      run-command: detect finished children by closed pipe rather than waitpid
-      document submodule sync --recursive
-
-Stefan Naewe (1):
-      revision.c: fix possible null pointer arithmetic
 
 Takashi Iwai (3):
       gitk: Update msgid's for menu items with accelerator
