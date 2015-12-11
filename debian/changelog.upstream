@@ -1,4 +1,4 @@
-Version next; changes since v2.6.3:
+Version next; changes since v2.6.4:
 -----------------------------------
 
 Alex Henrie (1):
@@ -14,35 +14,20 @@ Alexey Shumkin (2):
 Antoine Delaite (1):
       bisect: add the terms old/new
 
-Atousa Pahlevan Duprat (2):
-      sha1: provide another level of indirection for the SHA-1 functions
-      sha1: allow limiting the size of the data passed to SHA1_Update()
-
 Beat Bolli (1):
       gitk: Add missing accelerators
 
 Ben Boeckel (1):
       remote: add get-url subcommand
 
-Charles Bailey (2):
-      http: treat config options sslCAPath and sslCAInfo as paths
+Charles Bailey (1):
       t3404: fix quoting of redirect for some versions of bash
 
-Christian Couder (2):
-      Documentation/git-update-index: add missing opts to synopsys
+Christian Couder (1):
       Documentation/git-update-index: add missing opts to synopsis
-
-Clemens Buchacher (1):
-      allow hooks to ignore their standard input stream
 
 Dair Grant (1):
       git-svn: improve rebase/mkdirs performance
-
-Daniel Knittl-Frank (1):
-      Escape Git's exec path in contrib/rerere-train.sh script
-
-David Aguilar (1):
-      difftool: ignore symbolic links in use_wt_file
 
 David Turner (9):
       refs: clean up common_list
@@ -55,17 +40,11 @@ David Turner (9):
       refs: break out ref conflict checks
       verify_pack: do not ignore return value of verification function
 
-Dennis Kaarsemaker (3):
+Dennis Kaarsemaker (1):
       git-p4: import the ctypes module
-      t5813: avoid creating urls that break on cygwin
-      check-ignore: correct documentation about output
 
 Dimitriy Ryazantcev (1):
       gitk: Update Russian translation
-
-Doug Kelly (2):
-      t5304: test cleaning pack garbage
-      gc: remove garbage .idx files from pack dir
 
 Edmundo Carmona Antoranz (1):
       checkout: add --progress option
@@ -75,12 +54,6 @@ Elia Pinto (1):
 
 Fabio Porcedda (1):
       contrib/subtree: remove "push" command from the "todo" file
-
-Fredrik Medley (1):
-      rebase-i-exec: Allow space in SHELL_PATH
-
-GIRARD Etienne (1):
-      git-p4: clean up after p4 submit failure
 
 Gabor Bernat (1):
       filter-branch: add passed/remaining seconds on progress
@@ -183,7 +156,7 @@ Johannes Sixt (9):
       modernize t9300: mark here-doc words to ignore tab indentation
       modernize t9300: move test preparations into test_expect_success
 
-John Keeping (19):
+John Keeping (16):
       Documentation/blame-options: don't list date formats
       Documentation/config: don't list date formats
       Documentation/git-for-each-ref: don't list date formats
@@ -198,9 +171,6 @@ John Keeping (19):
       test-lib-functions: support "test_config -C <dir> ..."
       t7800: don't use test_config in a subshell
       test-lib-functions: detect test_when_finished in subshell
-      interpret-trailers: allow running outside a repository
-      rebase: support --no-autostash
-      Documentation/git-rebase: fix --no-autostash formatting
       send-email: expand path in sendemail.smtpsslcertpath config
       send-email: die if CA path doesn't exist
 
@@ -210,7 +180,7 @@ Jonathan Nieder (1):
 Juerg Haefliger (1):
       git-quiltimport: add commandline option --series <file>
 
-Junio C Hamano (76):
+Junio C Hamano (73):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       rerere: fix an off-by-one non-bug
       rerere: handle conflicts with multiple stage #1 entries
@@ -233,7 +203,6 @@ Junio C Hamano (76):
       rerere: call conflict-ids IDs
       rerere: use "struct rerere_id" instead of "char *" for conflict ID
       rerere: un-nest merge() further
-      prepare_packed_git(): refactor garbage reporting in pack directory
       filter-branch: make report-progress more readable
       Start cycle toward 2.7
       Second batch for 2.7
@@ -283,8 +252,6 @@ Junio C Hamano (76):
       Tenth batch for 2.7
       Eleventh batch for 2.7
       RelNotes update for 2.7
-      Prepare for 2.6.4
-      Git 2.6.4
       Update release notes to 2.7
       Git 2.7-rc0
 
@@ -351,11 +318,6 @@ Lukas Fleischer (4):
       hideRefs: add support for matching full refs
       t5509: add basic tests for hideRefs
 
-Luke Diamand (3):
-      git-p4: add failing test for submit from detached head
-      git-p4: add option to system() to return subshell status
-      git-p4: work with a detached head
-
 Matthieu Moy (5):
       bisect: sanity check on terms
       bisect: add 'git bisect terms' to view the current terms
@@ -373,9 +335,6 @@ Michael Haggerty (4):
       refname_is_safe(): improve docstring
       refs/refs-internal.h: new header file
       refs: split filesystem-based refs code into a new file
-
-Michael J Gruber (1):
-      Documentation/diff: give --word-diff-regex=. example
 
 Michael Rappazzo (5):
       worktree: add top-level worktree.c
@@ -404,16 +363,10 @@ Nguyễn Thái Ngọc Duy (4):
 Noam Postavsky (1):
       credential-cache: new option to ignore sighup
 
-Pat Thoyts (1):
-      remote-http(s): support SOCKS proxies
-
-Rainer M. Canavan (1):
-      configure.ac: use $LIBS not $CFLAGS when testing -lpthread
-
 Ramsay Jones (1):
       http: fix some printf format warnings
 
-René Scharfe (13):
+René Scharfe (12):
       use pop_commit() for consuming the first entry of a struct commit_list
       run-command: name the cleanup function child_process_clear()
       run-command: export child_process_clear()
@@ -426,17 +379,12 @@ René Scharfe (13):
       grep: stop using PARSE_OPT_NO_INTERNAL_HELP
       fsck: treat a NUL in a tag header as an error
       show-ref: stop using PARSE_OPT_NO_INTERNAL_HELP
-      wt-status: correct and simplify check for detached HEAD
 
 Ronnie Sahlberg (2):
       verify_refname_available(): rename function
       verify_refname_available(): new function
 
-SZEDER Gábor (5):
-      bash prompt: test dirty index and worktree while on an orphan branch
-      bash prompt: remove a redundant 'git diff' option
-      bash prompt: indicate dirty index even on orphan branches
-      filter-branch: deal with object name vs. pathname ambiguity in tree-filter
+SZEDER Gábor (1):
       Make error message after failing commit_lock_file() less confusing
 
 Stefan Beller (21):
@@ -504,6 +452,76 @@ brian m. carlson (12):
       Convert struct object to object_id
       Remove get_object_hash.
       remote: convert functions to struct object_id
+
+
+Version v2.6.4; changes since v2.6.3:
+-------------------------------------
+
+Atousa Pahlevan Duprat (2):
+      sha1: provide another level of indirection for the SHA-1 functions
+      sha1: allow limiting the size of the data passed to SHA1_Update()
+
+Charles Bailey (1):
+      http: treat config options sslCAPath and sslCAInfo as paths
+
+Christian Couder (1):
+      Documentation/git-update-index: add missing opts to synopsys
+
+Clemens Buchacher (1):
+      allow hooks to ignore their standard input stream
+
+Daniel Knittl-Frank (1):
+      Escape Git's exec path in contrib/rerere-train.sh script
+
+David Aguilar (1):
+      difftool: ignore symbolic links in use_wt_file
+
+Dennis Kaarsemaker (2):
+      t5813: avoid creating urls that break on cygwin
+      check-ignore: correct documentation about output
+
+Doug Kelly (2):
+      t5304: test cleaning pack garbage
+      gc: remove garbage .idx files from pack dir
+
+Fredrik Medley (1):
+      rebase-i-exec: Allow space in SHELL_PATH
+
+GIRARD Etienne (1):
+      git-p4: clean up after p4 submit failure
+
+John Keeping (3):
+      interpret-trailers: allow running outside a repository
+      rebase: support --no-autostash
+      Documentation/git-rebase: fix --no-autostash formatting
+
+Junio C Hamano (3):
+      prepare_packed_git(): refactor garbage reporting in pack directory
+      Prepare for 2.6.4
+      Git 2.6.4
+
+Luke Diamand (3):
+      git-p4: add failing test for submit from detached head
+      git-p4: add option to system() to return subshell status
+      git-p4: work with a detached head
+
+Michael J Gruber (1):
+      Documentation/diff: give --word-diff-regex=. example
+
+Pat Thoyts (1):
+      remote-http(s): support SOCKS proxies
+
+Rainer M. Canavan (1):
+      configure.ac: use $LIBS not $CFLAGS when testing -lpthread
+
+René Scharfe (1):
+      wt-status: correct and simplify check for detached HEAD
+
+SZEDER Gábor (4):
+      bash prompt: test dirty index and worktree while on an orphan branch
+      bash prompt: remove a redundant 'git diff' option
+      bash prompt: indicate dirty index even on orphan branches
+      filter-branch: deal with object name vs. pathname ambiguity in tree-filter
 
 Андрей Рыбак (1):
       Documentation: make environment variable formatting more consistent
