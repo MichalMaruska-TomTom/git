@@ -24,11 +24,13 @@ Beat Bolli (1):
 Ben Boeckel (1):
       remote: add get-url subcommand
 
-Charles Bailey (1):
+Charles Bailey (2):
       http: treat config options sslCAPath and sslCAInfo as paths
+      t3404: fix quoting of redirect for some versions of bash
 
-Christian Couder (1):
+Christian Couder (2):
       Documentation/git-update-index: add missing opts to synopsys
+      Documentation/git-update-index: add missing opts to synopsis
 
 Clemens Buchacher (1):
       allow hooks to ignore their standard input stream
@@ -208,7 +210,7 @@ Jonathan Nieder (1):
 Juerg Haefliger (1):
       git-quiltimport: add commandline option --series <file>
 
-Junio C Hamano (73):
+Junio C Hamano (76):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       rerere: fix an off-by-one non-bug
       rerere: handle conflicts with multiple stage #1 entries
@@ -282,6 +284,9 @@ Junio C Hamano (73):
       Eleventh batch for 2.7
       RelNotes update for 2.7
       Prepare for 2.6.4
+      Git 2.6.4
+      Update release notes to 2.7
+      Git 2.7-rc0
 
 Karthik Nayak (35):
       t6302: for-each-ref tests for ref-filter APIs
@@ -379,8 +384,10 @@ Michael Rappazzo (5):
       worktree: add details to the worktree struct
       worktree: add 'list' command
 
-Mike Crowe (1):
+Mike Crowe (3):
       push: add recurseSubmodules config option
+      push: test that --recurse-submodules on command line overrides config
+      push: follow the "last one wins" convention for --recurse-submodules
 
 Mike Hommey (1):
       notes: allow treeish expressions as notes ref
@@ -388,10 +395,11 @@ Mike Hommey (1):
 Namhyung Kim (1):
       stash: allow "stash show" diff output configurable
 
-Nguyễn Thái Ngọc Duy (3):
+Nguyễn Thái Ngọc Duy (4):
       dir.c: make last_exclude_matching_from_list() run til the end
       dir.c: don't exclude whole dir prematurely if neg pattern may match
       mailinfo: fix passing wrong address to git_mailinfo_config
+      git-check-ref-format.txt: typo, s/avoids/avoid/
 
 Noam Postavsky (1):
       credential-cache: new option to ignore sighup
@@ -424,13 +432,14 @@ Ronnie Sahlberg (2):
       verify_refname_available(): rename function
       verify_refname_available(): new function
 
-SZEDER Gábor (4):
+SZEDER Gábor (5):
       bash prompt: test dirty index and worktree while on an orphan branch
       bash prompt: remove a redundant 'git diff' option
       bash prompt: indicate dirty index even on orphan branches
       filter-branch: deal with object name vs. pathname ambiguity in tree-filter
+      Make error message after failing commit_lock_file() less confusing
 
-Stefan Beller (20):
+Stefan Beller (21):
       submodule: rewrite `module_list` shell function in C
       submodule: rewrite `module_name` shell function in C
       submodule: rewrite `module_clone` shell function in C
@@ -451,6 +460,10 @@ Stefan Beller (20):
       run-command: remove set_nonblocking()
       strbuf: update documentation for strbuf_read_once()
       run-command: detect finished children by closed pipe rather than waitpid
+      document submodule sync --recursive
+
+Stefan Naewe (1):
+      revision.c: fix possible null pointer arithmetic
 
 Takashi Iwai (3):
       gitk: Update msgid's for menu items with accelerator
