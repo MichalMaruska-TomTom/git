@@ -75,10 +75,11 @@ test_expect_success "fetch --recurse-submodules -j2 has the same output behaviou
 	add_upstream_commit &&
 	(
 		cd downstream &&
-		git fetch --recurse-submodules -j2 2>../actual.err
+		GIT_TRACE=$(pwd)/../trace.out git fetch --recurse-submodules -j2 2>../actual.err
 	) &&
 	test_must_be_empty actual.out &&
-	test_i18ncmp expect.err actual.err
+	test_i18ncmp expect.err actual.err &&
+	grep "2 tasks" trace.out
 '
 
 test_expect_success "fetch alone only fetches superproject" '

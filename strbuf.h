@@ -367,10 +367,10 @@ extern size_t strbuf_fread(struct strbuf *, size_t, FILE *);
 extern ssize_t strbuf_read(struct strbuf *, int fd, size_t hint);
 
 /**
- * Returns the number of new bytes appended to the sb.
- * Negative return value signals there was an error returned from
- * underlying read(2), in which case the caller should check errno.
- * e.g. errno == EAGAIN when the read may have blocked.
+ * Read the contents of a given file descriptor partially by using only one
+ * attempt of xread. The third argument can be used to give a hint about the
+ * file size, to avoid reallocs. Returns the number of new bytes appended to
+ * the sb.
  */
 extern ssize_t strbuf_read_once(struct strbuf *, int fd, size_t hint);
 

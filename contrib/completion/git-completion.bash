@@ -664,6 +664,7 @@ __git_list_porcelain_commands ()
 		check-mailmap)    : plumbing;;
 		check-ref-format) : plumbing;;
 		checkout-index)   : plumbing;;
+		column)           : internal helper;;
 		commit-tree)      : plumbing;;
 		count-objects)    : infrequent;;
 		credential)       : credentials;;
@@ -1311,6 +1312,7 @@ _git_grep ()
 			--full-name --line-number
 			--extended-regexp --basic-regexp --fixed-strings
 			--perl-regexp
+			--threads
 			--files-with-matches --name-only
 			--files-without-match
 			--max-depth
@@ -1716,7 +1718,7 @@ _git_send_email ()
 	--to|--cc|--bcc|--from)
 		__gitcomp "
 		$(git --git-dir="$(__gitdir)" send-email --dump-aliases 2>/dev/null)
-		" "" ""
+		"
 		return
 		;;
 	esac

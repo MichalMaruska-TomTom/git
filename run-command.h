@@ -129,8 +129,6 @@ int in_async(void);
  * pp_cb is the callback cookie as passed to run_processes_parallel.
  * You can store a child process specific callback cookie in pp_task_cb.
  *
- * You MUST set stdout_to_stderr.
- *
  * Even after returning 0 to indicate that there are no more processes,
  * this function will be called again until there are no more running
  * child processes.
@@ -138,12 +136,12 @@ int in_async(void);
  * Return 1 if the next child is ready to run.
  * Return 0 if there are currently no more tasks to be processed.
  * To send a signal to other child processes for abortion,
- * return negative signal code.
+ * return the negative signal number.
  */
-typedef int (*get_next_task_fn)(void **pp_task_cb,
-				struct child_process *cp,
+typedef int (*get_next_task_fn)(struct child_process *cp,
 				struct strbuf *err,
-				void *pp_cb);
+				void *pp_cb,
+				void **pp_task_cb);
 
 /**
  * This callback is called whenever there are problems starting
@@ -158,7 +156,7 @@ typedef int (*get_next_task_fn)(void **pp_task_cb,
  *
  * Return 0 to continue the parallel processing. To abort return non zero.
  * To send a signal to other child processes for abortion, return
- * negative signal code.
+ * the negative signal number.
  */
 typedef int (*start_failure_fn)(struct child_process *cp,
 				struct strbuf *err,
@@ -177,7 +175,7 @@ typedef int (*start_failure_fn)(struct child_process *cp,
  *
  * Return 0 to continue the parallel processing.  To abort return non zero.
  * To send a signal to other child processes for abortion, return
- * negative signal code.
+ * the negative signal number.
  */
 typedef int (*task_finished_fn)(int result,
 				struct child_process *cp,
@@ -187,14 +185,14 @@ typedef int (*task_finished_fn)(int result,
 
 /**
  * Runs up to n processes at the same time. Whenever a process can be
- * started, the callback `get_next_task` is called to obtain the data
- * fed to the child process.
+ * started, the callback get_next_task_fn is called to obtain the data
+ * required to start another child process.
  *
- * The children started via this function run in parallel and their output
- * to stderr is buffered, while one of the children will directly output
- * to stderr.
+ * The children started via this function run in parallel. Their output
+ * (both stdout and stderr) is routed to stderr in a manner that output
+ * from different tasks does not interleave.
  *
- * If start_failure_fn and return_value_fn are NULL, default handlers
+ * If start_failure_fn or task_finished_fn are NULL, default handlers
  * will be used. The default handlers will print an error message on
  * error without issuing an emergency stop.
  */

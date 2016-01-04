@@ -16,10 +16,10 @@
 #include <errno.h>
 
 static int number_callbacks;
-static int parallel_next(void** task_cb,
-			 struct child_process *cp,
+static int parallel_next(struct child_process *cp,
 			 struct strbuf *err,
-			 void *cb)
+			 void *cb,
+			 void **task_cb)
 {
 	struct child_process *d = cb;
 	if (number_callbacks >= 4)
@@ -31,10 +31,10 @@ static int parallel_next(void** task_cb,
 	return 1;
 }
 
-static int no_job(void** task_cb,
-		  struct child_process *cp,
+static int no_job(struct child_process *cp,
 		  struct strbuf *err,
-		  void *cb)
+		  void *cb,
+		  void **task_cb)
 {
 	strbuf_addf(err, "no further jobs available\n");
 	return 0;

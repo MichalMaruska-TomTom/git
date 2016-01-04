@@ -874,7 +874,7 @@ enum child_state {
 	GIT_CP_WAIT_CLEANUP,
 };
 
-static struct parallel_processes {
+struct parallel_processes {
 	void *data;
 
 	int max_processes;
@@ -900,7 +900,7 @@ static struct parallel_processes {
 
 	int output_owner;
 	struct strbuf buffered_output; /* of finished children */
-} parallel_processes_struct;
+};
 
 static int default_start_failure(struct child_process *cp,
 				 struct strbuf *err,
@@ -943,28 +943,31 @@ static void kill_children(struct parallel_processes *pp, int signo)
 			kill(pp->children[i].process.pid, signo);
 }
 
+static struct parallel_processes *pp_for_signal;
+
 static void handle_children_on_signal(int signo)
 {
-	struct parallel_processes *pp = &parallel_processes_struct;
-
-	kill_children(pp, signo);
+	kill_children(pp_for_signal, signo);
 	sigchain_pop(signo);
 	raise(signo);
 }
 
-static struct parallel_processes *pp_init(int n,
-					  get_next_task_fn get_next_task,
-					  start_failure_fn start_failure,
-					  task_finished_fn task_finished,
-					  void *data)
+static void pp_init(struct parallel_processes *pp,
+		    int n,
+		    get_next_task_fn get_next_task,
+		    start_failure_fn start_failure,
+		    task_finished_fn task_finished,
+		    void *data)
 {
 	int i;
-	struct parallel_processes *pp = &parallel_processes_struct;
 
 	if (n < 1)
 		n = online_cpus();
 
 	pp->max_processes = n;
+
+	trace_printf("run_processes_parallel: preparing to run up to %d tasks", n);
+
 	pp->data = data;
 	if (!get_next_task)
 		die("BUG: you need to specify a get_next_task function");
@@ -986,14 +989,16 @@ static struct parallel_processes *pp_init(int n,
 		pp->pfd[i].events = POLLIN | POLLHUP;
 		pp->pfd[i].fd = -1;
 	}
+
+	pp_for_signal = pp;
 	sigchain_push_common(handle_children_on_signal);
-	return pp;
 }
 
 static void pp_cleanup(struct parallel_processes *pp)
 {
 	int i;
 
+	trace_printf("run_processes_parallel: done");
 	for (i = 0; i < pp->max_processes; i++) {
 		strbuf_release(&pp->children[i].err);
 		child_process_clear(&pp->children[i].process);
@@ -1029,10 +1034,10 @@ static int pp_start_one(struct parallel_processes *pp)
 	if (i == pp->max_processes)
 		die("BUG: bookkeeping is hard");
 
-	code = pp->get_next_task(&pp->children[i].data,
-				 &pp->children[i].process,
+	code = pp->get_next_task(&pp->children[i].process,
 				 &pp->children[i].err,
-				 pp->data);
+				 pp->data,
+				 &pp->children[i].data);
 	if (!code) {
 		strbuf_addbuf(&pp->buffered_output, &pp->children[i].err);
 		strbuf_reset(&pp->children[i].err);
@@ -1163,35 +1168,35 @@ int run_processes_parallel(int n,
 	int i, code;
 	int output_timeout = 100;
 	int spawn_cap = 4;
-	struct parallel_processes *pp;
+	struct parallel_processes pp;
 
-	pp = pp_init(n, get_next_task, start_failure, task_finished, pp_cb);
+	pp_init(&pp, n, get_next_task, start_failure, task_finished, pp_cb);
 	while (1) {
 		for (i = 0;
-		    i < spawn_cap && !pp->shutdown &&
-		    pp->nr_processes < pp->max_processes;
+		    i < spawn_cap && !pp.shutdown &&
+		    pp.nr_processes < pp.max_processes;
 		    i++) {
-			code = pp_start_one(pp);
+			code = pp_start_one(&pp);
 			if (!code)
 				continue;
 			if (code < 0) {
-				pp->shutdown = 1;
-				kill_children(pp, -code);
+				pp.shutdown = 1;
+				kill_children(&pp, -code);
 			}
 			break;
 		}
-		if (!pp->nr_processes)
+		if (!pp.nr_processes)
 			break;
-		pp_buffer_stderr(pp, output_timeout);
-		pp_output(pp);
-		code = pp_collect_finished(pp);
+		pp_buffer_stderr(&pp, output_timeout);
+		pp_output(&pp);
+		code = pp_collect_finished(&pp);
 		if (code) {
-			pp->shutdown = 1;
+			pp.shutdown = 1;
 			if (code < 0)
-				kill_children(pp, -code);
+				kill_children(&pp, -code);
 		}
 	}
 
-	pp_cleanup(pp);
+	pp_cleanup(&pp);
 	return 0;
 }
