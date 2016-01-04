@@ -1,18 +1,86 @@
 Version next; changes since v2.7.0-rc0:
 ---------------------------------------
 
+Alex Henrie (2):
+      l10n: ca.po: update translation
+      l10n: ca.po: update translation
+
+Alexander Shopov (2):
+      l10n: Updated Bulgarian translation of git (2477t,0f,0u)
+      l10n: Updated Bulgarian translation of git (2477t,0f,0u)
+
+Audric Schiltknecht (1):
+      l10n: fr.po: Fix typo
+
 Charles Bailey (1):
       t3404: fix quoting of redirect for some versions of bash
 
-Johannes Schindelin (1):
-      merge_recursive_options: introduce the "gently" flag
+Dimitriy Ryazantcev (1):
+      l10n: ru.po: update Russian translation
 
-Jonathan Nieder (1):
+Edmundo Carmona Antoranz (1):
+      blame: add support for --[no-]progress option
+
+Elia Pinto (1):
+      Makefile: add missing phony target
+
+Fabian Ruch (1):
+      rebase -i: remember merge options beyond continue actions
+
+Giuseppe Bilotta (2):
+      gitk: Match ttk fonts to gitk fonts
+      gitk: Let .bleft.mid widgets 'breathe'
+
+Jean-Noel Avila (2):
+      l10n: fr v2.7.0 round 1 (2477t)
+      l10n: fr.po v2.7.0 round 2 (2477t)
+
+Jeff King (7):
+      ident: make xgetpwuid_self() a static local helper
+      ident: keep a flag for bogus default_email
+      ident: loosen getpwuid error in non-strict mode
+      ident: fix undefined variable when NO_IPV6 is set
+      revision.c: propagate tag names from pending array
+      symbolic-ref: propagate error code from create_symref()
+      t1401: test reflog creation for git-symbolic-ref
+
+Jiang Xin (4):
+      l10n: git.pot: v2.7.0 round 1 (66 new, 29 removed)
+      l10n: zh_CN: for git v2.7.0 l10n round 1
+      l10n: git.pot: v2.7.0 round 2 (2 new, 2 removed)
+      l10n: zh_CN: for git v2.7.0 l10n round 2
+
+Johannes Schindelin (2):
+      merge_recursive_options: introduce the "gently" flag
+      mingw: emulate write(2) that fails with a EPIPE
+
+Johannes Sixt (1):
+      prune: close directory earlier during loose-object directory traversal
+
+John Keeping (1):
+      send-email: enable SSL level 1 debug output
+
+Jonathan Nieder (2):
+      submodule.c: write "Fetching submodule <foo>" to stderr
       submodule.c: write "Fetching submodule <foo>" to stderr
 
-Junio C Hamano (2):
+Junio C Hamano (10):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       am: make a direct call to merge_recursive
+      Prepare for 2.6.5
+      Update release notes to 2.7
+      Revert "Merge branch 'sb/submodule-parallel-fetch' into next"
+      Update draft release notes to 2.6.5
+      Git 2.7-rc1
+      Update release notes to 2.7
+      Git 2.7-rc2
+      Git 2.7-rc3
+
+Lars Schneider (1):
+      git-p4: add option to keep empty commits
+
+Luke Diamand (1):
+      git-p4: failing test case for skipping changes with multiple depots
 
 Mike Crowe (3):
       push: add recurseSubmodules config option
@@ -22,15 +90,38 @@ Mike Crowe (3):
 Mike Hommey (1):
       notes: allow treeish expressions as notes ref
 
+Nguyễn Thái Ngọc Duy (1):
+      Revert "setup: set env $GIT_WORK_TREE when work tree is set, like $GIT_DIR"
+
+Patrick Steinhardt (2):
+      push: add '--delete' flag to synopsis
+      push: add '-d' as shorthand for '--delete'
+
+Peter Krefting (4):
+      gitk: sv.po: Update Swedish translation (311t)
+      l10n: sv.po: Update Swedish translation (2477t0f0u)
+      l10n: sv: Fix bad translation
+      l10n: sv.po: Update Swedish translation (2477t0f0u)
+
+Ralf Thielow (1):
+      push: don't mark options of recurse-submodules for translation
+
 René Scharfe (3):
       run-command: name the cleanup function child_process_clear()
       run-command: export child_process_clear()
       daemon: plug memory leak
 
-SZEDER Gábor (1):
+SZEDER Gábor (4):
       Make error message after failing commit_lock_file() less confusing
+      completion: remove 'git column' from porcelain commands
+      completion: fix completing unstuck email alias arguments
+      credential-store: don't pass strerror to die_errno()
 
-Stefan Beller (17):
+Sam Hocevar (2):
+      git-p4: support multiple depot paths in p4 submit
+      git-p4: reduce number of server queries for fetches
+
+Stefan Beller (23):
       xread: poll on non blocking fds
       xread_nonblock: add functionality to read from fds without blocking
       strbuf: add strbuf_read_once to read without blocking
@@ -48,9 +139,49 @@ Stefan Beller (17):
       strbuf: update documentation for strbuf_read_once()
       run-command: detect finished children by closed pipe rather than waitpid
       document submodule sync --recursive
+      xread: poll on non blocking fds
+      strbuf: add strbuf_read_once to read without blocking
+      sigchain: add command to pop all common signals
+      run-command: add an asynchronous parallel child processor
+      fetch_populated_submodules: use new parallel job processing
+      submodules: allow parallel fetching, add tests and documentation
 
 Stefan Naewe (1):
       revision.c: fix possible null pointer arithmetic
+
+Trần Ngọc Quân (1):
+      l10n: vi.po: Updated translation (2477t)
+
+Victor Leschuk (3):
+      grep: allow threading even on a single-core machine
+      grep: slight refactoring to the code that disables threading
+      grep: add --threads=<num> option and grep.threads configuration
+
+YOKOTA Hiroshi (16):
+      gitk: Color name update
+      gitk: Re-sync line number in Japanese message catalogue
+      gitk: Update Japanese message catalog
+      gitk: Translate more to Japanese catalog
+      gitk: Translate Japanese catalog
+      gitk: Fix wrong translation
+      gitk: Update Japanese translation
+      gitk: Fix translation around copyright sign
+      gitk: Update Japanese translation
+      gitk: Update fuzzy messages
+      gitk: Change last translator line
+      gitk: Update year
+      gitk: Remove unused line
+      gitk: Improve translation message
+      gitk: Update "Language:" header
+      gitk: Update revision date in Japanese PO file
+
+brian m. carlson (3):
+      sha1_file.c: introduce a null_oid constant
+      format-patch: add an option to suppress commit hash
+      format-patch: check that header line has expected format
+
+Élie Bouttier (1):
+      l10n: fr.po: Fix typo
 
 
 Version v2.7.0-rc0; changes since v2.6.4:
