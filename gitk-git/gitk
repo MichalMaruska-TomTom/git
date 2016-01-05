@@ -6564,6 +6564,7 @@ proc drawtags {id x xt y1} {
     set delta [expr {int(0.5 * ($linespc - $lthickness))}]
     set extra [expr {$delta + $lthickness + $linespc}]
 
+    # mmc: So marks starts with TAGS
     if {[info exists idtags($id)]} {
 	set marks $idtags($id)
 	set ntags [llength $marks]
@@ -6579,44 +6580,73 @@ proc drawtags {id x xt y1} {
 	    set ntags 1
 	}
     }
+    # then HEADS ... including remotes
     if {[info exists idheads($id)]} {
 	set marks [concat $marks $idheads($id)]
 	set nheads [llength $idheads($id)]
     }
+    # other refs
     if {[info exists idotherrefs($id)]} {
 	set marks [concat $marks $idotherrefs($id)]
     }
+    # nothing to draw!
     if {$marks eq {}} {
 	return $xt
     }
 
+    # puts "drawtags: got $marks"
     set yt [expr {$y1 - 0.5 * $linespc}]
+    # top^  bottom v
     set yb [expr {$yt + $linespc - 1}]
     set xvals {}
     set wvals {}
     set i -1
+
+    # so, what is this? all the refs of this commit?
     foreach tag $marks {
 	incr i
 	if {$i >= $ntags && $i < $ntags + $nheads && $tag eq $mainhead} {
 	    set wid [font measure mainfontbold $tag]
+	    # so this is for current branch!
 	} else {
 	    set wid [font measure mainfont $tag]
 	}
+	# left (or right) edges:
 	lappend xvals $xt
+	# widths:
 	lappend wvals $wid
+	# next one:
 	set xt [expr {$xt + $wid + $extra}]
     }
+
+    # ?? this is the horizontal line!
     set t [$canv create line $x $y1 [lindex $xvals end] $y1 \
 	       -width $lthickness -fill $reflinecolor -tags tag.$id]
     $canv lower $t
+
+    # then above we draw the labels:
     foreach tag $marks x $xvals wid $wvals {
+	# x is the left ref point.
+	# wid is the width (allocated)
 	set tag_quoted [string map {% %%} $tag]
+
+
 	set xl [expr {$x + $delta}]
+	# here the width of the rectangle:
+	# note: how $extra ... in the xwals is composed of $lthickness!
 	set xr [expr {$x + $delta + $wid + $lthickness}]
+
 	set font mainfont
+
+	# mmc: first are tags, then heads, then the rest?
 	if {[incr ntags -1] >= 0} {
 	    # draw a tag
 	    set t [$canv create polygon $x [expr {$yt + $delta}] $xl $yt \
+	    # the fish form!
+	    #  x/[]  / xl/yt
+	    #               ---  xr/yt |   xr/yb
+	    #          xl yb----
+	    # x/[] \
 		       $xr $yt $xr $yb $xl $yb $x [expr {$yb - $delta}] \
 		       -width 1 -outline $tagoutlinecolor -fill $tagbgcolor \
 		       -tags tag.$id]
@@ -6625,29 +6655,91 @@ proc drawtags {id x xt y1} {
 	    } else {
 		set tagclick [list showtag $tag_quoted 1]
 	    }
+	    # callback for mouse-click?
+	    # mmc: can is a canvas .tf.histframe.pwclist.canv
+	    # so an object w/ bind method?
 	    $canv bind $t <1> $tagclick
+
 	    set rowtextx([rowofcommit $id]) [expr {$xr + $linespc}]
 	} else {
+
 	    # draw a head or other ref
 	    if {[incr nheads -1] >= 0} {
+		# mmc: the only use of $headbgcolor:
 		set col $headbgcolor
+		puts "drawtags: $tag"
+		if {[string equal $tag "mmc-all"]} {
+		# mmc: I want ForestGreen and DarkGreen for segments/sums.
+		    set col "ForestGreen"
+		} elseif {[string equal $tag "mmc-keep-time"]} {
+		    set col "DarkGreen"
+		    set lfgcolor "White"
+		}
+
 		if {$tag eq $mainhead} {
 		    set font mainfontbold
 		}
 	    } else {
+		# non-tag, non-branch refs:
 		set col "#ddddff"
 	    }
 	    set xl [expr {$xl - $delta/2}]
+
+# this is the original, over the whole label...... but why w/o it I see the horizontal line above the label?
+
+
 	    $canv create polygon $x $yt $xr $yt $xr $yb $x $yb \
 		-width 1 -outline black -fill $col -tags tag.$id
+	    # so it this useless in the end, for the cases below?
+
+
 	    if {[regexp {^(remotes/.*/|remotes/)} $tag match remoteprefix]} {
 	        set rwid [font measure mainfont $remoteprefix]
 		set xi [expr {$x + 1}]
 		set yti [expr {$yt + 1}]
 		set xri [expr {$x + $rwid}]
+
+		# note: the width 0 ... no black around.
 		$canv create polygon $xi $yti $xri $yti $xri $yb $xi $yb \
 			-width 0 -fill $remotebgcolor -tags tag.$id
+	    } elseif {[regexp {^(start/|base/|sums/)} $tag match remoteprefix]} {
+
+
+		# mmc: here I naively change the label:
+		# how to drop it?
+		set i [string last "/" $tag]
+		set tag [string range $tag [ expr {$i + 1}] end]
+		## changed. see below for "create text"
+
+		puts "drawtags: start/base !!!!  $remoteprefix"
+		# trying to DROP the prefix, and rely on distinction by color!
+		# set tag [string range $tag [string length $remoteprefix ] -1 ]
+	        set rwid [font measure mainfont $remoteprefix]
+		set xi [expr {$x + 1}]
+		set yti [expr {$yt + 1}]
+		set xri [expr {$x + $rwid}]
+
+
+		# I think  start:xx,yy,zz would be enough
+		if {[string equal $remoteprefix "start/"]} {
+		    set prefixbgcolor "#00ddbb"
+		    # "IndianRed"
+		} elseif {[string equal $remoteprefix "sums/"]} {
+		       set prefixbgcolor "#aadd00"
+		} else {
+		    set prefixbgcolor "#aaddbb"
+		    #
+		}
+		# mmc: ZERO boundary line, but FILLed with remote color!
+		# 
+		$canv create polygon $xi $yti $xri $yti $xri $yb $xi $yb \
+		    -width 0 -fill $prefixbgcolor -tags tag.$id
+
+		# the rest will be:
+		set col "#00ddff"
 	    }
+	    # elseif  sums/xxx/digit
+
 	}
 	set t [$canv create text $xl $y1 -anchor w -text $tag -fill $headfgcolor \
 		   -font $font -tags [list tag.$id text]]
@@ -12211,6 +12303,7 @@ set ignorespace 0
 set worddiff ""
 set markbgcolor "#e0e0ff"
 
+# mmc: it's lime, but see ~/.gitk
 set headbgcolor lime
 set headfgcolor black
 set headoutlinecolor black
