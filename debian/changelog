@@ -1,3 +1,10 @@
+git (1:2.7.0~rc3-1maruska2) unstable; urgency=medium
+
+  * fix bug w/ comments vs line continuation "backquote"
+  * dump the tag name when drawing it.
+
+ -- Michal Maruska <mmaruska@gmail.com>  Thu, 07 Jan 2016 15:14:19 +0100
+
 git (1:2.7.0~rc3-1maruska) unstable; urgency=medium
 
   * Invoke hooks on rebase finished or aborted.
