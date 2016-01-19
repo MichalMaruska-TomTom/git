@@ -386,7 +386,7 @@ static int grep_cache(struct grep_opt *opt, const struct pathspec *pathspec, int
 
 	for (nr = 0; nr < active_nr; nr++) {
 		const struct cache_entry *ce = active_cache[nr];
-		if (!S_ISREG(ce->ce_mode))
+		if (!S_ISREG(ce->ce_mode) || ce_intent_to_add(ce))
 			continue;
 		if (!ce_path_match(ce, pathspec, NULL))
 			continue;
@@ -768,9 +768,15 @@ int cmd_grep(int argc, const char **argv, const char *prefix)
 			     PARSE_OPT_STOP_AT_NON_OPTION);
 	grep_commit_pattern_type(pattern_type_arg, &opt);
 
-	if (use_index && !startup_info->have_repository)
-		/* die the same way as if we did it at the beginning */
-		setup_git_directory();
+	if (use_index && !startup_info->have_repository) {
+		int fallback = 0;
+		git_config_get_bool("grep.fallbacktonoindex", &fallback);
+		if (fallback)
+			use_index = 0;
+		else
+			/* die the same way as if we did it at the beginning */
+			setup_git_directory();
+	}
 
 	/*
 	 * skip a -- separator; we know it cannot be

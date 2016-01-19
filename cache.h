@@ -9,6 +9,7 @@
 #include "convert.h"
 #include "trace.h"
 #include "string-list.h"
+#include "pack-revindex.h"
 
 #include SHA1_HEADER
 #ifndef platform_SHA_CTX
@@ -214,7 +215,7 @@ struct cache_entry {
 #define CE_INTENT_TO_ADD     (1 << 29)
 #define CE_SKIP_WORKTREE     (1 << 30)
 /* CE_EXTENDED2 is for future extension */
-#define CE_EXTENDED2         (1 << 31)
+#define CE_EXTENDED2         (1U << 31)
 
 #define CE_EXTENDED_FLAGS (CE_INTENT_TO_ADD | CE_SKIP_WORKTREE)
 
@@ -259,6 +260,7 @@ static inline unsigned create_ce_flags(unsigned stage)
 #define ce_uptodate(ce) ((ce)->ce_flags & CE_UPTODATE)
 #define ce_skip_worktree(ce) ((ce)->ce_flags & CE_SKIP_WORKTREE)
 #define ce_mark_uptodate(ce) ((ce)->ce_flags |= CE_UPTODATE)
+#define ce_intent_to_add(ce) ((ce)->ce_flags & CE_INTENT_TO_ADD)
 
 #define ce_permissions(mode) (((mode) & 0100) ? 0755 : 0644)
 static inline unsigned int create_ce_mode(unsigned int mode)
@@ -1299,6 +1301,7 @@ extern struct packed_git {
 		 freshened:1,
 		 do_not_close:1;
 	unsigned char sha1[20];
+	struct revindex_entry *revindex;
 	/* something like ".git/objects/pack/xxxxx.pack" */
 	char pack_name[FLEX_ARRAY]; /* more */
 } *packed_git;
