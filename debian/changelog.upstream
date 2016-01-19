@@ -1,67 +1,103 @@
 Version next; changes since v2.7.0-rc3:
 ---------------------------------------
 
+Changwoo Ryu (1):
+      l10n: ko.po: Add Korean translation
+
+David A. Wheeler (1):
+      Expand documentation describing --signoff
+
+Dennis Kaarsemaker (1):
+      reflog-walk: don't segfault on non-commit sha1's in the reflog
+
 Edmundo Carmona Antoranz (1):
       blame: add support for --[no-]progress option
 
 Elia Pinto (1):
       Makefile: add missing phony target
 
-Johannes Schindelin (1):
-      merge_recursive_options: introduce the "gently" flag
+Eric Wong (2):
+      git-send-email: do not double-escape quotes from mutt
+      for-each-ref: document `creatordate` and `creator` fields
 
-Jonathan Nieder (2):
-      submodule.c: write "Fetching submodule <foo>" to stderr
+Jeff King (5):
+      pack-revindex: drop hash table
+      pack-revindex: store entries directly in packed_git
+      run-command: don't warn on SIGPIPE deaths
+      avoid shifting signed integers 31 bits
+      bswap: add NO_UNALIGNED_LOADS define
+
+Johannes Schindelin (6):
+      commit: allow editing the commit message even in shared repos
+      Handle more file writes correctly in shared repos
+      Refactor skipping DOS drive prefixes
+      compat/basename: make basename() conform to POSIX
+      compat/basename.c: provide a dirname() compatibility function
+      t0060: verify that basename() and dirname() work as expected
+
+Jonathan Nieder (1):
       submodule.c: write "Fetching submodule <foo>" to stderr
 
 Junio C Hamano (3):
-      merge: drop 'git merge <message> HEAD <commit>' syntax
-      am: make a direct call to merge_recursive
-      Revert "Merge branch 'sb/submodule-parallel-fetch' into next"
+      Git 2.6.5
+      Git 2.7
+      First batch for post 2.7 cycle
 
 Mike Hommey (1):
       notes: allow treeish expressions as notes ref
 
-Nguyễn Thái Ngọc Duy (1):
+Nguyễn Thái Ngọc Duy (9):
+      blame: remove obsolete comment
+      add and use a convenience macro ce_intent_to_add()
       Revert "setup: set env $GIT_WORK_TREE when work tree is set, like $GIT_DIR"
+      git.c: make it clear save_env() is for alias handling only
+      setup.c: re-fix d95138e (setup: set env $GIT_WORK_TREE when ..
+      git.c: make sure we do not leak GIT_* to alias scripts
+      grep: make it clear i-t-a entries are ignored
+      dir.c: clean the entire struct in clear_exclude_list()
+      Revert "dir.c: don't exclude whole dir prematurely if neg pattern may match"
 
 Patrick Steinhardt (2):
       push: add '--delete' flag to synopsis
       push: add '-d' as shorthand for '--delete'
 
-René Scharfe (3):
-      run-command: name the cleanup function child_process_clear()
-      run-command: export child_process_clear()
-      daemon: plug memory leak
+Ralf Thielow (2):
+      l10n: de.po: improve some translations
+      l10n: de.po: translate 68 new messages
 
-Stefan Beller (22):
-      xread: poll on non blocking fds
-      xread_nonblock: add functionality to read from fds without blocking
-      strbuf: add strbuf_read_once to read without blocking
-      sigchain: add command to pop all common signals
-      run-command: add an asynchronous parallel child processor
-      fetch_populated_submodules: use new parallel job processing
-      submodules: allow parallel fetching, add tests and documentation
-      run-command: fix early shutdown
-      run-command: clear leftover state from child_process structure
-      run-command: initialize the shutdown flag
-      test-run-command: test for gracefully aborting
-      test-run-command: increase test coverage
-      run-command: fix missing output from late callbacks
-      run-command: remove set_nonblocking()
-      strbuf: update documentation for strbuf_read_once()
-      run-command: detect finished children by closed pipe rather than waitpid
+SZEDER Gábor (1):
+      t6050-replace: make failing editor test more robust
+
+Sebastian Schuberth (3):
+      docs: clarify that passing --depth to git-clone implies --single-branch
+      docs: say "commits" in the --depth option wording for git-clone
+      docs: clarify that --depth for git-fetch works with newly initialized repos
+
+Stefan Beller (6):
       xread: poll on non blocking fds
       strbuf: add strbuf_read_once to read without blocking
       sigchain: add command to pop all common signals
       run-command: add an asynchronous parallel child processor
       fetch_populated_submodules: use new parallel job processing
       submodules: allow parallel fetching, add tests and documentation
+
+Stephen P. Smith (4):
+      user-manual: remove temporary branch entry from todo list
+      glossary: define the term shallow clone
+      user-manual: add section documenting shallow clones
+      user-manual: add addition gitweb information
+
+Thomas Gummerer (2):
+      t7810: correct --no-index test
+      builtin/grep: add grep.fallbackToNoIndex config
 
 Victor Leschuk (3):
       grep: allow threading even on a single-core machine
       grep: slight refactoring to the code that disables threading
       grep: add --threads=<num> option and grep.threads configuration
+
+Øyvind A. Holm (1):
+      gitweb: squelch "uninitialized value" warning
 
 
 Version v2.7.0-rc3; changes since v2.7.0-rc2:

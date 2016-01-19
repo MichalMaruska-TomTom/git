@@ -1,9 +1,9 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Contact: git@vger.kernel.org
-Source: https://git.kernel.org/cgit/git/git.git/snapshot/0ac5344e.tar.xz
+Source: https://git.kernel.org/cgit/git/git.git/snapshot/dc08a195.tar.xz
 
 Files: *
-Copyright: © 2005-2015, Linus Torvalds and others.
+Copyright: © 2005-2016, Linus Torvalds and others.
 License: GPL-2
 
 Files: xdiff/*
