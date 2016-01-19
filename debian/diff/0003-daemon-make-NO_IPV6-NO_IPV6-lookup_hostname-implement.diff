@@ -1,4 +1,4 @@
-From 4614f526103716b590dcd19ea7789f7c7724801c Mon Sep 17 00:00:00 2001
+From 7a6d3e9193d28d13e535f06daf223412e99f2568 Mon Sep 17 00:00:00 2001
 From: Jonathan Nieder <jrnieder@gmail.com>
 Date: Mon, 6 Jun 2011 04:38:45 -0500
 Subject: daemon: make NO_IPV6, !NO_IPV6 lookup_hostname implementations
@@ -12,7 +12,7 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  1 file changed, 12 insertions(+), 2 deletions(-)
 
 diff --git a/daemon.c b/daemon.c
-index d3d3e43..304bb7b 100644
+index 4be1091..a1e2e04 100644
 --- a/daemon.c
 +++ b/daemon.c
 @@ -598,10 +598,11 @@ static void parse_host_arg(struct hostinfo *hi, char *extra_args, int buflen)
@@ -59,5 +59,5 @@ index d3d3e43..304bb7b 100644
  {
  	memset(hi, 0, sizeof(*hi));
 -- 
-2.2.0.rc0.207.ga3a616c
+2.4.3.573.g4eafbef
 

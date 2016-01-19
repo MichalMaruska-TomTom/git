@@ -1,5 +1,5 @@
-Version next; changes since v2.7.0-rc3:
----------------------------------------
+Version next; changes since v2.7.0:
+-----------------------------------
 
 Changwoo Ryu (1):
       l10n: ko.po: Add Korean translation
@@ -38,9 +38,7 @@ Johannes Schindelin (6):
 Jonathan Nieder (1):
       submodule.c: write "Fetching submodule <foo>" to stderr
 
-Junio C Hamano (3):
-      Git 2.6.5
-      Git 2.7
+Junio C Hamano (1):
       First batch for post 2.7 cycle
 
 Mike Hommey (1):
@@ -60,10 +58,6 @@ Nguyễn Thái Ngọc Duy (9):
 Patrick Steinhardt (2):
       push: add '--delete' flag to synopsis
       push: add '-d' as shorthand for '--delete'
-
-Ralf Thielow (2):
-      l10n: de.po: improve some translations
-      l10n: de.po: translate 68 new messages
 
 SZEDER Gábor (1):
       t6050-replace: make failing editor test more robust
@@ -98,6 +92,18 @@ Victor Leschuk (3):
 
 Øyvind A. Holm (1):
       gitweb: squelch "uninitialized value" warning
+
+
+Version v2.7.0; changes since v2.7.0-rc3:
+-----------------------------------------
+
+Junio C Hamano (2):
+      Git 2.6.5
+      Git 2.7
+
+Ralf Thielow (2):
+      l10n: de.po: improve some translations
+      l10n: de.po: translate 68 new messages
 
 
 Version v2.7.0-rc3; changes since v2.7.0-rc2:
@@ -250,7 +256,7 @@ Stefan Naewe (1):
       revision.c: fix possible null pointer arithmetic
 
 
-Version v2.7.0-rc0; changes since v2.6.4:
+Version v2.7.0-rc0; changes since v2.6.5:
 -----------------------------------------
 
 Alex Henrie (1):
@@ -258,10 +264,6 @@ Alex Henrie (1):
 
 Alex Riesen (1):
       clone: allow "--dissociate" without reference
-
-Alexey Shumkin (2):
-      t7900-subtree: test the "space in a subdirectory name" case
-      contrib/subtree: respect spaces in a repository path
 
 Antoine Delaite (1):
       bisect: add the terms old/new
@@ -272,13 +274,10 @@ Beat Bolli (1):
 Ben Boeckel (1):
       remote: add get-url subcommand
 
-Christian Couder (1):
-      Documentation/git-update-index: add missing opts to synopsis
-
 Dair Grant (1):
       git-svn: improve rebase/mkdirs performance
 
-David Turner (9):
+David Turner (8):
       refs: clean up common_list
       path: optimize common dir checking
       refs: make refs/bisect/* per-worktree
@@ -287,7 +286,6 @@ David Turner (9):
       initdb: make safe_create_dir public
       files_log_ref_write: new function
       refs: break out ref conflict checks
-      verify_pack: do not ignore return value of verification function
 
 Dennis Kaarsemaker (1):
       git-p4: import the ctypes module
@@ -297,9 +295,6 @@ Dimitriy Ryazantcev (1):
 
 Edmundo Carmona Antoranz (1):
       checkout: add --progress option
-
-Elia Pinto (1):
-      ident.c: add support for IPv6
 
 Fabio Porcedda (1):
       contrib/subtree: remove "push" command from the "todo" file
@@ -404,7 +399,7 @@ Johannes Sixt (9):
       modernize t9300: mark here-doc words to ignore tab indentation
       modernize t9300: move test preparations into test_expect_success
 
-John Keeping (16):
+John Keeping (11):
       Documentation/blame-options: don't list date formats
       Documentation/config: don't list date formats
       Documentation/git-for-each-ref: don't list date formats
@@ -414,11 +409,6 @@ John Keeping (16):
       date: check for "local" before anything else
       t6300: make UTC and local dates different
       t6300: add tests for "-local" date formats
-      t7610: don't use test_config in a subshell
-      t5801: don't use test_when_finished in a subshell
-      test-lib-functions: support "test_config -C <dir> ..."
-      t7800: don't use test_config in a subshell
-      test-lib-functions: detect test_when_finished in subshell
       send-email: expand path in sendemail.smtpsslcertpath config
       send-email: die if CA path doesn't exist
 
@@ -589,11 +579,10 @@ Michael Rappazzo (5):
 Namhyung Kim (1):
       stash: allow "stash show" diff output configurable
 
-Nguyễn Thái Ngọc Duy (4):
+Nguyễn Thái Ngọc Duy (3):
       dir.c: make last_exclude_matching_from_list() run til the end
       dir.c: don't exclude whole dir prematurely if neg pattern may match
       mailinfo: fix passing wrong address to git_mailinfo_config
-      git-check-ref-format.txt: typo, s/avoids/avoid/
 
 Noam Postavsky (1):
       credential-cache: new option to ignore sighup
@@ -601,9 +590,7 @@ Noam Postavsky (1):
 Ramsay Jones (1):
       http: fix some printf format warnings
 
-René Scharfe (9):
-      use pop_commit() for consuming the first entry of a struct commit_list
-      show-branch: use argv_array for default arguments
+René Scharfe (7):
       parse-options: deduplicate parse_options_usage() calls
       parse-options: inline parse_options_usage() at its only remaining caller
       parse-options: allow -h as a short option
@@ -661,6 +648,72 @@ brian m. carlson (12):
       Convert struct object to object_id
       Remove get_object_hash.
       remote: convert functions to struct object_id
+
+
+Version v2.6.5; changes since v2.6.4:
+-------------------------------------
+
+Alexey Shumkin (2):
+      t7900-subtree: test the "space in a subdirectory name" case
+      contrib/subtree: respect spaces in a repository path
+
+Charles Bailey (1):
+      t3404: fix quoting of redirect for some versions of bash
+
+Christian Couder (1):
+      Documentation/git-update-index: add missing opts to synopsis
+
+David Turner (1):
+      verify_pack: do not ignore return value of verification function
+
+Elia Pinto (1):
+      ident.c: add support for IPv6
+
+Jeff King (7):
+      ident: make xgetpwuid_self() a static local helper
+      ident: keep a flag for bogus default_email
+      ident: loosen getpwuid error in non-strict mode
+      ident: fix undefined variable when NO_IPV6 is set
+      revision.c: propagate tag names from pending array
+      symbolic-ref: propagate error code from create_symref()
+      t1401: test reflog creation for git-symbolic-ref
+
+Johannes Sixt (1):
+      prune: close directory earlier during loose-object directory traversal
+
+John Keeping (6):
+      t7610: don't use test_config in a subshell
+      t5801: don't use test_when_finished in a subshell
+      test-lib-functions: support "test_config -C <dir> ..."
+      t7800: don't use test_config in a subshell
+      test-lib-functions: detect test_when_finished in subshell
+      send-email: enable SSL level 1 debug output
+
+Junio C Hamano (3):
+      Prepare for 2.6.5
+      Update draft release notes to 2.6.5
+      Git 2.6.5
+
+Lars Schneider (1):
+      git-p4: add option to keep empty commits
+
+Nguyễn Thái Ngọc Duy (1):
+      git-check-ref-format.txt: typo, s/avoids/avoid/
+
+René Scharfe (2):
+      use pop_commit() for consuming the first entry of a struct commit_list
+      show-branch: use argv_array for default arguments
+
+SZEDER Gábor (3):
+      Make error message after failing commit_lock_file() less confusing
+      completion: remove 'git column' from porcelain commands
+      credential-store: don't pass strerror to die_errno()
+
+Stefan Beller (1):
+      document submodule sync --recursive
+
+Stefan Naewe (1):
+      revision.c: fix possible null pointer arithmetic
 
 
 Version v2.6.4; changes since v2.6.3:

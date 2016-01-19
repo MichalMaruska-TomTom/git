@@ -1,4 +1,4 @@
-From 632ec73a4610ca3dd63e82e17b62591bf0a6fbf1 Mon Sep 17 00:00:00 2001
+From 4f800d96f8732ffef065c728ae733d756155c067 Mon Sep 17 00:00:00 2001
 From: Jonathan Nieder <jrnieder@gmail.com>
 Date: Fri, 13 Jan 2012 15:51:12 -0600
 Subject: srv: be more tolerant of broken DNS replies
@@ -118,5 +118,5 @@ index 2716206..829ef76 100644
  	if (n < 0)
  		/* srv_parse writes a message */
 -- 
-2.2.0.rc0.207.ga3a616c
+2.4.3.573.g4eafbef
 
