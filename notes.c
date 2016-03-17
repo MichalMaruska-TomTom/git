@@ -1035,7 +1035,7 @@ struct notes_tree **load_notes_trees(struct string_list *refs, int flags)
 	struct string_list_item *item;
 	int counter = 0;
 	struct notes_tree **trees;
-	trees = xmalloc((refs->nr+1) * sizeof(struct notes_tree *));
+	ALLOC_ARRAY(trees, refs->nr + 1);
 	for_each_string_list_item(item, refs) {
 		struct notes_tree *t = xcalloc(1, sizeof(struct notes_tree));
 		init_notes(t, item->string, combine_notes_ignore, flags);
@@ -1305,4 +1305,14 @@ void expand_notes_ref(struct strbuf *sb)
 		strbuf_insert(sb, 0, "refs/", 5);
 	else
 		strbuf_insert(sb, 0, "refs/notes/", 11);
+}
+
+void expand_loose_notes_ref(struct strbuf *sb)
+{
+	unsigned char object[20];
+
+	if (get_sha1(sb->buf, object)) {
+		/* fallback to expand_notes_ref */
+		expand_notes_ref(sb);
+	}
 }

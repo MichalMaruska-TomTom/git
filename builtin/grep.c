@@ -365,17 +365,17 @@ static void append_path(struct grep_opt *opt, const void *data, size_t len)
 static void run_pager(struct grep_opt *opt, const char *prefix)
 {
 	struct string_list *path_list = opt->output_priv;
-	const char **argv = xmalloc(sizeof(const char *) * (path_list->nr + 1));
+	struct child_process child = CHILD_PROCESS_INIT;
 	int i, status;
 
 	for (i = 0; i < path_list->nr; i++)
-		argv[i] = path_list->items[i].string;
-	argv[path_list->nr] = NULL;
+		argv_array_push(&child.args, path_list->items[i].string);
+	child.dir = prefix;
+	child.use_shell = 1;
 
-	status = run_command_v_opt_cd_env(argv, RUN_USING_SHELL, prefix, NULL);
+	status = run_command(&child);
 	if (status)
 		exit(status);
-	free(argv);
 }
 
 static int grep_cache(struct grep_opt *opt, const struct pathspec *pathspec, int cached)
@@ -522,12 +522,14 @@ static int grep_objects(struct grep_opt *opt, const struct pathspec *pathspec,
 }
 
 static int grep_directory(struct grep_opt *opt, const struct pathspec *pathspec,
-			  int exc_std)
+			  int exc_std, int use_index)
 {
 	struct dir_struct dir;
 	int i, hit = 0;
 
 	memset(&dir, 0, sizeof(dir));
+	if (!use_index)
+		dir.flags |= DIR_NO_GITLINKS;
 	if (exc_std)
 		setup_standard_excludes(&dir);
 
@@ -573,7 +575,7 @@ static int file_callback(const struct option *opt, const char *arg, int unset)
 	patterns = from_stdin ? stdin : fopen(arg, "r");
 	if (!patterns)
 		die_errno(_("cannot open '%s'"), arg);
-	while (strbuf_getline(&sb, patterns, '\n') == 0) {
+	while (strbuf_getline(&sb, patterns) == 0) {
 		/* ignore empty line like grep does */
 		if (sb.len == 0)
 			continue;
@@ -902,7 +904,7 @@ int cmd_grep(int argc, const char **argv, const char *prefix)
 		int use_exclude = (opt_exclude < 0) ? use_index : !!opt_exclude;
 		if (list.nr)
 			die(_("--no-index or --untracked cannot be used with revs."));
-		hit = grep_directory(&opt, &pathspec, use_exclude);
+		hit = grep_directory(&opt, &pathspec, use_exclude, use_index);
 	} else if (0 <= opt_exclude) {
 		die(_("--[no-]exclude-standard cannot be used for tracked contents."));
 	} else if (!list.nr) {

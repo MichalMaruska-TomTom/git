@@ -121,6 +121,7 @@ struct async {
 int start_async(struct async *async);
 int finish_async(struct async *async);
 int in_async(void);
+void NORETURN async_exit(int code);
 
 /**
  * This callback should initialize the child process and preload the
@@ -139,7 +140,7 @@ int in_async(void);
  * return the negative signal number.
  */
 typedef int (*get_next_task_fn)(struct child_process *cp,
-				struct strbuf *err,
+				struct strbuf *out,
 				void *pp_cb,
 				void **pp_task_cb);
 
@@ -148,7 +149,7 @@ typedef int (*get_next_task_fn)(struct child_process *cp,
  * a new process.
  *
  * You must not write to stdout or stderr in this function. Add your
- * message to the strbuf err instead, which will be printed without
+ * message to the strbuf out instead, which will be printed without
  * messing up the output of the other parallel processes.
  *
  * pp_cb is the callback cookie as passed into run_processes_parallel,
@@ -158,8 +159,7 @@ typedef int (*get_next_task_fn)(struct child_process *cp,
  * To send a signal to other child processes for abortion, return
  * the negative signal number.
  */
-typedef int (*start_failure_fn)(struct child_process *cp,
-				struct strbuf *err,
+typedef int (*start_failure_fn)(struct strbuf *out,
 				void *pp_cb,
 				void *pp_task_cb);
 
@@ -167,7 +167,7 @@ typedef int (*start_failure_fn)(struct child_process *cp,
  * This callback is called on every child process that finished processing.
  *
  * You must not write to stdout or stderr in this function. Add your
- * message to the strbuf err instead, which will be printed without
+ * message to the strbuf out instead, which will be printed without
  * messing up the output of the other parallel processes.
  *
  * pp_cb is the callback cookie as passed into run_processes_parallel,
@@ -178,8 +178,7 @@ typedef int (*start_failure_fn)(struct child_process *cp,
  * the negative signal number.
  */
 typedef int (*task_finished_fn)(int result,
-				struct child_process *cp,
-				struct strbuf *err,
+				struct strbuf *out,
 				void *pp_cb,
 				void *pp_task_cb);
 
@@ -192,9 +191,8 @@ typedef int (*task_finished_fn)(int result,
  * (both stdout and stderr) is routed to stderr in a manner that output
  * from different tasks does not interleave.
  *
- * If start_failure_fn or task_finished_fn are NULL, default handlers
- * will be used. The default handlers will print an error message on
- * error without issuing an emergency stop.
+ * start_failure_fn and task_finished_fn can be NULL to omit any
+ * special handling.
  */
 int run_processes_parallel(int n,
 			   get_next_task_fn,

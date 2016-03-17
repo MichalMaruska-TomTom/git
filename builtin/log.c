@@ -100,6 +100,12 @@ static int log_line_range_callback(const struct option *option, const char *arg,
 	return 0;
 }
 
+static void init_log_defaults(void)
+{
+	init_grep_defaults();
+	init_diff_ui_defaults();
+}
+
 static void cmd_log_init_defaults(struct rev_info *rev)
 {
 	if (fmt_pretty)
@@ -416,7 +422,7 @@ int cmd_whatchanged(int argc, const char **argv, const char *prefix)
 	struct rev_info rev;
 	struct setup_revision_opt opt;
 
-	init_grep_defaults();
+	init_log_defaults();
 	git_config(git_log_config, NULL);
 
 	init_revisions(&rev, prefix);
@@ -527,7 +533,7 @@ int cmd_show(int argc, const char **argv, const char *prefix)
 	struct pathspec match_all;
 	int i, count, ret = 0;
 
-	init_grep_defaults();
+	init_log_defaults();
 	git_config(git_log_config, NULL);
 
 	memset(&match_all, 0, sizeof(match_all));
@@ -608,7 +614,7 @@ int cmd_log_reflog(int argc, const char **argv, const char *prefix)
 	struct rev_info rev;
 	struct setup_revision_opt opt;
 
-	init_grep_defaults();
+	init_log_defaults();
 	git_config(git_log_config, NULL);
 
 	init_revisions(&rev, prefix);
@@ -647,7 +653,7 @@ int cmd_log(int argc, const char **argv, const char *prefix)
 	struct rev_info rev;
 	struct setup_revision_opt opt;
 
-	init_grep_defaults();
+	init_log_defaults();
 	git_config(git_log_config, NULL);
 
 	init_revisions(&rev, prefix);
@@ -699,6 +705,7 @@ static int do_signoff;
 static const char *signature = git_version_string;
 static const char *signature_file;
 static int config_cover_letter;
+static const char *config_output_directory;
 
 enum {
 	COVER_UNSET,
@@ -777,6 +784,8 @@ static int git_format_config(const char *var, const char *value, void *cb)
 		config_cover_letter = git_config_bool(var, value) ? COVER_ON : COVER_OFF;
 		return 0;
 	}
+	if (!strcmp(var, "format.outputdirectory"))
+		return git_config_string(&config_output_directory, var, value);
 
 	return git_log_config(var, value, cb);
 }
@@ -1277,7 +1286,7 @@ int cmd_format_patch(int argc, const char **argv, const char *prefix)
 	extra_hdr.strdup_strings = 1;
 	extra_to.strdup_strings = 1;
 	extra_cc.strdup_strings = 1;
-	init_grep_defaults();
+	init_log_defaults();
 	git_config(git_format_config, NULL);
 	init_revisions(&rev, prefix);
 	rev.commit_format = CMIT_FMT_EMAIL;
@@ -1390,6 +1399,9 @@ int cmd_format_patch(int argc, const char **argv, const char *prefix)
 
 	if (rev.show_notes)
 		init_display_notes(&rev.notes_opt);
+
+	if (!output_directory && !use_stdout)
+		output_directory = config_output_directory;
 
 	if (!use_stdout)
 		output_directory = set_outdir(prefix, output_directory);
