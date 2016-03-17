@@ -1,9 +1,18 @@
-git (1:2.7.0+next.20160316-0.1) experimental; urgency=low
+git (1:2.8.0~rc3+next.20160316-0.1) experimental; urgency=low
 
   * new snapshot, taken from upstream commit 39d40208.
-  * debian/git.docs: update for README -> README.md renaming.
+  * merge branch debian-sid.
 
  -- Jonathan Nieder <jrnieder@gmail.com>  Wed, 16 Mar 2016 20:00:28 -0700
+
+git (1:2.8.0~rc3-1) unstable; urgency=medium
+
+  * new upstream release candidate (see RelNotes/2.8.0.txt).
+    * harden against on-stack and on-heap buffer overflows (CVE-2016-2324,
+      CVE-2016-2315; closes: #818318).
+  * debian/git.docs: update for README -> README.md renaming.
+
+ -- Jonathan Nieder <jrnieder@gmail.com>  Wed, 16 Mar 2016 18:28:12 -0700
 
 git (1:2.7.0+next.20160112-1) experimental; urgency=low
 
