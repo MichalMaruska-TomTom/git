@@ -1,9 +1,9 @@
-git (1:2.8.0~rc3+next.20160316-0.1) experimental; urgency=low
+git (1:2.8.0~rc3+next.20160316-1) experimental; urgency=low
 
   * new snapshot, taken from upstream commit 39d40208.
   * merge branch debian-sid.
 
- -- Jonathan Nieder <jrnieder@gmail.com>  Wed, 16 Mar 2016 20:00:28 -0700
+ -- Jonathan Nieder <jrnieder@gmail.com>  Wed, 16 Mar 2016 20:06:28 -0700
 
 git (1:2.8.0~rc3-1) unstable; urgency=medium
 
