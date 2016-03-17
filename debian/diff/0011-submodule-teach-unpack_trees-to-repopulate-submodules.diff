@@ -1,4 +1,4 @@
-From 57f545e3a0827abeb8177fadac701cfd5af4afd0 Mon Sep 17 00:00:00 2001
+From 601d66a556e0811ed4e4b8472048fa096271bae8 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Mon, 18 Jun 2012 22:11:45 +0200
 Subject: submodule: teach unpack_trees() to repopulate submodules
@@ -14,7 +14,7 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  5 files changed, 67 insertions(+), 14 deletions(-)
 
 diff --git a/entry.c b/entry.c
-index 582c400..f259206 100644
+index a410957..2c92082 100644
 --- a/entry.c
 +++ b/entry.c
 @@ -2,6 +2,7 @@
@@ -36,10 +36,10 @@ index 582c400..f259206 100644
  	default:
  		return error("unknown file mode for %s in index", path);
 diff --git a/submodule.c b/submodule.c
-index 92644cb..0ed2911 100644
+index b48fbb4..8c2b18c 100644
 --- a/submodule.c
 +++ b/submodule.c
-@@ -286,6 +286,42 @@ static void print_submodule_summary(struct rev_info *rev, FILE *f,
+@@ -313,6 +313,42 @@ static void print_submodule_summary(struct rev_info *rev, FILE *f,
  	strbuf_release(&sb);
  }
  
@@ -82,7 +82,7 @@ index 92644cb..0ed2911 100644
  int depopulate_submodule(const char *path)
  {
  	struct strbuf dot_git = STRBUF_INIT;
-@@ -1134,18 +1170,19 @@ void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir)
+@@ -1163,23 +1199,25 @@ void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir)
  {
  	struct strbuf file_name = STRBUF_INIT;
  	struct strbuf rel_path = STRBUF_INIT;
@@ -99,23 +99,23 @@ index 92644cb..0ed2911 100644
  	strbuf_reset(&file_name);
 -	strbuf_addf(&file_name, "%s/config", git_dir);
 +	strbuf_addf(&file_name, "%s/config", real_git_dir);
- 	if (git_config_set_in_file(file_name.buf, "core.worktree",
--				   relative_path(real_work_tree, git_dir,
-+				   relative_path(real_work_tree, real_git_dir,
- 						 &rel_path)))
- 		die(_("Could not set core.worktree in %s"),
- 		    file_name.buf);
-@@ -1153,4 +1190,5 @@ void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir)
+ 	git_config_set_in_file(file_name.buf, "core.worktree",
+-			       relative_path(real_work_tree, git_dir,
++			       relative_path(real_work_tree, real_git_dir,
+ 					     &rel_path));
+ 
  	strbuf_release(&file_name);
  	strbuf_release(&rel_path);
  	free((void *)real_work_tree);
 +	free((void *)real_git_dir);
  }
+ 
+ int parallel_submodules(void)
 diff --git a/submodule.h b/submodule.h
-index 634ab87..900531e 100644
+index 722c07d..a7fcf94 100644
 --- a/submodule.h
 +++ b/submodule.h
-@@ -31,6 +31,7 @@ void show_submodule_summary(FILE *f, const char *path,
+@@ -48,6 +48,7 @@ void show_submodule_summary(FILE *f, const char *path,
  void set_config_fetch_recurse_submodules(int value);
  void set_config_update_recurse_submodules(int default_value, int option_value);
  int submodule_needs_update(const char *path);
@@ -155,10 +155,10 @@ index 79cdd34..711f55b 100755
  		reset_work_tree_to add_sub1 &&
  		(
 diff --git a/unpack-trees.c b/unpack-trees.c
-index 1777513..9855438 100644
+index b8a13cc..7688d36 100644
 --- a/unpack-trees.c
 +++ b/unpack-trees.c
-@@ -1383,6 +1383,7 @@ static int check_ok_to_remove(const char *name, int len, int dtype,
+@@ -1428,6 +1428,7 @@ static int check_ok_to_remove(const char *name, int len, int dtype,
  			      struct unpack_trees_options *o)
  {
  	const struct cache_entry *result;
@@ -166,7 +166,7 @@ index 1777513..9855438 100644
  
  	/*
  	 * It may be that the 'lstat()' succeeded even though
-@@ -1425,6 +1426,24 @@ static int check_ok_to_remove(const char *name, int len, int dtype,
+@@ -1470,6 +1471,24 @@ static int check_ok_to_remove(const char *name, int len, int dtype,
  			return 0;
  	}
  
@@ -192,5 +192,5 @@ index 1777513..9855438 100644
  		add_rejected_path(o, error_type, name);
  }
 -- 
-2.6.0.rc2.230.g3dd15c0
+2.7.0.rc3.207.g0ac5344
 

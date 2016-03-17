@@ -1,4 +1,4 @@
-From 4b67539d50b9a9ab5a9378cfb0561181a54f4180 Mon Sep 17 00:00:00 2001
+From c90ff0523be455e23292b0b3c2dc8b028b9f9e97 Mon Sep 17 00:00:00 2001
 From: Jonathan Nieder <jrnieder@gmail.com>
 Date: Mon, 6 Jun 2011 04:41:28 -0500
 Subject: tcp: unify ipv4 and ipv6 code paths
@@ -85,20 +85,20 @@ Improved-by: Erik Faye-Lund <kusmabite@gmail.com>
  Makefile   |   3 +
  dns-ipv4.c |  36 ++++++++++++
  dns-ipv4.h |  76 +++++++++++++++++++++++++
- dns-ipv6.c |  52 +++++++++++++++++
+ dns-ipv6.c |  57 +++++++++++++++++++
  dns-ipv6.h |  32 +++++++++++
- tcp.c      | 185 ++++++++++---------------------------------------------------
- 6 files changed, 229 insertions(+), 155 deletions(-)
+ tcp.c      | 189 ++++++++++---------------------------------------------------
+ 6 files changed, 234 insertions(+), 159 deletions(-)
  create mode 100644 dns-ipv4.c
  create mode 100644 dns-ipv4.h
  create mode 100644 dns-ipv6.c
  create mode 100644 dns-ipv6.h
 
 diff --git a/Makefile b/Makefile
-index 43aa8c7..a60888e 100644
+index afc9cc3..21444d6 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -1300,6 +1300,9 @@ ifdef NEEDS_MODE_TRANSLATION
+@@ -1316,6 +1316,9 @@ ifdef NEEDS_MODE_TRANSLATION
  endif
  ifdef NO_IPV6
  	BASIC_CFLAGS += -DNO_IPV6
@@ -234,11 +234,12 @@ index 0000000..63d18cc
 +#endif
 diff --git a/dns-ipv6.c b/dns-ipv6.c
 new file mode 100644
-index 0000000..acf058a
+index 0000000..147a3cc
 --- /dev/null
 +++ b/dns-ipv6.c
-@@ -0,0 +1,52 @@
+@@ -0,0 +1,57 @@
 +#include "cache.h"
++#include "connect.h"
 +#include "dns-ipv6.h"
 +
 +/* from RFC 2553 */
@@ -279,6 +280,10 @@ index 0000000..acf058a
 +	memset(&hints, 0, sizeof(hints));
 +	if (flags & RESOLVE_CANONNAME)
 +		hints.ai_flags = AI_CANONNAME;
++	if (flags & CONNECT_IPV4)
++		hints.ai_family = AF_INET;
++	else if (flags & CONNECT_IPV6)
++		hints.ai_family = AF_INET6;
 +	hints.ai_socktype = SOCK_STREAM;
 +	hints.ai_protocol = IPPROTO_TCP;
 +
@@ -329,7 +334,7 @@ index 0000000..7021912
 +
 +#endif
 diff --git a/tcp.c b/tcp.c
-index 07ac5a2..f81e98a 100644
+index b2daa71..f81e98a 100644
 --- a/tcp.c
 +++ b/tcp.c
 @@ -3,8 +3,10 @@
@@ -407,7 +412,7 @@ index 07ac5a2..f81e98a 100644
  		hi->hostname_lookup_done = 1;
  	}
  }
-@@ -120,46 +104,42 @@ static int git_tcp_connect_sock(char *host, int flags)
+@@ -120,50 +104,42 @@ static int git_tcp_connect_sock(char *host, int flags)
  	struct strbuf error_message = STRBUF_INIT;
  	int sockfd = -1;
  	const char *port = STR(DEFAULT_GIT_PORT);
@@ -423,6 +428,10 @@ index 07ac5a2..f81e98a 100644
  		port = "<none>";
  
 -	memset(&hints, 0, sizeof(hints));
+-	if (flags & CONNECT_IPV4)
+-		hints.ai_family = AF_INET;
+-	else if (flags & CONNECT_IPV6)
+-		hints.ai_family = AF_INET6;
 -	hints.ai_socktype = SOCK_STREAM;
 -	hints.ai_protocol = IPPROTO_TCP;
 -
@@ -468,7 +477,7 @@ index 07ac5a2..f81e98a 100644
  
  	if (sockfd < 0)
  		die("unable to connect to %s:\n%s", host, error_message.buf);
-@@ -174,111 +154,6 @@ static int git_tcp_connect_sock(char *host, int flags)
+@@ -178,111 +154,6 @@ static int git_tcp_connect_sock(char *host, int flags)
  	return sockfd;
  }
  
@@ -581,5 +590,5 @@ index 07ac5a2..f81e98a 100644
  {
  	int sockfd = git_tcp_connect_sock(host, flags);
 -- 
-2.6.0.rc2.230.g3dd15c0
+2.7.0.rc3.207.g0ac5344
 

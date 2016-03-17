@@ -1,4 +1,4 @@
-From a17faf39c9a5afc7c7aa687c4de630b55b3fdaa8 Mon Sep 17 00:00:00 2001
+From 0b1a21e281444bb7f45d7ecaacf1dd01525c4da0 Mon Sep 17 00:00:00 2001
 From: Jonathan Nieder <jrnieder@gmail.com>
 Date: Tue, 19 Jan 2016 10:59:24 -0800
 Subject: record version
@@ -15,18 +15,18 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
 
 diff --git a/git-gui/version b/git-gui/version
 new file mode 100644
-index 0000000..5a03fb7
+index 0000000..07083e2
 --- /dev/null
 +++ b/git-gui/version
 @@ -0,0 +1 @@
-+0.20.0
++0.20.0.1.gc218a
 diff --git a/version b/version
 new file mode 100644
-index 0000000..ebff41a
+index 0000000..e56413f
 --- /dev/null
 +++ b/version
 @@ -0,0 +1 @@
-+2.7.0.79.gdc08a19
++2.8.0.rc3.226.g39d4020
 -- 
-2.6.0.rc2.230.g3dd15c0
+2.7.0.rc3.207.g0ac5344
 

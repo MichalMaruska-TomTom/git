@@ -1,4 +1,4 @@
-From 4836dfe2662b3a719b8f3f813b82d885fa02fcb4 Mon Sep 17 00:00:00 2001
+From f5ff1087b6c47e2e8de6771cd8e2dfde43e3f822 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Tue, 19 Jun 2012 20:55:45 +0200
 Subject: submodule: teach unpack_trees() to remove submodule contents
@@ -28,10 +28,10 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  4 files changed, 43 insertions(+), 4 deletions(-)
 
 diff --git a/submodule.c b/submodule.c
-index f87660f..086c037 100644
+index b1f9ab6..b48fbb4 100644
 --- a/submodule.c
 +++ b/submodule.c
-@@ -286,6 +286,43 @@ static void print_submodule_summary(struct rev_info *rev, FILE *f,
+@@ -313,6 +313,43 @@ static void print_submodule_summary(struct rev_info *rev, FILE *f,
  	strbuf_release(&sb);
  }
  
@@ -76,10 +76,10 @@ index f87660f..086c037 100644
  		const char *line_prefix,
  		unsigned char one[20], unsigned char two[20],
 diff --git a/submodule.h b/submodule.h
-index 56ae48f..634ab87 100644
+index 6d37ae4..722c07d 100644
 --- a/submodule.h
 +++ b/submodule.h
-@@ -31,6 +31,7 @@ void show_submodule_summary(FILE *f, const char *path,
+@@ -48,6 +48,7 @@ void show_submodule_summary(FILE *f, const char *path,
  void set_config_fetch_recurse_submodules(int value);
  void set_config_update_recurse_submodules(int default_value, int option_value);
  int submodule_needs_update(const char *path);
@@ -88,7 +88,7 @@ index 56ae48f..634ab87 100644
  int fetch_populated_submodules(const struct argv_array *options,
  			       const char *prefix, int command_line_option,
 diff --git a/unpack-trees.c b/unpack-trees.c
-index 8e2032f..1777513 100644
+index 9f55cc2..b8a13cc 100644
 --- a/unpack-trees.c
 +++ b/unpack-trees.c
 @@ -9,6 +9,7 @@
@@ -99,7 +99,7 @@ index 8e2032f..1777513 100644
  #include "dir.h"
  
  /*
-@@ -1283,15 +1284,12 @@ static void invalidate_ce_path(const struct cache_entry *ce,
+@@ -1328,15 +1329,12 @@ static void invalidate_ce_path(const struct cache_entry *ce,
  /*
   * Check that checking out ce->sha1 in subdir ce->name is not
   * going to overwrite any working files.
@@ -117,7 +117,7 @@ index 8e2032f..1777513 100644
  
  static int verify_clean_subdirectory(const struct cache_entry *ce,
 diff --git a/wrapper.c b/wrapper.c
-index 29a45d2..3fd8aac 100644
+index 9afc1a0..df8520e 100644
 --- a/wrapper.c
 +++ b/wrapper.c
 @@ -2,6 +2,7 @@
@@ -128,7 +128,7 @@ index 29a45d2..3fd8aac 100644
  
  static void do_nothing(size_t size)
  {
-@@ -595,6 +596,8 @@ int unlink_or_warn(const char *file)
+@@ -598,6 +599,8 @@ int unlink_or_warn(const char *file)
  
  int rmdir_or_warn(const char *file)
  {
@@ -138,5 +138,5 @@ index 29a45d2..3fd8aac 100644
  }
  
 -- 
-2.6.0.rc2.230.g3dd15c0
+2.7.0.rc3.207.g0ac5344
 

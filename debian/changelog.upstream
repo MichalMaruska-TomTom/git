@@ -1,50 +1,533 @@
 Version next; changes since v2.7.0:
 -----------------------------------
 
-Changwoo Ryu (1):
+Adam Dinwoodie (1):
+      t9117: test specifying full url to git svn init -T
+
+Alex Henrie (1):
+      stripspace: call U+0020 a "space" instead of a "blank"
+
+Alexander Kuleshov (3):
+      format-patch: introduce format.outputDirectory configuration
+      exec_cmd.c: use find_last_dir_sep() for code simplification
+      git.c: simplify stripping extension of a file in handle_builtin()
+
+Andrew Wheeler (1):
+      push: fix ref status reporting for --force-with-lease
+
+Audric Schiltknecht (1):
+      l10n: fr.po: Correct case in sentence
+
+Carlos Martín Nieto (1):
+      Disown ssh+git and git+ssh
+
+Changwoo Ryu (3):
       l10n: ko.po: Add Korean translation
+      l10n: ko.po: Update Korean translation
+      l10n: ko: Update Korean translation
+
+Christian Couder (11):
+      dir: free untracked cache when removing it
+      update-index: use enum for untracked cache options
+      update-index: add --test-untracked-cache
+      update-index: add untracked cache notifications
+      update-index: move 'uc' var declaration
+      dir: add {new,add}_untracked_cache()
+      dir: add remove_untracked_cache()
+      dir: simplify untracked cache "ident" field
+      config: add core.untrackedCache
+      test-dump-untracked-cache: don't modify the untracked cache
+      t7063: add tests for core.untrackedCache
+
+Christoph Egger (1):
+      http: implement public key pinning
+
+Christoph Hoopmann (1):
+      l10n: de.po: fix typo
+
+Dan Aloni (1):
+      ident: add user.useConfigOnly boolean for when ident shouldn't be guessed
+
+Dave Ware (1):
+      contrib/subtree: fix "subtree split" skipped-merge bug
+
+David A. Greene (1):
+      contrib/subtree: Make testing easier
 
 David A. Wheeler (1):
       Expand documentation describing --signoff
 
+David Aguilar (2):
+      mergetool: support delete/delete conflicts
+      mergetool: honor tempfile configuration when resolving delete conflicts
+
+David Turner (3):
+      do_compare_entry: use already-computed path
+      unpack-trees: fix accidentally quadratic behavior
+      refs: document transaction semantics
+
 Dennis Kaarsemaker (1):
       reflog-walk: don't segfault on non-commit sha1's in the reflog
+
+Dickson Wong (1):
+      mergetool: reorder vim/gvim buffers in three-way diffs
+
+Dimitriy Ryazantcev (2):
+      l10n: ru.po: update Russian translation
+      l10n: ru.po: update Russian translation
 
 Edmundo Carmona Antoranz (1):
       blame: add support for --[no-]progress option
 
-Elia Pinto (1):
+Elia Pinto (92):
       Makefile: add missing phony target
+      contrib/examples/git-commit.sh: use the $( ... ) construct for command substitution
+      contrib/examples/git-fetch.sh: use the $( ... ) construct for command substitution
+      contrib/examples/git-merge.sh: use the $( ... ) construct for command substitution
+      contrib/examples/git-repack.sh: use the $( ... ) construct for command substitution
+      contrib/examples/git-revert.sh: use the $( ... ) construct for command substitution
+      contrib/thunderbird-patch-inline/appp.sh: use the $( ... ) construct for command substitution
+      git-gui/po/glossary/txt-to-pot.sh: use the $( ... ) construct for command substitution
+      t/lib-httpd.sh: use the $( ... ) construct for command substitution
+      test-sha1.sh: use the $( ... ) construct for command substitution
+      unimplemented.sh: use the $( ... ) construct for command substitution
+      t/t1100-commit-tree-options.sh: use the $( ... ) construct for command substitution
+      t/t1401-symbolic-ref.sh: use the $( ... ) construct for command substitution
+      t/t1410-reflog.sh: use the $( ... ) construct for command substitution
+      t/t1511-rev-parse-caret.sh: use the $( ... ) construct for command substitution
+      t/t1512-rev-parse-disambiguation.sh: use the $( ... ) construct for command substitution
+      t/t1700-split-index.sh: use the $( ... ) construct for command substitution
+      t/t2025-worktree-add.sh: use the $( ... ) construct for command substitution
+      t/t2102-update-index-symlinks.sh: use the $( ... ) construct for command substitution
+      t/t3030-merge-recursive.sh: use the $( ... ) construct for command substitution
+      t/t3100-ls-tree-restrict.sh: use the $( ... ) construct for command substitution
+      t/t3101-ls-tree-dirname.sh: use the $( ... ) construct for command substitution
+      t/t3210-pack-refs.sh: use the $( ... ) construct for command substitution
+      t/t3403-rebase-skip.sh: use the $( ... ) construct for command substitution
+      t/t3511-cherry-pick-x.sh: use the $( ... ) construct for command substitution
+      t/t3600-rm.sh: use the $( ... ) construct for command substitution
+      t/t3700-add.sh: use the $( ... ) construct for command substitution
+      t/t5100-mailinfo.sh: use the $( ... ) construct for command substitution
+      t/t5300-pack-object.sh: use the $( ... ) construct for command substitution
+      t/t5301-sliding-window.sh: use the $( ... ) construct for command substitution
+      t/t5302-pack-index.sh: use the $( ... ) construct for command substitution
+      t/t5303-pack-corruption-resilience.sh: use the $( ... ) construct for command substitution
+      t/t5304-prune.sh: use the $( ... ) construct for command substitution
+      t/t5305-include-tag.sh: use the $( ... ) construct for command substitution
+      t/t5500-fetch-pack.sh: use the $( ... ) construct for command substitution
+      t/t5505-remote.sh: use the $( ... ) construct for command substitution
+      t/t5506-remote-groups.sh: use the $( ... ) construct for command substitution
+      t/t5510-fetch.sh: use the $( ... ) construct for command substitution
+      t/t5515-fetch-merge-logic.sh: use the $( ... ) construct for command substitution
+      t/t5516-fetch-push.sh: use the $( ... ) construct for command substitution
+      t/t5517-push-mirror.sh: use the $( ... ) construct for command substitution
+      t/t5522-pull-symlink.sh: use the $( ... ) construct for command substitution
+      t/t5530-upload-pack-error.sh: use the $( ... ) construct for command substitution
+      t/t5532-fetch-proxy.sh: use the $( ... ) construct for command substitution
+      t/t5537-fetch-shallow.sh: use the $( ... ) construct for command substitution
+      t/t5538-push-shallow.sh: use the $( ... ) construct for command substitution
+      t/t5550-http-fetch-dumb.sh: use the $( ... ) construct for command substitution
+      t/t5570-git-daemon.sh: use the $( ... ) construct for command substitution
+      t/t5601-clone.sh: use the $( ... ) construct for command substitution
+      t/t5700-clone-reference.sh: use the $( ... ) construct for command substitution
+      t/t5710-info-alternate.sh: use the $( ... ) construct for command substitution
+      t/t5900-repo-selection.sh: use the $( ... ) construct for command substitution
+      t/t6001-rev-list-graft.sh: use the $( ... ) construct for command substitution
+      t/t6002-rev-list-bisect.sh: use the $( ... ) construct for command substitution
+      t/t6015-rev-list-show-all-parents.sh: use the $( ... ) construct for command substitution
+      t/t6032-merge-large-rename.sh: use the $( ... ) construct for command substitution
+      t/t6132-pathspec-exclude.sh: use the $( ... ) construct for command substitution
+      t/t7001-mv.sh: use the $( ... ) construct for command substitution
+      t/t7003-filter-branch.sh: use the $( ... ) construct for command substitution
+      t/t7004-tag.sh: use the $( ... ) construct for command substitution
+      t/t7006-pager.sh: use the $( ... ) construct for command substitution
+      t/t7103-reset-bare.sh: use the $( ... ) construct for command substitution
+      t/t7406-submodule-update.sh: use the $( ... ) construct for command substitution
+      t/t7408-submodule-reference.sh: use the $( ... ) construct for command substitution
+      t/t7504-commit-msg-hook.sh: use the $( ... ) construct for command substitution
+      t/t7505-prepare-commit-msg-hook.sh: use the $( ... ) construct for command substitution
+      t/t7602-merge-octopus-many.sh: use the $( ... ) construct for command substitution
+      t/t7700-repack.sh: use the $( ... ) construct for command substitution
+      t/t8003-blame-corner-cases.sh: use the $( ... ) construct for command substitution
+      t/t9001-send-email.sh: use the $( ... ) construct for command substitution
+      t9100-git-svn-basic.sh: use the $( ... ) construct for command substitution
+      t9101-git-svn-props.sh: use the $( ... ) construct for command substitution
+      t9104-git-svn-follow-parent.sh: use the $( ... ) construct for command substitution
+      t9105-git-svn-commit-diff.sh: use the $( ... ) construct for command substitution
+      t9107-git-svn-migrate.sh: use the $( ... ) construct for command substitution
+      t9108-git-svn-glob.sh: use the $( ... ) construct for command substitution
+      t9109-git-svn-multi-glob.sh: use the $( ... ) construct for command substitution
+      t9110-git-svn-use-svm-props.sh: use the $( ... ) construct for command substitution
+      t9114-git-svn-dcommit-merge.sh: use the $( ... ) construct for command substitution
+      t9118-git-svn-funky-branch-names.sh: use the $( ... ) construct for command substitution
+      t9119-git-svn-info.sh: use the $( ... ) construct for command substitution
+      t9129-git-svn-i18n-commitencoding.sh: use the $( ... ) construct for command substitution
+      t9130-git-svn-authors-file.sh: use the $( ... ) construct for command substitution
+      t9132-git-svn-broken-symlink.sh: use the $( ... ) construct for command substitution
+      t9137-git-svn-dcommit-clobber-series.sh: use the $( ... ) construct for command substitution
+      t9138-git-svn-authors-prog.sh: use the $( ... ) construct for command substitution
+      t9145-git-svn-master-branch.sh: use the $( ... ) construct for command substitution
+      t9150-svk-mergetickets.sh: use the $( ... ) construct for command substitution
+      t9300-fast-import.sh: use the $( ... ) construct for command substitution
+      t9350-fast-export.sh: use the $( ... ) construct for command substitution
+      t9501-gitweb-standalone-http-status.sh: use the $( ... ) construct for command substitution
+      t9901-git-web--browse.sh: use the $( ... ) construct for command substitution
 
-Eric Wong (2):
+Eric Sunshine (4):
+      lib-gpg: drop unnecessary "missing GPG" warning
+      t6302: normalize names and descriptions of signed tags
+      t6302: also test annotated in addition to signed tags
+      t6302: skip only signed tags rather than all tests when GPG is missing
+
+Eric Wong (10):
       git-send-email: do not double-escape quotes from mutt
       for-each-ref: document `creatordate` and `creator` fields
+      git-svn: fix auth parameter handling on SVN 1.9.0+
+      pass transport verbosity down to git_connect
+      connect & http: support -4 and -6 switches for remote operations
+      t5570: add tests for "git {clone,fetch,pull} -v"
+      git-svn: hoist out utf8 prep from t9129 to lib-git-svn
+      tests: remove no-op full-svn-test target
+      git-svn: shorten glob error message
+      git-svn: fix URL canonicalization during init w/ SVN 1.7+
 
-Jeff King (5):
+Felipe Gonçalves Assis (7):
+      merge-recursive: option to disable renames
+      merge-recursive: more consistent interface
+      merge-strategies.txt: fix typo
+      merge-recursive: find-renames resets threshold
+      t3034: add rename threshold tests
+      t3034: test option to disable renames
+      t3034: test deprecated interface
+
+Gabriel Souza Franco (2):
+      fetch-pack: fix object_id of exact sha1
+      fetch-pack: update the documentation for "<refs>..." arguments
+
+GyuYong Jung (1):
+      git-cvsserver.perl: fix typo
+
+Jacob Keller (7):
+      notes: allow merging from arbitrary references
+      submodule: don't pass empty string arguments to submodule--helper clone
+      submodule: check argc count for git submodule--helper clone
+      submodule: fix submodule--helper clone usage
+      submodule: fix segmentation fault in submodule--helper clone
+      quote: implement sq_quotef()
+      git: submodule honor -c credential.* from command line
+
+Jean-Noel Avila (2):
+      l10n: fr.po v2.8.0 round 1 2509t
+      l10n: fr.po v2.8.0 round 2
+
+Jeff King (97):
       pack-revindex: drop hash table
       pack-revindex: store entries directly in packed_git
+      create_symref: modernize variable names
+      create_symref: use existing ref-lock code
+      create_symref: write reflog while holding lock
       run-command: don't warn on SIGPIPE deaths
       avoid shifting signed integers 31 bits
       bswap: add NO_UNALIGNED_LOADS define
+      checkout,clone: check return value of create_symref
+      lock_ref_sha1_basic: always fill old_oid while holding lock
+      lock_ref_sha1_basic: handle REF_NODEREF with invalid refs
+      rebase: ignore failures from "gc --auto"
+      shortlog: match both "Author:" and "author" on stdin
+      shortlog: use strbufs to read from stdin
+      shortlog: replace hand-parsing of author with pretty-printer
+      shortlog: optimize "--summary" mode
+      shortlog: optimize out useless "<none>" normalization
+      shortlog: optimize out useless string list
+      shortlog: don't warn on empty author
+      filter-branch: resolve $commit^{tree} in no-index case
+      clean: make is_git_repository a public function
+      resolve_gitlink_ref: ignore non-repository paths
+      t6300: use test_atom for some un-modern tests
+      tag: do not show ambiguous tag names as "tags/foo"
+      transport: drop support for git-over-rsync
+      give "nbuf" strbuf a more meaningful name
+      checkout-index: simplify "-z" option parsing
+      checkout-index: handle "--no-prefix" option
+      checkout-index: handle "--no-index" option
+      checkout-index: disallow "--no-stage" option
+      apply, ls-files: simplify "-z" parsing
+      fmt_ident: refactor strictness checks
+      test-path-utils: use xsnprintf in favor of strcpy
+      rerere: replace strcpy with xsnprintf
+      checkout: reorder check_filename conditional
+      check_filename: tighten dwim-wildcard ambiguity
+      get_sha1: don't die() on bogus search strings
+      http-push: stop using name_path
+      show_object_with_name: simplify by using path_name()
+      list-objects: convert name_path to a strbuf
+      list-objects: drop name_path entirely
+      list-objects: pass full pathname to callbacks
+      git-config: better document default behavior for `--include`
+      ref-filter: use string_list_split over strbuf_split
+      reflog_expire_cfg: NUL-terminate pattern field
+      add helpers for detecting size_t overflow
+      tree-diff: catch integer overflow in combine_diff_path allocation
+      diff: clarify textconv interface
+      harden REALLOC_ARRAY and xcalloc against size_t overflow
+      add helpers for allocating flex-array structs
+      argv-array: add detach function
+      convert manual allocations to argv_array
+      convert trivial cases to ALLOC_ARRAY
+      use xmallocz to avoid size arithmetic
+      convert trivial cases to FLEX_ARRAY macros
+      use st_add and st_mult for allocation size computation
+      prepare_{git,shell}_cmd: use argv_array
+      write_untracked_extension: use FLEX_ALLOC helper
+      fast-import: simplify allocation in start_packfile
+      fetch-pack: simplify add_sought_entry
+      test-path-utils: fix normalize_path_copy output buffer size
+      sequencer: simplify memory allocation of get_message
+      git-compat-util: drop mempcpy compat code
+      transport_anonymize_url: use xstrfmt
+      diff_populate_gitlink: use a strbuf
+      convert ewah/bitmap code to use xmalloc
+      ewah: convert to REALLOC_ARRAY, etc
+      merge-one-file: use empty blob for add/add base
+      merge-tree: drop generate_common strategy
+      xdiff: drop XDL_EMIT_COMMON
+      t5313: test bounds-checks of corrupted/malicious pack/idx files
+      nth_packed_object_offset: bounds-check extended offset
+      use_pack: handle signed off_t overflow
+      write_or_die: handle EPIPE in async threads
+      fetch-pack: ignore SIGPIPE in sideband demuxer
+      test_must_fail: report number of unexpected signal
+      t5504: handle expected output from SIGPIPE death
+      credential: let empty credential specs reset helper list
+      t1515: add tests for rev-parse out-of-repo helpers
+      add--interactive: allow custom diff highlighting programs
+      rev-parse: let some options run outside repository
+      compat/mingw: brown paper bag fix for 50a6c8e
+      t9700: fix test for perl older than 5.14
+      strbuf_getwholeline: NUL-terminate getdelim buffer on error
+      setup: make startup_info available everywhere
+      setup: set startup_info->have_repository more reliably
+      remote: don't resolve HEAD in non-repository
+      mailmap: do not resolve blobs in a non-repository
+      grep: turn off gitlink detection for --no-index
+      use setup_git_directory() in test-* programs
+      add helpers for detecting size_t overflow
+      tree-diff: catch integer overflow in combine_diff_path allocation
+      http-push: stop using name_path
+      show_object_with_name: simplify by using path_name()
+      list-objects: convert name_path to a strbuf
+      list-objects: drop name_path entirely
+      list-objects: pass full pathname to callbacks
 
-Johannes Schindelin (6):
+Jiang Xin (7):
+      l10n: git.pot: v2.8.0 round 1 (48 new, 16 removed)
+      http: honor no_http env variable to bypass proxy
+      l10n: zh_CN: for git v2.8.0 l10n round 1
+      l10n: git.pot: v2.8.0 round 2 (21 new, 1 removed)
+      l10n: zh_CN: for git v2.8.0 l10n round 2
+      l10n: git.pot: Add one new message for Git 2.8.0
+      l10n: zh_CN: for git v2.8.0 l10n round 3
+
+Johannes Schindelin (47):
       commit: allow editing the commit message even in shared repos
       Handle more file writes correctly in shared repos
       Refactor skipping DOS drive prefixes
       compat/basename: make basename() conform to POSIX
       compat/basename.c: provide a dirname() compatibility function
       t0060: verify that basename() and dirname() work as expected
+      config.mak.uname: support MSys2
+      config.mak.uname: supporting 64-bit MSys2
+      fetch: release pack files before garbage-collecting
+      am: release pack files before garbage-collecting
+      merge: release pack files before garbage-collecting
+      receive-pack: release pack files before garbage-collecting
+      pull: allow interactive rebase with --rebase=interactive
+      remote: handle the config setting branch.*.rebase=interactive
+      completion: add missing branch.*.rebase values
+      nedmalloc: allow compiling with MSys2's compiler
+      compat/mingw: support MSys2-based MinGW build
+      compat/winansi: support compiling with MSys2
+      t0060: loosen overly strict expectations
+      mingw: avoid redefining S_* constants
+      mingw: avoid warnings when casting HANDLEs to int
+      mingw: squash another warning about a cast
+      mingw: uglify (a, 0) definitions to shut up warnings
+      mingw: let's use gettext with MSYS2
+      mingw: do not trust MSYS2's MinGW gettext.sh
+      Git.pm: stop assuming that absolute paths start with a slash
+      mingw: prepare the TMPDIR environment variable for shell scripts
+      mingw: let lstat() fail with errno == ENOTDIR when appropriate
+      merge-file: let conflict markers match end-of-line style of the context
+      merge-file: ensure that conflict sections match eol style
+      mingw: fix t5601-clone.sh
+      mingw: accomodate t0060-path-utils for MSYS2
+      mingw: disable mkfifo-based tests
+      tests: turn off git-daemon tests if FIFOs are not available
+      mingw: skip test in t1508 that fails due to path conversion
+      mingw: fix t9700's assumption about directory separators
+      mingw: work around pwd issues in the tests
+      mingw: mark t9100's test cases with appropriate prereqs
+      mingw: avoid illegal filename in t9118
+      mingw: handle the missing POSIXPERM prereq in t9124
+      mingw: skip a test in t9130 that cannot pass on Windows
+      mingw: do not bother to test funny file names
+      test-lib: limit the output of the yes utility
+      gitignore: ignore generated test-fake-ssh executable
+      t5505: 'remote add x y' should work when url.y.insteadOf = x
+      git config: report when trying to modify a non-existing repo config
+      Mark win32's pthread_exit() as NORETURN
+
+Johannes Sixt (3):
+      t/t5100: no need to use 'echo' command substitutions for globbing
+      mingw: avoid linking to the C library's isalpha()
+      t0001: fix GIT_* environment variable check under --valgrind
+
+John Keeping (6):
+      completion: add missing git-rebase options
+      t8005: avoid grep on non-ASCII data
+      t9200: avoid grep on non-ASCII data
+      config: fail if --get-urlmatch finds no value
+      Documentation/git-config: use bulleted list for exit codes
+      Documentation/git-config: fix --get-all description
+
+Jon Griffiths (3):
+      credential-cache--daemon: refactor check_socket_directory
+      credential-cache--daemon: disallow relative socket path
+      credential-cache--daemon: change to the socket dir on startup
 
 Jonathan Nieder (1):
       submodule.c: write "Fetching submodule <foo>" to stderr
 
-Junio C Hamano (1):
+Junio C Hamano (52):
       First batch for post 2.7 cycle
+      strbuf: miniscule style fix
+      strbuf: make strbuf_getline_crlf() global
+      strbuf: introduce strbuf_getline_{lf,nul}()
+      mktree: there are only two possible line terminations
+      check-attr: there are only two possible line terminations
+      check-ignore: there are only two possible line terminations
+      update-index: there are only two possible line terminations
+      checkout-index: there are only two possible line terminations
+      strbuf: give strbuf_getline() to the "most text friendly" variant
+      hash-object: read --stdin-paths with strbuf_getline()
+      revision: read --stdin with strbuf_getline()
+      rev-parse: read parseopt spec with strbuf_getline()
+      ident.c: read /etc/mailname with strbuf_getline()
+      remote.c: read $GIT_DIR/remotes/* with strbuf_getline()
+      clone/sha1_file: read info/alternates with strbuf_getline()
+      transport-helper: read helper response with strbuf_getline()
+      cat-file: read batch stream with strbuf_getline()
+      column: read lines with strbuf_getline()
+      send-pack: read list of refs with strbuf_getline()
+      grep: read -f file with strbuf_getline()
+      test-sha1-array: read command stream with strbuf_getline()
+      test-lib: clarify and tighten SANITY
+      Second batch for 2.8 cycle
+      Third batch for 2.8 cycle
+      git: remove an early return from save_env_before_alias()
+      git: protect against unbalanced calls to {save,restore}_env()
+      git: simplify environment save/restore logic
+      Fourth batch for 2.8.cycle
+      Getting closer to 2.7.1
+      restore_env(): free the saved environment variable once we are done
+      Fifth batch for 2.8 cycle
+      Git 2.7.1
+      Sixth batch for the 2.8 cycle
+      pager: lose a separate argv[]
+      pager: factor out a helper to prepare a child process to run the pager
+      am -i: fix "v"iew
+      Start preparing for 2.7.2
+      Seventh batch for the 2.8 cycle
+      Git 2.7.2
+      Eighth batch for 2.8
+      Git 2.8-rc0
+      index-pack: correct --keep[=<msg>]
+      index-pack: add a helper function to derive .idx/.keep filename
+      Git 2.8-rc1
+      gitignore: document that unignoring a directory unignores everything in it
+      Git 2.7.3
+      Git 2.8-rc2
+      sane_grep: pass "-a" if grep accepts it
+      rebase-i: clarify "is this commit relevant?" test
+      RelNotes for 2.8.0: typofix
+      Git 2.8-rc3
+
+Karsten Blees (1):
+      mingw: factor out Windows specific environment setup
+
+Karthik Nayak (10):
+      ref-filter: bump 'used_atom' and related code to the top
+      ref-filter: introduce struct used_atom
+      ref-filter: introduce parsing functions for each valid atom
+      ref-filter: introduce color_atom_parser()
+      ref-filter: introduce parse_align_position()
+      ref-filter: introduce align_atom_parser()
+      ref-filter: align: introduce long-form syntax
+      ref-filter: introduce remote_ref_atom_parser()
+      ref-filter: introduce contents_atom_parser()
+      ref-filter: introduce objectname_atom_parser()
+
+Kazutoshi Satoda (2):
+      git-svn: enable "svn.pathnameencoding" on dcommit
+      git-svn: apply "svn.pathnameencoding" before URL encoding
+
+Knut Franke (2):
+      http: allow selection of proxy authentication method
+      http: use credential API to handle proxy authentication
+
+Lars Schneider (8):
+      travis-ci: run previously failed tests first, then slowest to fastest
+      travis-ci: explicity use container-based infrastructure
+      convert: treat an empty string for clean/smudge filters as "cat"
+      t: do not hide Git's exit code in tests using 'nul_to_q'
+      rename git_config_from_buf to git_config_from_mem
+      config: add 'origin_type' to config_source struct
+      config: add '--show-origin' option to print the origin of a config value
+      add DEVELOPER makefile knob to check for acknowledged warnings
+
+Lars Vogel (1):
+      git-add doc: do not say working directory when you mean working tree
+
+Martin Amdisen (1):
+      templates/hooks: fix minor typo in the sample update-hook
+
+Matt McCutchen (1):
+      Documentation/git-clean.txt: don't mention deletion of .git/modules/*
+
+Matthew Kraai (1):
+      Documentation: remove unnecessary backslashes
+
+Matthieu Moy (15):
+      Documentation/git-push: document that 'simple' is the default
+      README: use markdown syntax
+      README.md: add hyperlinks on filenames
+      README.md: move the link to git-scm.com up
+      README.md: don't call git stupid in the title
+      README.md: move down historical explanation about the name
+      Documentation/diff-config: fix description of diff.renames
+      t4001-diff-rename: wrap file creations in a test
+      t: add tests for diff.renames (true/false/unset)
+      push: remove "push.default is unset" warning message
+      log: introduce init_log_defaults()
+      diff: activate diff.renames by default
+      README.md: don't take 'commandname' literally
+      lockfile: mark strings for translation
+      lockfile: improve error message when lockfile exists
+
+Michael J Gruber (5):
+      t9100: fix breakage when SHELL_PATH is not /bin/sh
+      tests: rename work-tree tests to *work-tree*
+      t/lib-httpd: load mod_unixd
+      t5510: do not leave changed cwd
+      wt-status: allow "ahead " to be picked up by l10n
+
+Michael Procter (1):
+      upload-pack: use argv_array for pack_objects
 
 Mike Hommey (1):
       notes: allow treeish expressions as notes ref
 
-Nguyễn Thái Ngọc Duy (9):
+Nguyễn Thái Ngọc Duy (25):
       blame: remove obsolete comment
       add and use a convenience macro ce_intent_to_add()
       Revert "setup: set env $GIT_WORK_TREE when work tree is set, like $GIT_DIR"
@@ -54,26 +537,113 @@ Nguyễn Thái Ngọc Duy (9):
       grep: make it clear i-t-a entries are ignored
       dir.c: clean the entire struct in clear_exclude_list()
       Revert "dir.c: don't exclude whole dir prematurely if neg pattern may match"
+      worktree.c: fix indentation
+      diff-no-index: do not take a redundant prefix argument
+      diff: make -O and --output work in subdirectory
+      worktree: stop supporting moving worktrees manually
+      rev-parse: take prefix into account in --git-common-dir
+      dir.c: fix match_pathname()
+      dir.c: support tracing exclude
+      dir.c: support marking some patterns already matched
+      dir.c: don't exclude whole dir prematurely
+      worktree: fix "add -B"
+      worktree add -B: do the checkout test before update branch
+      sha1_file.c: mark strings for translation
+      builtin/checkout.c: mark strings for translation
+      builtin/clone.c: mark strings for translation
+      ref-filter.c: mark strings for translation
+      trailer.c: mark strings for translation
 
-Patrick Steinhardt (2):
+Pat Thoyts (1):
+      t0008: avoid absolute path
+
+Patrick Steinhardt (18):
       push: add '--delete' flag to synopsis
       push: add '-d' as shorthand for '--delete'
+      config: introduce set_or_die wrappers
+      branch: report errors in tracking branch setup
+      branch: die on config error when unsetting upstream
+      branch: die on config error when editing branch description
+      submodule: die on config error when linking modules
+      submodule--helper: die on config error when cloning module
+      remote: die on config error when setting URL
+      remote: die on config error when setting/adding branches
+      remote: die on config error when manipulating remotes
+      clone: die on config error in cmd_clone
+      init-db: die on config errors when initializing empty repo
+      sequencer: die on config error when saving replay opts
+      compat: die when unable to set core.precomposeunicode
+      config: rename git_config_set to git_config_set_gently
+      config: rename git_config_set_or_die to git_config_set
+      xdiff/xmerge: fix memory leak in xdl_merge
 
-SZEDER Gábor (1):
+Paul Wagland (2):
+      completion: complete show-branch "--date-order"
+      completion: update completion arguments for stash
+
+Peter Krefting (2):
+      l10n: sv.po: Fix inconsistent translation of "progress meter"
+      l10n: sv.po: Update Swedish translation (2509t0f0u)
+
+Pranit Bauva (1):
+      t/t7502 : drop duplicate test
+
+Ralf Thielow (5):
+      l10n: TEAMS: update Ralf Thielow's email address
+      l10n: de.po: add space to abbreviation "z. B."
+      l10n: de.po: fix interactive rebase message
+      l10n: de.po: translate "command" as "Befehl"
+      l10n: de.po: translate 48 new messages
+
+Ramsay Jones (2):
+      xdiff/xprepare: use the XDF_DIFF_ALG() macro to access flag bits
+      xdiff/xprepare: fix a memory leak
+
+Rob Mayoff (1):
+      contrib/subtree: unwrap tag refs
+
+Romain Picard (1):
+      git-p4.py: add support for filetype change
+
+SZEDER Gábor (2):
       t6050-replace: make failing editor test more robust
+      completion: fix mis-indentation in _git_stash()
+
+Saurav Sachidanand (1):
+      dir: store EXC_FLAG_* values in unsigned integers
 
 Sebastian Schuberth (3):
       docs: clarify that passing --depth to git-clone implies --single-branch
       docs: say "commits" in the --depth option wording for git-clone
       docs: clarify that --depth for git-fetch works with newly initialized repos
 
-Stefan Beller (6):
+Shawn O. Pearce (1):
+      remote-curl: include curl_errorstr on SSL setup failures
+
+Sidhant Sharma [:tk] (1):
+      builtin/receive-pack.c: use parse_options API
+
+Stefan Beller (20):
       xread: poll on non blocking fds
       strbuf: add strbuf_read_once to read without blocking
       sigchain: add command to pop all common signals
       run-command: add an asynchronous parallel child processor
       fetch_populated_submodules: use new parallel job processing
       submodules: allow parallel fetching, add tests and documentation
+      submodule helper list: respect correct path prefix
+      submodule: try harder to fetch needed sha1 by direct fetching sha1
+      run-command: do not pass child process data into callbacks
+      submodule-config: keep update strategy around
+      submodule-config: drop check against NULL
+      fetching submodules: respect `submodule.fetchJobs` config option
+      submodule update: direct error message to stderr
+      run_processes_parallel: treat output of children as byte array
+      run_processes_parallel: rename parameters for the callbacks
+      git submodule update: have a dedicated helper for cloning
+      submodule helper: remove double 'fatal: ' prefix
+      submodule update: expose parallelism to the user
+      clone: allow an explicit argument for parallel submodule clones
+      Documentation: reword rebase summary
 
 Stephen P. Smith (4):
       user-manual: remove temporary branch entry from todo list
@@ -81,17 +651,61 @@ Stephen P. Smith (4):
       user-manual: add section documenting shallow clones
       user-manual: add addition gitweb information
 
-Thomas Gummerer (2):
+Thomas Ackermann (1):
+      documentation: fix some typos
+
+Thomas Braun (1):
+      completion: complete "diff --word-diff-regex="
+
+Thomas Gummerer (11):
       t7810: correct --no-index test
       builtin/grep: add grep.fallbackToNoIndex config
+      ls-remote: document --quiet option
+      ls-remote: document --refs option
+      ls-remote: fix synopsis
+      ls-remote: use parse-options api
+      ls-remote: add support for showing symrefs
+      remote: use parse_config_key
+      remote: simplify remote_is_configured()
+      remote: actually check if remote exits
+      remote: use remote_is_configured() for add and rename
 
-Victor Leschuk (3):
+Tobias Klauser (2):
+      trailer: allow to write to files other than stdout
+      interpret-trailers: add option for in-place editing
+
+Torsten Bögershausen (9):
+      ls-files: add eol diagnostics
+      t0027: add tests for get_stream_filter()
+      convert.c: remove unused parameter 'path'
+      convert.c: remove input_crlf_action()
+      convert.c: use text_eol_is_crlf()
+      convert.c: refactor crlf_action
+      convert.c: simplify text_stat
+      convert.c: correct attr_action()
+      config.mak.uname: use clang for Mac OS X 10.6
+
+Trần Ngọc Quân (1):
+      l10n: vi.po (2509t): Updated Vietnamese translation
+
+Victor Leschuk (4):
       grep: allow threading even on a single-core machine
       grep: slight refactoring to the code that disables threading
       grep: add --threads=<num> option and grep.threads configuration
+      git-svn: loosen config globs limitations
+
+Will Palmer (2):
+      test for '!' handling in rev-parse's named commits
+      object name: introduce '^{/!-<negative pattern>}' notation
+
+brian m. carlson (1):
+      http: add option to try authentication without username
 
 Øyvind A. Holm (1):
       gitweb: squelch "uninitialized value" warning
+
+마누엘 (1):
+      mingw: try to delete target directory before renaming
 
 
 Version v2.7.0; changes since v2.7.0-rc3:

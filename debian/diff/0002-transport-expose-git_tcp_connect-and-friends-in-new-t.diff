@@ -1,4 +1,4 @@
-From dd58038c1efede95204f9e23b09c4322b8ea0e6b Mon Sep 17 00:00:00 2001
+From 1c03bc6229ba29f0a4834c43b48a8ba42f9e38de Mon Sep 17 00:00:00 2001
 From: Jonathan Nieder <jrnieder@gmail.com>
 Date: Mon, 6 Jun 2011 04:37:14 -0500
 Subject: transport: expose git_tcp_connect() and friends in new tcp.h
@@ -13,19 +13,19 @@ library easier to understand before adding to it.
 Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
 ---
  Makefile  |   1 +
- connect.c | 270 +------------------------------------------------------------
+ connect.c | 274 +------------------------------------------------------------
  connect.h |   2 +
- tcp.c     | 271 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- tcp.h     |   9 +++
- 5 files changed, 285 insertions(+), 268 deletions(-)
+ tcp.c     | 275 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tcp.h     |   9 ++
+ 5 files changed, 289 insertions(+), 272 deletions(-)
  create mode 100644 tcp.c
  create mode 100644 tcp.h
 
 diff --git a/Makefile b/Makefile
-index fd19b54..43aa8c7 100644
+index 2742a69..afc9cc3 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -799,6 +799,7 @@ LIB_OBJS += submodule.o
+@@ -815,6 +815,7 @@ LIB_OBJS += submodule.o
  LIB_OBJS += submodule-config.o
  LIB_OBJS += symlinks.o
  LIB_OBJS += tag.o
@@ -34,7 +34,7 @@ index fd19b54..43aa8c7 100644
  LIB_OBJS += trace.o
  LIB_OBJS += trailer.o
 diff --git a/connect.c b/connect.c
-index fd7ffe1..9fbe198 100644
+index c53f3f1..57aa805 100644
 --- a/connect.c
 +++ b/connect.c
 @@ -6,6 +6,7 @@
@@ -54,7 +54,7 @@ index fd7ffe1..9fbe198 100644
  {
  	char *host = *hoststart;
  	char *end;
-@@ -300,273 +301,6 @@ static char *host_end(char **hoststart, int removebrackets)
+@@ -300,277 +301,6 @@ static char *host_end(char **hoststart, int removebrackets)
  	return end;
  }
  
@@ -115,6 +115,10 @@ index fd7ffe1..9fbe198 100644
 -		port = "<none>";
 -
 -	memset(&hints, 0, sizeof(hints));
+-	if (flags & CONNECT_IPV4)
+-		hints.ai_family = AF_INET;
+-	else if (flags & CONNECT_IPV6)
+-		hints.ai_family = AF_INET6;
 -	hints.ai_socktype = SOCK_STREAM;
 -	hints.ai_protocol = IPPROTO_TCP;
 -
@@ -329,10 +333,10 @@ index fd7ffe1..9fbe198 100644
  {
  	char *end;
 diff --git a/connect.h b/connect.h
-index c41a685..e97a835 100644
+index 01f14cd..c112c23 100644
 --- a/connect.h
 +++ b/connect.h
-@@ -11,4 +11,6 @@ extern int parse_feature_request(const char *features, const char *feature);
+@@ -13,4 +13,6 @@ extern int parse_feature_request(const char *features, const char *feature);
  extern const char *server_feature_value(const char *feature, int *len_ret);
  extern int url_is_local_not_ssh(const char *url);
  
@@ -341,10 +345,10 @@ index c41a685..e97a835 100644
  #endif
 diff --git a/tcp.c b/tcp.c
 new file mode 100644
-index 0000000..c8e3a9d
+index 0000000..e8e0d44
 --- /dev/null
 +++ b/tcp.c
-@@ -0,0 +1,271 @@
+@@ -0,0 +1,275 @@
 +#include "cache.h"
 +#include "tcp.h"
 +#include "run-command.h"
@@ -407,6 +411,10 @@ index 0000000..c8e3a9d
 +		port = "<none>";
 +
 +	memset(&hints, 0, sizeof(hints));
++	if (flags & CONNECT_IPV4)
++		hints.ai_family = AF_INET;
++	else if (flags & CONNECT_IPV6)
++		hints.ai_family = AF_INET6;
 +	hints.ai_socktype = SOCK_STREAM;
 +	hints.ai_protocol = IPPROTO_TCP;
 +
@@ -632,5 +640,5 @@ index 0000000..566afd4
 +
 +#endif
 -- 
-2.6.0.rc2.230.g3dd15c0
+2.7.0.rc3.207.g0ac5344
 

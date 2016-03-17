@@ -1,4 +1,4 @@
-From f1ffa24310def6a7dfab7013e26d799f752e2b08 Mon Sep 17 00:00:00 2001
+From a998b61c4439d38bb091cc8b1715408033cfdfca Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Wed, 13 Jun 2012 18:50:10 +0200
 Subject: Teach checkout to recursively checkout submodules
@@ -42,7 +42,7 @@ index 5e5273e..1e92bd0 100644
  	Branch to checkout; if it refers to a branch (i.e., a name that,
  	when prepended with "refs/heads/", is a valid ref), then that
 diff --git a/builtin/checkout.c b/builtin/checkout.c
-index e8110a9..ece6971 100644
+index efcbd8f..51ab19e 100644
 --- a/builtin/checkout.c
 +++ b/builtin/checkout.c
 @@ -21,6 +21,9 @@
@@ -55,7 +55,7 @@ index e8110a9..ece6971 100644
  static const char * const checkout_usage[] = {
  	N_("git checkout [<options>] <branch>"),
  	N_("git checkout [<options>] [<branch>] -- <file>..."),
-@@ -1157,6 +1160,12 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
+@@ -1159,6 +1162,12 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
  				N_("second guess 'git checkout <no-such-branch>'")),
  		OPT_BOOL(0, "ignore-other-worktrees", &opts.ignore_other_worktrees,
  			 N_("do not check if another worktree is holding the given ref")),
@@ -68,7 +68,7 @@ index e8110a9..ece6971 100644
  		OPT_BOOL(0, "progress", &opts.show_progress, N_("force progress reporting")),
  		OPT_END(),
  	};
-@@ -1187,6 +1196,11 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
+@@ -1189,6 +1198,11 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
  		git_xmerge_config("merge.conflictstyle", conflict_style, NULL);
  	}
  
@@ -81,7 +81,7 @@ index e8110a9..ece6971 100644
  		die(_("-b, -B and --orphan are mutually exclusive"));
  
 diff --git a/submodule-config.c b/submodule-config.c
-index 215e307..cf157e1 100644
+index bc06ace..c2ff62d 100644
 --- a/submodule-config.c
 +++ b/submodule-config.c
 @@ -1,6 +1,7 @@
@@ -92,7 +92,7 @@ index 215e307..cf157e1 100644
  #include "strbuf.h"
  
  /*
-@@ -250,6 +251,20 @@ int parse_update_recurse_submodules_arg(const char *opt, const char *arg)
+@@ -253,6 +254,20 @@ int parse_update_recurse_submodules_arg(const char *opt, const char *arg)
  	return parse_update_recurse(opt, arg, 1);
  }
  
@@ -114,11 +114,11 @@ index 215e307..cf157e1 100644
  			       int die_on_error)
  {
 diff --git a/submodule-config.h b/submodule-config.h
-index 7efc6b8..616c93b 100644
+index 859d40c..dd42c39 100644
 --- a/submodule-config.h
 +++ b/submodule-config.h
-@@ -4,6 +4,8 @@
- #include "hashmap.h"
+@@ -5,6 +5,8 @@
+ #include "submodule.h"
  #include "strbuf.h"
  
 +struct option;
@@ -126,7 +126,7 @@ index 7efc6b8..616c93b 100644
  /*
   * Submodule entry containing the information about a certain submodule
   * in a certain revision.
-@@ -20,6 +22,8 @@ struct submodule {
+@@ -22,6 +24,8 @@ struct submodule {
  
  int parse_fetch_recurse_submodules_arg(const char *opt, const char *arg);
  int parse_update_recurse_submodules_arg(const char *opt, const char *arg);
@@ -546,5 +546,5 @@ index d1e9fcc..39ff7b3 100755
  
  test_done
 -- 
-2.6.0.rc2.230.g3dd15c0
+2.7.0.rc3.207.g0ac5344
 
