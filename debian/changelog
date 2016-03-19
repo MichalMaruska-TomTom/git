@@ -1,3 +1,19 @@
+git (1:2.8.0~rc3-1maruska) unstable; urgency=medium
+
+  * Invoke hooks on rebase finished or aborted.
+  * colorful info on applying a patch, via cecho!
+  * Debian: strip should be conditional: but howto do a shell noop?
+  * colorize the native-code version of 'am'
+  * Use color conditionally
+  * comments to understand gitk.
+  * useless test to color-highlight mmc-all & mmc-keep-time
+  * comments on how the ref labels are drawn (rectangles & text)
+  * all for sums/start/base
+  * empty lines
+  * be_verbose only when requested by option (-v --verbose)
+
+ -- Michal Maruska <mmaruska@gmail.com>  Sat, 19 Mar 2016 01:49:20 +0100
+
 git (1:2.8.0~rc3-1) unstable; urgency=medium
 
   * new upstream release candidate (see RelNotes/2.8.0.txt).
