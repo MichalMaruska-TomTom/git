@@ -1,20 +1,11 @@
-Version next; changes since v2.8.0-rc3:
----------------------------------------
+Version next; changes since v2.8.1:
+-----------------------------------
 
 Adam Dinwoodie (1):
       commit: --amend -m '' silently fails to wipe message
 
-Alex Henrie (1):
-      l10n: ca.po: update translation
-
 Alexander Kuleshov (1):
       submodule-config: use hashmap_iter_first()
-
-Alexander Shopov (1):
-      gitk: Update Bulgarian translation (311t)
-
-Changwoo Ryu (1):
-      l10n: ko.po: Update Korean translation
 
 Christian Couder (4):
       Documentation: talk about pager in api-trace.txt
@@ -33,9 +24,6 @@ David Turner (5):
       refs: move resolve_ref_unsafe into common code
       refs: on symref reflog expire, lock symref not referrent
 
-Dimitriy Ryazantcev (1):
-      l10n: ru.po: update Russian translation
-
 Elia Pinto (1):
       api-trace.txt: fix typo
 
@@ -45,13 +33,11 @@ Elijah Newren (4):
       t6044: new merge testcases for when index doesn't match HEAD
       merge-octopus: abort if index does not match HEAD
 
-Eric Sunshine (7):
+Eric Sunshine (5):
       lib-gpg: drop unnecessary "missing GPG" warning
       t6302: normalize names and descriptions of signed tags
       t6302: also test annotated in addition to signed tags
       t6302: skip only signed tags rather than all tests when GPG is missing
-      git-compat-util: st_add4: work around gcc 4.2.x compiler crash
-      Revert "config.mak.uname: use clang for Mac OS X 10.6"
       git-format-patch.txt: don't show -s as shorthand for multiple options
 
 Eric Wong (2):
@@ -61,9 +47,6 @@ Eric Wong (2):
 Gabriel Souza Franco (2):
       fetch-pack: fix object_id of exact sha1
       fetch-pack: update the documentation for "<refs>..." arguments
-
-Guillermo S. Romero (1):
-      gitk: Follow themed bgcolor in help dialogs
 
 Jacob Keller (6):
       submodule: don't pass empty string arguments to submodule--helper clone
@@ -76,11 +59,6 @@ Jacob Keller (6):
 Jacob Nisnevich (2):
       mergetools: create mergetool_find_win32_cmd() helper function for winmerge
       mergetools: add support for ExamDiff
-
-Jean-Noel Avila (3):
-      l10n: fr.po v2.8.0 round 3
-      gitk: Update French translation (311t)
-      gitk: fr.po: Sync translations with git
 
 Jeff King (31):
       credential: let empty credential specs reset helper list
@@ -115,12 +93,6 @@ Jeff King (31):
       git_config_set_multivar_in_file: handle "unset" errors
       t5532: use write_script
 
-Johannes Schindelin (4):
-      config --show-origin: report paths with forward slashes
-      t1300-repo-config: make it resilient to being run via 'sh -x'
-      t1300: fix the new --show-origin tests on Windows
-      mingw: skip some tests in t9115 due to file name issues
-
 Johannes Sixt (1):
       Windows: shorten code by re-using convert_slashes()
 
@@ -129,7 +101,7 @@ John Keeping (3):
       Documentation/git-config: use bulleted list for exit codes
       Documentation/git-config: fix --get-all description
 
-Junio C Hamano (42):
+Junio C Hamano (32):
       rerere: split conflict ID further
       rerere: scan $GIT_DIR/rr-cache/$ID when instantiating a rerere_id
       index-pack: correct --keep[=<msg>]
@@ -139,22 +111,12 @@ Junio C Hamano (42):
       rerere: allow multiple variants to exist
       t4200: rerere a merge with two identical conflicts
       rerere: do use multiple variants
-      Git 2.4.11
-      Git 2.5.5
-      Git 2.6.6
-      Git 2.7.4
-      Revert "Merge branch 'jc/exclusion-doc'"
-      Revert "Merge branch 'nd/exclusion-regression-fix'"
-      RelNotes: remove the mention of !reinclusion
-      Git 2.8-rc4
       apply: remove unused call to free() in gitdiff_{old,new}name()
       merge: fix NULL pointer dereference when merging nothing into void
       merge: refuse to create too cool a merge by default
-      Git 2.8
       pretty: enable --expand-tabs by default for selected pretty formats
       pretty: allow tweaking tabwidth in --expand-tabs
       submodule--helper: do not borrow absolute_path() result for too long
-      Git 2.8.1
       First batch for post 2.8 cycle
       pretty: test --expand-tabs
       Makefile: fix misdirected redirections
@@ -185,10 +147,8 @@ Kazuki Yamaguchi (10):
       imap-send: check for NOLOGIN capability only when using LOGIN command
       imap-send: fix CRAM-MD5 response calculation
 
-Lars Schneider (3):
+Lars Schneider (1):
       git-p4: map a P4 user to Git author name and email address
-      Documentation: use ASCII quotation marks in git-p4
-      Documentation: fix git-p4 AsciiDoc formatting
 
 Laurent Arnoud (1):
       tag: add the option to force signing of annotated tags
@@ -196,7 +156,7 @@ Laurent Arnoud (1):
 Linus Torvalds (1):
       pretty: expand tabs in indented logs to make things line up properly
 
-Matthieu Moy (10):
+Matthieu Moy (8):
       Documentation/diff-config: fix description of diff.renames
       t4001-diff-rename: wrap file creations in a test
       t: add tests for diff.renames (true/false/unset)
@@ -204,8 +164,6 @@ Matthieu Moy (10):
       diff: activate diff.renames by default
       lockfile: mark strings for translation
       lockfile: improve error message when lockfile exists
-      Documentation: fix broken linkgit to git-config
-      git.spec.in: use README.md, not README
       README.md: don't take 'commandname' literally
 
 Mehul Jain (9):
@@ -254,18 +212,12 @@ Nguyễn Thái Ngọc Duy (3):
 Ori Avtalion (1):
       Documentation: git diff --check detects conflict markers
 
-Peter Krefting (1):
-      l10n: sv.po: Update Swedish translation (2530t0f0u)
-
 Pranit Bauva (3):
       t/t7502 : drop duplicate test
       commit: add a commit.verbose config variable
       api-parse-options.txt: document OPT_CMDMODE()
 
-Ralf Thielow (6):
-      l10n: de.po: translate 22 new messages
-      l10n: de.po: add missing newlines
-      gitk: Update German translation
+Ralf Thielow (3):
       completion: add option '--guides' to 'git help'
       completion: add 'revisions' and 'everyday' to 'git help'
       rebase-i: print an abbreviated hash when stop for editing
@@ -273,9 +225,6 @@ Ralf Thielow (6):
 Ramsay Jones (2):
       xdiff/xprepare: use the XDF_DIFF_ALG() macro to access flag bits
       xdiff/xprepare: fix a memory leak
-
-Ray Chen (1):
-      l10n: zh_CN: review for git v2.8.0 l10n round 2
 
 Ray Zhang (1):
       worktree: add: introduce --checkout option
@@ -293,7 +242,7 @@ Sidhant Sharma [:tk] (1):
 Stanislav Kolotinskiy (1):
       git-send-pack: fix --all option when used with directory
 
-Stefan Beller (23):
+Stefan Beller (22):
       submodule-config: keep update strategy around
       submodule-config: drop check against NULL
       fetching submodules: respect `submodule.fetchJobs` config option
@@ -307,7 +256,6 @@ Stefan Beller (23):
       clone tests: rename t57* => t56*
       rebase: decouple --exec from --interactive
       t3404: cleanup double empty lines between tests
-      submodule: fix regression for deinit without submodules
       recursive submodules: test for relative paths
       submodule--helper: fix potential NULL-dereference
       submodule--helper clone: create the submodule path just once
@@ -326,11 +274,87 @@ Sven Strickroth (3):
 Torsten Bögershausen (1):
       correct blame for files commited with CRLF
 
+
+Version v2.8.1; changes since v2.8.0-rc4:
+-----------------------------------------
+
+Alex Henrie (1):
+      l10n: ca.po: update translation
+
+Johannes Schindelin (4):
+      config --show-origin: report paths with forward slashes
+      t1300-repo-config: make it resilient to being run via 'sh -x'
+      t1300: fix the new --show-origin tests on Windows
+      mingw: skip some tests in t9115 due to file name issues
+
+Junio C Hamano (2):
+      Git 2.8
+      Git 2.8.1
+
+Lars Schneider (2):
+      Documentation: use ASCII quotation marks in git-p4
+      Documentation: fix git-p4 AsciiDoc formatting
+
+Matthieu Moy (1):
+      git.spec.in: use README.md, not README
+
+Stefan Beller (1):
+      submodule: fix regression for deinit without submodules
+
 Trần Ngọc Quân (1):
       l10n: vi.po (2530t): Update translation
 
 Vasco Almeida (1):
       l10n: pt_PT: Update and add new translations
+
+
+Version v2.8.0-rc4; changes since v2.8.0-rc3:
+---------------------------------------------
+
+Alexander Shopov (1):
+      gitk: Update Bulgarian translation (311t)
+
+Changwoo Ryu (1):
+      l10n: ko.po: Update Korean translation
+
+Dimitriy Ryazantcev (1):
+      l10n: ru.po: update Russian translation
+
+Eric Sunshine (2):
+      git-compat-util: st_add4: work around gcc 4.2.x compiler crash
+      Revert "config.mak.uname: use clang for Mac OS X 10.6"
+
+Guillermo S. Romero (1):
+      gitk: Follow themed bgcolor in help dialogs
+
+Jean-Noel Avila (3):
+      l10n: fr.po v2.8.0 round 3
+      gitk: Update French translation (311t)
+      gitk: fr.po: Sync translations with git
+
+Junio C Hamano (8):
+      Git 2.4.11
+      Git 2.5.5
+      Git 2.6.6
+      Git 2.7.4
+      Revert "Merge branch 'jc/exclusion-doc'"
+      Revert "Merge branch 'nd/exclusion-regression-fix'"
+      RelNotes: remove the mention of !reinclusion
+      Git 2.8-rc4
+
+Matthieu Moy (1):
+      Documentation: fix broken linkgit to git-config
+
+Peter Krefting (1):
+      l10n: sv.po: Update Swedish translation (2530t0f0u)
+
+Ralf Thielow (3):
+      l10n: de.po: translate 22 new messages
+      l10n: de.po: add missing newlines
+      gitk: Update German translation
+
+Ray Chen (1):
+      l10n: zh_CN: review for git v2.8.0 l10n round 2
 
 
 Version v2.8.0-rc3; changes since v2.8.0-rc2:
@@ -465,7 +489,7 @@ Torsten Bögershausen (1):
       config.mak.uname: use clang for Mac OS X 10.6
 
 
-Version v2.8.0-rc0; changes since v2.7.3:
+Version v2.8.0-rc0; changes since v2.7.4:
 -----------------------------------------
 
 Alexander Kuleshov (1):
@@ -853,6 +877,25 @@ brian m. carlson (1):
 
 마누엘 (1):
       mingw: try to delete target directory before renaming
+
+
+Version v2.7.4; changes since v2.7.3:
+-------------------------------------
+
+Jeff King (7):
+      add helpers for detecting size_t overflow
+      tree-diff: catch integer overflow in combine_diff_path allocation
+      http-push: stop using name_path
+      show_object_with_name: simplify by using path_name()
+      list-objects: convert name_path to a strbuf
+      list-objects: drop name_path entirely
+      list-objects: pass full pathname to callbacks
+
+Junio C Hamano (4):
+      Git 2.4.11
+      Git 2.5.5
+      Git 2.6.6
+      Git 2.7.4
 
 
 Version v2.7.3; changes since v2.7.2:
@@ -1243,7 +1286,7 @@ Stefan Naewe (1):
       revision.c: fix possible null pointer arithmetic
 
 
-Version v2.7.0-rc0; changes since v2.6.5:
+Version v2.7.0-rc0; changes since v2.6.6:
 -----------------------------------------
 
 Alex Henrie (1):
@@ -1635,6 +1678,24 @@ brian m. carlson (12):
       Convert struct object to object_id
       Remove get_object_hash.
       remote: convert functions to struct object_id
+
+
+Version v2.6.6; changes since v2.6.5:
+-------------------------------------
+
+Jeff King (7):
+      add helpers for detecting size_t overflow
+      tree-diff: catch integer overflow in combine_diff_path allocation
+      http-push: stop using name_path
+      show_object_with_name: simplify by using path_name()
+      list-objects: convert name_path to a strbuf
+      list-objects: drop name_path entirely
+      list-objects: pass full pathname to callbacks
+
+Junio C Hamano (3):
+      Git 2.4.11
+      Git 2.5.5
+      Git 2.6.6
 
 
 Version v2.6.5; changes since v2.6.4:
@@ -2122,7 +2183,7 @@ Junio C Hamano (2):
       Git 2.6-rc1
 
 
-Version v2.6.0-rc0; changes since v2.5.4:
+Version v2.6.0-rc0; changes since v2.5.5:
 -----------------------------------------
 
 Alex Henrie (3):
@@ -2537,6 +2598,23 @@ brian m. carlson (7):
       gpg: centralize printing signature buffers
       verify-commit: add option to print raw gpg status information
       verify-tag: add option to print raw gpg status information
+
+
+Version v2.5.5; changes since v2.5.4:
+-------------------------------------
+
+Jeff King (7):
+      add helpers for detecting size_t overflow
+      tree-diff: catch integer overflow in combine_diff_path allocation
+      http-push: stop using name_path
+      show_object_with_name: simplify by using path_name()
+      list-objects: convert name_path to a strbuf
+      list-objects: drop name_path entirely
+      list-objects: pass full pathname to callbacks
+
+Junio C Hamano (2):
+      Git 2.4.11
+      Git 2.5.5
 
 
 Version v2.5.4; changes since v2.5.3:

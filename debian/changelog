@@ -1,8 +1,17 @@
-git (1:2.8.0~rc3+next.20160414-0.1) experimental; urgency=low
+git (1:2.8.1+next.20160414-0.1) experimental; urgency=low
 
   * new snapshot, taken from upstream commit eae769a9.
+  * merge branch debian-sid.
 
  -- Jonathan Nieder <jrnieder@gmail.com>  Mon, 18 Apr 2016 17:27:37 -0700
+
+git (1:2.8.1-1) unstable; urgency=low
+
+  * new upstream point release.
+  * debian/diff/0003-0007-srv-be-more-tolerant-of-broken-DNS-replies.diff:
+    remove.
+
+ -- Jonathan Nieder <jrnieder@gmail.com>  Mon, 18 Apr 2016 17:23:33 -0700
 
 git (1:2.8.0~rc3+next.20160316-1) experimental; urgency=low
 
