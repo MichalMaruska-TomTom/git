@@ -1,6 +1,6 @@
-From 0b1a21e281444bb7f45d7ecaacf1dd01525c4da0 Mon Sep 17 00:00:00 2001
-From: Jonathan Nieder <jrnieder@gmail.com>
-Date: Tue, 19 Jan 2016 10:59:24 -0800
+From bf11a66a413396c8929cd3d425d2c052227cbf0c Mon Sep 17 00:00:00 2001
+From: Jonathan Nieder <jrn@google.com>
+Date: Mon, 18 Apr 2016 17:26:04 -0700
 Subject: record version
 
 Generated using GIT-VERSION-GEN and git-gui/GIT-VERSION-GEN.
@@ -22,11 +22,11 @@ index 0000000..07083e2
 +0.20.0.1.gc218a
 diff --git a/version b/version
 new file mode 100644
-index 0000000..e56413f
+index 0000000..aaac4e5
 --- /dev/null
 +++ b/version
 @@ -0,0 +1 @@
-+2.8.0.rc3.226.g39d4020
++2.8.1.369.geae769a
 -- 
-2.7.0.rc3.207.g0ac5344
+2.8.0.rc3.226.g39d4020
 

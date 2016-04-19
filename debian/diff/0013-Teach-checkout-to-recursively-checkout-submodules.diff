@@ -1,4 +1,4 @@
-From a998b61c4439d38bb091cc8b1715408033cfdfca Mon Sep 17 00:00:00 2001
+From e2557a5c925d7d638b7b2b0bb0ce2e0a4b624e6e Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Wed, 13 Jun 2012 18:50:10 +0200
 Subject: Teach checkout to recursively checkout submodules
@@ -42,7 +42,7 @@ index 5e5273e..1e92bd0 100644
  	Branch to checkout; if it refers to a branch (i.e., a name that,
  	when prepended with "refs/heads/", is a valid ref), then that
 diff --git a/builtin/checkout.c b/builtin/checkout.c
-index efcbd8f..51ab19e 100644
+index ea2fe1c..6cfc6df 100644
 --- a/builtin/checkout.c
 +++ b/builtin/checkout.c
 @@ -21,6 +21,9 @@
@@ -55,7 +55,7 @@ index efcbd8f..51ab19e 100644
  static const char * const checkout_usage[] = {
  	N_("git checkout [<options>] <branch>"),
  	N_("git checkout [<options>] [<branch>] -- <file>..."),
-@@ -1159,6 +1162,12 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
+@@ -1158,6 +1161,12 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
  				N_("second guess 'git checkout <no-such-branch>'")),
  		OPT_BOOL(0, "ignore-other-worktrees", &opts.ignore_other_worktrees,
  			 N_("do not check if another worktree is holding the given ref")),
@@ -68,7 +68,7 @@ index efcbd8f..51ab19e 100644
  		OPT_BOOL(0, "progress", &opts.show_progress, N_("force progress reporting")),
  		OPT_END(),
  	};
-@@ -1189,6 +1198,11 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
+@@ -1188,6 +1197,11 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
  		git_xmerge_config("merge.conflictstyle", conflict_style, NULL);
  	}
  
@@ -81,7 +81,7 @@ index efcbd8f..51ab19e 100644
  		die(_("-b, -B and --orphan are mutually exclusive"));
  
 diff --git a/submodule-config.c b/submodule-config.c
-index bc06ace..c2ff62d 100644
+index 54b2b03..4e6b71c 100644
 --- a/submodule-config.c
 +++ b/submodule-config.c
 @@ -1,6 +1,7 @@
@@ -546,5 +546,5 @@ index d1e9fcc..39ff7b3 100755
  
  test_done
 -- 
-2.7.0.rc3.207.g0ac5344
+2.8.0.rc3.226.g39d4020
 
