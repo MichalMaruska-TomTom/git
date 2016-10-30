@@ -292,12 +292,14 @@ proc parseviewargs {n arglist} {
     return $allknown
 }
 
+# mmc: return the list of root refs!
 proc parseviewrevs {view revs} {
     global vposids vnegids
 
     if {$revs eq {}} {
+        # mmc: the default
         set revs HEAD
-    } elseif {[lsearch -exact $revs --all] >= 0} {
+    } elseif {[lsearch -exact $revs --all] >= 0} { # all
         lappend revs HEAD
     }
     if {[catch {set ids [eval exec git rev-parse $revs]} err]} {
@@ -395,7 +397,7 @@ proc start_rev_list {view} {
         }
         set args [concat $args [split $str "\n"]]
     }
-    set vcanopt($view) [parseviewargs $view $args]
+    set vcanopt($view) [parseviewargs $view $args]; # mmc:
 
     set files $viewfiles($view)
     if {$vmergeonly($view)} {
@@ -415,7 +417,7 @@ proc start_rev_list {view} {
     set vfilelimit($view) $files
 
     if {$vcanopt($view)} {
-        set revs [parseviewrevs $view $vrevs($view)]
+        set revs [parseviewrevs $view $vrevs($view)]; # mmc!
         if {$revs eq {}} {
             return 0
         }
@@ -426,6 +428,7 @@ proc start_rev_list {view} {
     }
 
     if {[catch {
+        # mmc:
         set fd [open [concat | git log --no-color -z --pretty=raw $show_notes \
                         --parents --boundary $args --stdin \
                         "<<[join [concat $revs "--" \
