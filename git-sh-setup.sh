@@ -3,7 +3,12 @@
 # a few helper shell functions.
 
 # Source git-sh-i18n for gettext support.
+if [ -z "$ZSH_VERSION" ];
+then
 . git-sh-i18n
+else
+. $(dirname $0)/git-sh-i18n
+fi
 
 # Having this variable in your environment would break scripts because
 # you would cause "cd" to be taken to unexpected places.  If you
