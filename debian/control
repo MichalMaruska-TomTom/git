@@ -2,7 +2,7 @@ Source: git
 Section: vcs
 Priority: optional
 Maintainer: Gerrit Pape <pape@smarden.org>
-Uploaders: Jonathan Nieder <jrnieder@gmail.com>
+Uploaders: Jonathan Nieder <jrnieder@gmail.com>, Anders Kaseorg <andersk@mit.edu>
 Build-Depends: libz-dev, libpcre3-dev, gettext,
  libcurl4-gnutls-dev, libexpat1-dev,
  subversion, libsvn-perl, libyaml-perl,
@@ -10,6 +10,9 @@ Build-Depends: libz-dev, libpcre3-dev, gettext,
  libhttp-date-perl | libtime-modules-perl,
  cvs, cvsps, libdbd-sqlite3-perl,
  unzip, libio-pty-perl,
+ debhelper (>= 9),
+ dh-exec (>= 0.7),
+ dh-apache2,
  dpkg-dev (>= 1.16.2~)
 Build-Depends-Indep: asciidoc, xmlto, docbook-xsl
 Standards-Version: 3.9.6.0
@@ -20,8 +23,9 @@ Vcs-Browser: http://repo.or.cz/w/git/debian.git/
 Package: git
 Architecture: any
 Multi-Arch: foreign
-Depends: ${shlibs:Depends}, perl-modules, liberror-perl,
+Depends: ${misc:Depends}, ${shlibs:Depends}, perl, liberror-perl,
  git-man (>> ${source:Upstream-Version}), git-man (<< ${source:Upstream-Version}-.)
+Pre-Depends: ${misc:Pre-Depends}
 Recommends: patch, less, rsync, ssh-client
 Suggests: gettext-base, git-daemon-run | git-daemon-sysvinit,
  git-doc, git-el, git-email, git-gui, gitk, gitweb,
@@ -54,6 +58,7 @@ Package: git-man
 Section: doc
 Architecture: all
 Multi-Arch: foreign
+Depends: ${misc:Depends}
 Replaces: git (<< 1:1.7.4~rc1),
  git-core (<< 1:1.7.0.4-1.)
 Breaks: git (<< 1:1.7.4~rc1)
@@ -73,7 +78,7 @@ Description: fast, scalable, distributed revision control system (manual pages)
 Package: git-core
 Architecture: all
 Multi-Arch: foreign
-Depends: git (>> 1:1.7.0.2)
+Depends: ${misc:Depends}, git (>> 1:1.7.0.2)
 Description: fast, scalable, distributed revision control system (obsolete)
  Git is popular version control system designed to handle very large
  projects with speed and efficiency; it is used for many high profile
@@ -93,6 +98,7 @@ Package: git-doc
 Section: doc
 Architecture: all
 Multi-Arch: foreign
+Depends: ${misc:Depends}
 Suggests: git, git-arch, git-cvs, git-svn, git-email, gitk, gitweb
 Description: fast, scalable, distributed revision control system (documentation)
  Git is popular version control system designed to handle very large
@@ -109,7 +115,7 @@ Description: fast, scalable, distributed revision control system (documentation)
 Package: git-arch
 Architecture: all
 Multi-Arch: foreign
-Depends: git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.), tla
+Depends: ${misc:Depends}, git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.), tla
 Suggests: git-doc
 Description: fast, scalable, distributed revision control system (arch interoperability)
  Git is popular version control system designed to handle very large
@@ -127,7 +133,7 @@ Description: fast, scalable, distributed revision control system (arch interoper
 Package: git-cvs
 Architecture: all
 Multi-Arch: foreign
-Depends: git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.), cvsps, libdbd-sqlite3-perl
+Depends: ${misc:Depends}, git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.), cvsps, libdbd-sqlite3-perl
 Suggests: git-doc, cvs
 Description: fast, scalable, distributed revision control system (cvs interoperability)
  Git is popular version control system designed to handle very large
@@ -152,7 +158,7 @@ Description: fast, scalable, distributed revision control system (cvs interopera
 Package: git-svn
 Architecture: all
 Multi-Arch: foreign
-Depends: git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.), libsvn-perl, libyaml-perl, libterm-readkey-perl
+Depends: ${misc:Depends}, git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.), libsvn-perl, libyaml-perl, libterm-readkey-perl
 Suggests: git-doc, subversion
 Breaks: git (<< 1:1.8.3~rc1-1.)
 Replaces: git (<< 1:1.8.3~rc1-1.)
@@ -172,10 +178,10 @@ Description: fast, scalable, distributed revision control system (svn interopera
 Package: git-mediawiki
 Architecture: all
 Multi-Arch: foreign
-Depends: git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.),
+Depends: ${misc:Depends}, git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.),
  libmediawiki-api-perl (>= 0.39), liblwp-protocol-https-perl, libdatetime-format-iso8601-perl
 Suggests: mediawiki
-Description: fast, scalable, distributed revision control system (MediaWiki interoperability)
+Description: fast, scalable, distributed revision control system (MediaWiki remote helper)
  Git is popular version control system designed to handle very large
  projects with speed and efficiency; it is used for many high profile
  open source projects, most notably the Linux kernel.
@@ -193,7 +199,7 @@ Description: fast, scalable, distributed revision control system (MediaWiki inte
 Package: git-email
 Architecture: all
 Multi-Arch: foreign
-Depends: git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.)
+Depends: ${misc:Depends}, git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.)
 Recommends: libemail-valid-perl, libnet-smtp-ssl-perl, libauthen-sasl-perl,
  libio-socket-ssl-perl (>= 1.951)
 Suggests: git-doc
@@ -213,7 +219,7 @@ Description: fast, scalable, distributed revision control system (email add-on)
 Package: git-daemon-run
 Architecture: all
 Multi-Arch: foreign
-Depends: git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.), runit, adduser
+Depends: ${misc:Depends}, git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.), runit, adduser
 Conflicts: git-daemon-sysvinit
 Description: fast, scalable, distributed revision control system (git-daemon service)
  Git is popular version control system designed to handle very large
@@ -234,7 +240,7 @@ Package: git-daemon-sysvinit
 Priority: extra
 Architecture: all
 Multi-Arch: foreign
-Depends: git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.), adduser
+Depends: ${misc:Depends}, git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.), adduser, lsb-base (>= 3.0-6)
 Conflicts: git-daemon-run
 Description: fast, scalable, distributed revision control system (git-daemon service)
  Git is popular version control system designed to handle very large
@@ -254,7 +260,7 @@ Description: fast, scalable, distributed revision control system (git-daemon ser
 Package: git-gui
 Architecture: all
 Multi-Arch: foreign
-Depends: git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.), tk
+Depends: ${misc:Depends}, git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.), tk
 Recommends: gitk
 Suggests: git-doc, aspell
 Description: fast, scalable, distributed revision control system (GUI)
@@ -275,7 +281,7 @@ Description: fast, scalable, distributed revision control system (GUI)
 Package: gitk
 Architecture: all
 Multi-Arch: foreign
-Depends: git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.), tk
+Depends: ${misc:Depends}, git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.), tk
 Suggests: git-doc
 Description: fast, scalable, distributed revision control system (revision tree visualizer)
  Git is popular version control system designed to handle very large
@@ -292,7 +298,7 @@ Description: fast, scalable, distributed revision control system (revision tree 
 Package: git-el
 Architecture: all
 Multi-Arch: foreign
-Depends: git (>= 1:1.7.4.1-2~), emacs | emacsen
+Depends: ${misc:Depends}, git (>= 1:1.7.4.1-2~), emacs | emacsen
 Replaces: git (<< 1:1.7.4.1-2~)
 Breaks: git (<< 1:1.7.4.1-2~)
 Description: fast, scalable, distributed revision control system (emacs support)
@@ -329,11 +335,11 @@ Description: fast, scalable, distributed revision control system (emacs support)
 Package: gitweb
 Architecture: all
 Multi-Arch: foreign
-Depends: git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.),
- perl, apache2 | httpd | lynx-cur
-Pre-Depends: dpkg (>= 1.16.1~)
-Recommends: libhttp-date-perl | libtime-modules-perl
-Breaks: apache2.2-common
+Depends: ${misc:Depends}, git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.),
+ perl
+Pre-Depends: ${misc:Pre-Depends}
+Recommends: ${misc:Recommends}, libhttp-date-perl | libtime-modules-perl
+Breaks: apache2.2-common (<< 2.3~)
 Suggests: httpd-cgi | libcgi-fast-perl, git-doc
 Description: fast, scalable, distributed revision control system (web interface)
  Git is popular version control system designed to handle very large
@@ -357,7 +363,7 @@ Description: fast, scalable, distributed revision control system (web interface)
 Package: git-all
 Architecture: all
 Multi-Arch: foreign
-Depends: git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.),
+Depends: ${misc:Depends}, git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.),
  git-doc, git-el, git-arch, git-cvs, git-mediawiki, git-svn,
  git-email, git-gui, gitk, gitweb
 Recommends: git-daemon-run | git-daemon-sysvinit

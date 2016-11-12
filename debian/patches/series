@@ -1,0 +1,8 @@
+0001-pre-rebase-hook-capture-documentation-in-a-here-docum.diff
+0002-record-version.diff
+0003-submodule-prepare-for-recursive-checkout-of-submodule.diff
+0004-submodule-teach-unpack_trees-to-remove-submodule-cont.diff
+0005-submodule-teach-unpack_trees-to-repopulate-submodules.diff
+0006-submodule-teach-unpack_trees-to-update-submodules.diff
+0007-Teach-checkout-to-recursively-checkout-submodules.diff
+Documentation-omit-asciidoc-footer-on-generated-input.diff

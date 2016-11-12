@@ -1,8 +1,61 @@
-git (1:2.8.1+next.20161111-0.1) experimental; urgency=low
+git (1:2.10.2+next.20161111-0.1) experimental; urgency=low
 
   * new snapshot, taken from upstream commit 34139e25.
+  * merge branch debian-sid.
+  * git-sh-setup-Restore-sourcability-from-outside-script.diff:
+    remove; applied upstream.
 
  -- Jonathan Nieder <jrnieder@gmail.com>  Sat, 12 Nov 2016 11:26:55 -0800
+
+git (1:2.10.2-2) unstable; urgency=medium
+
+  * Add missing upstream changelog entries from v2.10.2.
+  * gitweb: Add version to Breaks: apache2.2-common (<< 2.3~).
+  * git-mediawiki: Shorten description.
+  * Link extra license files to common-licenses.
+  * Invoke dpkg-maintscript-helper dir_to_symlink correctly.
+    (Closes: #843011)
+  * debian/patches/Documentation-omit-asciidoc-footer-on-generated-input.diff:
+    Omit the “last updated” footer when processing asciidoc inputs that
+    are generated at build time.  (Closes: #813912)
+
+ -- Anders Kaseorg <andersk@mit.edu>  Sat, 05 Nov 2016 07:20:14 -0400
+
+git (1:2.10.2-1) unstable; urgency=medium
+
+  * New upstream point release.
+    - imap-send: Tell cURL to use imap:// or imaps:// (Closes: #648329)
+  * Run asciidoc in TZ=UTC to improve the reproducibility of documentation
+    footer timestamps.
+  * debian/patches/git-sh-setup-Restore-sourcability-from-outside-script.diff:
+    Restore sourcability of git-sh-setup from outside scripts.
+    (Closes: #842477)
+
+ -- Anders Kaseorg <andersk@mit.edu>  Sat, 29 Oct 2016 22:44:37 -0400
+
+git (1:2.10.1-1) unstable; urgency=medium
+
+  * New upstream release (see RelNotes/2.10.0.txt, RelNotes/2.10.1.txt).
+    (Closes: #840800)
+  * debian/rules: Fix clean target to remove GIT-VERSION-FILE and
+    contrib/subtree build products.  (Closes: #834870)
+  * Fix a missing reference in /usr/share/doc-base/everyday-git.
+    (Closes: #836516)
+  * Migrate patches to 3.0 (quilt) format.  (Closes: #834566)
+  * Migrate packaging to Debhelper.  (Closes: #834886)
+  * Replace perl-modules dependency with perl.
+  * git-daemon-sysvinit: Depend lsb-base (>= 3.0-6) for
+    /lib/lsb/init-functions.
+
+ -- Anders Kaseorg <andersk@mit.edu>  Fri, 14 Oct 2016 21:47:15 -0400
+
+git (1:2.9.3-1) unstable; urgency=medium
+
+  * New upstream release (see RelNotes/2.8.2.txt, RelNotes/2.8.3.txt,
+    RelNotes/2.9.0.txt, RelNotes/2.9.1.txt, RelNotes/2.9.2.txt,
+    RelNotes/2.9.3.txt).
+
+ -- Anders Kaseorg <andersk@mit.edu>  Tue, 16 Aug 2016 16:32:47 -0400
 
 git (1:2.8.1+next.20160414-1) experimental; urgency=low
 
