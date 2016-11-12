@@ -1,4 +1,4 @@
-From 897b812f8c7a46ab885d543a5d66befae5185d9f Mon Sep 17 00:00:00 2001
+From bb9bb22d0935be3c9bfd40a9225e795814455d77 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Mon, 18 Jun 2012 22:17:59 +0200
 Subject: submodule: prepare for recursive checkout of submodules
@@ -17,10 +17,10 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  4 files changed, 45 insertions(+)
 
 diff --git a/submodule-config.c b/submodule-config.c
-index b82d1fb..bc06ace 100644
+index 098085b..57eb067 100644
 --- a/submodule-config.c
 +++ b/submodule-config.c
-@@ -231,6 +231,28 @@ int parse_fetch_recurse_submodules_arg(const char *opt, const char *arg)
+@@ -234,6 +234,28 @@ int parse_fetch_recurse_submodules_arg(const char *opt, const char *arg)
  	return parse_fetch_recurse(opt, arg, 1);
  }
  
@@ -50,10 +50,10 @@ index b82d1fb..bc06ace 100644
  			       int die_on_error)
  {
 diff --git a/submodule-config.h b/submodule-config.h
-index e4857f5..859d40c 100644
+index d05c542..f47aa26 100644
 --- a/submodule-config.h
 +++ b/submodule-config.h
-@@ -21,6 +21,7 @@ struct submodule {
+@@ -23,6 +23,7 @@ struct submodule {
  };
  
  int parse_fetch_recurse_submodules_arg(const char *opt, const char *arg);
@@ -62,19 +62,19 @@ index e4857f5..859d40c 100644
  int parse_submodule_config_option(const char *var, const char *value);
  const struct submodule *submodule_from_name(const unsigned char *commit_sha1,
 diff --git a/submodule.c b/submodule.c
-index 90825e1..b1f9ab6 100644
+index 6f7d883..28a6a24 100644
 --- a/submodule.c
 +++ b/submodule.c
-@@ -15,6 +15,8 @@
- #include "thread-utils.h"
+@@ -16,6 +16,8 @@
+ #include "quote.h"
  
  static int config_fetch_recurse_submodules = RECURSE_SUBMODULES_ON_DEMAND;
 +static int config_update_recurse_submodules = RECURSE_SUBMODULES_OFF;
 +static int option_update_recurse_submodules = RECURSE_SUBMODULES_DEFAULT;
  static int parallel_jobs = 1;
- static struct string_list changed_submodule_paths;
+ static struct string_list changed_submodule_paths = STRING_LIST_INIT_NODUP;
  static int initialized_fetch_ref_tips;
-@@ -374,6 +376,24 @@ void set_config_fetch_recurse_submodules(int value)
+@@ -494,6 +496,24 @@ void set_config_fetch_recurse_submodules(int value)
  	config_fetch_recurse_submodules = value;
  }
  
@@ -100,12 +100,12 @@ index 90825e1..b1f9ab6 100644
  		      int flags, void *cb_data)
  {
 diff --git a/submodule.h b/submodule.h
-index 7ef3775..6d37ae4 100644
+index d9e197a..df23758 100644
 --- a/submodule.h
 +++ b/submodule.h
-@@ -46,6 +46,8 @@ void show_submodule_summary(FILE *f, const char *path,
- 		unsigned dirty_submodule, const char *meta,
- 		const char *del, const char *add, const char *reset);
+@@ -53,6 +53,8 @@ void show_submodule_inline_diff(FILE *f, const char *path,
+ 		const char *del, const char *add, const char *reset,
+ 		const struct diff_options *opt);
  void set_config_fetch_recurse_submodules(int value);
 +void set_config_update_recurse_submodules(int default_value, int option_value);
 +int submodule_needs_update(const char *path);
@@ -113,5 +113,5 @@ index 7ef3775..6d37ae4 100644
  int fetch_populated_submodules(const struct argv_array *options,
  			       const char *prefix, int command_line_option,
 -- 
-2.7.0.rc3.207.g0ac5344
+2.8.0.rc3.226.g39d4020
 

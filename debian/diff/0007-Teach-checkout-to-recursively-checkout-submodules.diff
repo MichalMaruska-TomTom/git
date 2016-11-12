@@ -1,4 +1,4 @@
-From e2557a5c925d7d638b7b2b0bb0ce2e0a4b624e6e Mon Sep 17 00:00:00 2001
+From 9f836f3add6bc6a3598fad0ead0802722dd711ff Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Wed, 13 Jun 2012 18:50:10 +0200
 Subject: Teach checkout to recursively checkout submodules
@@ -23,7 +23,7 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  14 files changed, 284 insertions(+), 5 deletions(-)
 
 diff --git a/Documentation/git-checkout.txt b/Documentation/git-checkout.txt
-index 5e5273e..1e92bd0 100644
+index 8e2c066..51029c0 100644
 --- a/Documentation/git-checkout.txt
 +++ b/Documentation/git-checkout.txt
 @@ -256,6 +256,14 @@ section of linkgit:git-add[1] to learn how to operate the `--patch` mode.
@@ -42,7 +42,7 @@ index 5e5273e..1e92bd0 100644
  	Branch to checkout; if it refers to a branch (i.e., a name that,
  	when prepended with "refs/heads/", is a valid ref), then that
 diff --git a/builtin/checkout.c b/builtin/checkout.c
-index ea2fe1c..6cfc6df 100644
+index 9b2a5b3..ca1f9d1 100644
 --- a/builtin/checkout.c
 +++ b/builtin/checkout.c
 @@ -21,6 +21,9 @@
@@ -55,7 +55,7 @@ index ea2fe1c..6cfc6df 100644
  static const char * const checkout_usage[] = {
  	N_("git checkout [<options>] <branch>"),
  	N_("git checkout [<options>] [<branch>] -- <file>..."),
-@@ -1158,6 +1161,12 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
+@@ -1160,6 +1163,12 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
  				N_("second guess 'git checkout <no-such-branch>'")),
  		OPT_BOOL(0, "ignore-other-worktrees", &opts.ignore_other_worktrees,
  			 N_("do not check if another worktree is holding the given ref")),
@@ -68,7 +68,7 @@ index ea2fe1c..6cfc6df 100644
  		OPT_BOOL(0, "progress", &opts.show_progress, N_("force progress reporting")),
  		OPT_END(),
  	};
-@@ -1188,6 +1197,11 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
+@@ -1190,6 +1199,11 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
  		git_xmerge_config("merge.conflictstyle", conflict_style, NULL);
  	}
  
@@ -81,7 +81,7 @@ index ea2fe1c..6cfc6df 100644
  		die(_("-b, -B and --orphan are mutually exclusive"));
  
 diff --git a/submodule-config.c b/submodule-config.c
-index 54b2b03..4e6b71c 100644
+index 57eb067..ae72890 100644
 --- a/submodule-config.c
 +++ b/submodule-config.c
 @@ -1,6 +1,7 @@
@@ -92,7 +92,7 @@ index 54b2b03..4e6b71c 100644
  #include "strbuf.h"
  
  /*
-@@ -253,6 +254,20 @@ int parse_update_recurse_submodules_arg(const char *opt, const char *arg)
+@@ -256,6 +257,20 @@ int parse_update_recurse_submodules_arg(const char *opt, const char *arg)
  	return parse_update_recurse(opt, arg, 1);
  }
  
@@ -114,7 +114,7 @@ index 54b2b03..4e6b71c 100644
  			       int die_on_error)
  {
 diff --git a/submodule-config.h b/submodule-config.h
-index 859d40c..dd42c39 100644
+index f47aa26..8138a47 100644
 --- a/submodule-config.h
 +++ b/submodule-config.h
 @@ -5,6 +5,8 @@
@@ -126,7 +126,7 @@ index 859d40c..dd42c39 100644
  /*
   * Submodule entry containing the information about a certain submodule
   * in a certain revision.
-@@ -22,6 +24,8 @@ struct submodule {
+@@ -24,6 +26,8 @@ struct submodule {
  
  int parse_fetch_recurse_submodules_arg(const char *opt, const char *arg);
  int parse_update_recurse_submodules_arg(const char *opt, const char *arg);
@@ -451,7 +451,7 @@ index d5b896d..d6ab06b 100755
  	git status -su >expect &&
  	ls -1pR * >>expect &&
 diff --git a/t/t3513-revert-submodule.sh b/t/t3513-revert-submodule.sh
-index a1c4e02..fffe6e2 100755
+index db93781..c248ad0 100755
 --- a/t/t3513-revert-submodule.sh
 +++ b/t/t3513-revert-submodule.sh
 @@ -27,6 +27,7 @@ git_revert () {
@@ -496,7 +496,7 @@ index accfa5c..3e5ed5d 100755
  
  test_done
 diff --git a/t/t6041-bisect-submodule.sh b/t/t6041-bisect-submodule.sh
-index c6b7aa6..a5e0136 100755
+index 62b8a2e..fd2b684 100755
 --- a/t/t6041-bisect-submodule.sh
 +++ b/t/t6041-bisect-submodule.sh
 @@ -27,6 +27,7 @@ git_bisect () {
