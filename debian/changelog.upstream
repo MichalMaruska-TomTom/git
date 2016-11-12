@@ -1,5 +1,70 @@
-Version next; changes since v2.10.2:
-------------------------------------
+Version next; changes since v2.11.0-rc1:
+----------------------------------------
+
+Dennis Kaarsemaker (1):
+      push: test pushing ambiguously named branches
+
+Jeff King (1):
+      setup_git_env: avoid blind fall-back to ".git"
+
+Junio C Hamano (4):
+      merge: drop 'git merge <message> HEAD <commit>' syntax
+      utf8: refactor code to decide fallback encoding
+      utf8: accept "latin-1" as ISO-8859-1
+      push: do not use potentially ambiguous default refspec
+
+
+Version v2.11.0-rc1; changes since v2.11.0-rc0:
+-----------------------------------------------
+
+Andreas Schwab (2):
+      t6026-merge-attr: don't fail if sleep exits early
+      t6026-merge-attr: ensure that the merge driver was called
+
+Christian Couder (1):
+      split-index: s/eith/with/ typo fix
+
+Jeff King (6):
+      t0021: use write_script to create rot13 shell script
+      t0021: put $TEST_ROOT in $PATH
+      t0021: use $PERL_PATH for rot13-filter.pl
+      t0021: fix filehandle usage on older perl
+      alternates: re-allow relative paths from environment
+      sequencer: silence -Wtautological-constant-out-of-range-compare
+
+Johannes Schindelin (1):
+      t6026: ensure that long-running script really is
+
+Johannes Sixt (4):
+      t0021: expect more variations in the output of uniq -c
+      t0021: compute file size with a single process instead of a pipeline
+      t0021, t5615: use $PWD instead of $(pwd) in PATH-like shell variables
+      t6026: clarify the point of "kill $(cat sleep.pid)"
+
+Junio C Hamano (5):
+      A bit of updates post -rc0
+      Revert "t6026-merge-attr: ensure that the merge driver was called"
+      Revert "t6026-merge-attr: don't fail if sleep exits early"
+      t0021: remove debugging cruft
+      Git 2.11.0-rc1
+
+Lars Schneider (2):
+      Makefile: set NO_OPENSSL on macOS by default
+      travis-ci: disable GIT_TEST_HTTPD for macOS
+
+Patrick Steinhardt (1):
+      doc: fix location of 'info/' with $GIT_COMMON_DIR
+
+Ralf Thielow (1):
+      fetch-pack.c: correct command at the beginning of an error message
+
+René Scharfe (2):
+      sha1_name: make wraparound of the index into ring-buffer explicit
+      cocci: avoid self-references in object_id transformations
+
+
+Version v2.11.0-rc0; changes since v2.10.2:
+-------------------------------------------
 
 Aaron M Watson (1):
       stash: allow stashes to be referenced by index only
@@ -16,10 +81,6 @@ Anders Kaseorg (2):
       pre-receive.sample: mark it executable
       git-sh-setup: be explicit where to dot-source git-sh-i18n from.
 
-Andreas Schwab (2):
-      t6026-merge-attr: don't fail if sleep exits early
-      t6026-merge-attr: ensure that the merge driver was called
-
 Brandon Williams (4):
       git: make super-prefix option
       ls-files: optionally recurse into submodules
@@ -29,7 +90,7 @@ Brandon Williams (4):
 Chris Packham (1):
       completion: support excluding refs
 
-Christian Couder (43):
+Christian Couder (42):
       apply: make some names more specific
       apply: move 'struct apply_state' to apply.h
       builtin/apply: make apply_patch() return -1 or -128 instead of die()ing
@@ -72,7 +133,6 @@ Christian Couder (43):
       apply: pass apply state to build_fake_ancestor()
       apply: learn to use a different index file
       builtin/am: use apply API in run_apply()
-      split-index: s/eith/with/ typo fix
 
 David Aguilar (4):
       mergetool: add copyright
@@ -90,9 +150,6 @@ David Turner (9):
       refs: make lock generic
       refs: implement iteration over only per-worktree refs
       fsck: handle bad trees like other errors
-
-Dennis Kaarsemaker (1):
-      push: test pushing ambiguously named branches
 
 Dimitriy Ryazantcev (1):
       git-gui: Update Russian translation
@@ -139,7 +196,7 @@ Jeff Hostetler (9):
       test-lib-functions.sh: add lf_to_nul helper
       status: unit tests for --porcelain=v2
 
-Jeff King (85):
+Jeff King (78):
       provide an initializer for "struct object_info"
       sha1_file: make packed_object_info public
       pack-objects: break delta cycles before delta-search phase
@@ -215,18 +272,11 @@ Jeff King (85):
       find_unique_abbrev: use 4-buffer ring
       diff_unique_abbrev: rename to diff_aligned_abbrev
       diff_aligned_abbrev: use "struct oid"
-      setup_git_env: avoid blind fall-back to ".git"
       diff: handle sha1 abbreviations outside of repository
       git-compat-util: move content inside ifdef/endif guards
       doc: fix missing "::" in config list
-      t0021: use write_script to create rot13 shell script
-      t0021: put $TEST_ROOT in $PATH
-      t0021: use $PERL_PATH for rot13-filter.pl
-      t0021: fix filehandle usage on older perl
-      alternates: re-allow relative paths from environment
-      sequencer: silence -Wtautological-constant-out-of-range-compare
 
-Johannes Schindelin (55):
+Johannes Schindelin (54):
       cat-file: fix a grammo in the man page
       sequencer: lib'ify sequencer_pick_revisions()
       sequencer: do not die() in do_pick_commit()
@@ -281,14 +331,9 @@ Johannes Schindelin (55):
       sequencer: quote filenames in error messages
       sequencer: start error messages consistently with lower case
       sequencer: mark all error messages for translation
-      t6026: ensure that long-running script really is
 
-Johannes Sixt (5):
+Johannes Sixt (1):
       t0060: sidestep surprising path mangling results on Windows
-      t0021: expect more variations in the output of uniq -c
-      t0021: compute file size with a single process instead of a pipeline
-      t0021, t5615: use $PWD instead of $(pwd) in PATH-like shell variables
-      t6026: clarify the point of "kill $(cat sleep.pid)"
 
 Jonathan Nieder (1):
       connect: tighten check for unexpected early hang up
@@ -311,8 +356,7 @@ Jonathan Tan (13):
 Josh Triplett (1):
       format-patch: add "--rfc" for the common case of [RFC PATCH]
 
-Junio C Hamano (37):
-      merge: drop 'git merge <message> HEAD <commit>' syntax
+Junio C Hamano (28):
       blame: improve diagnosis for "--reverse NEW"
       blame: dwim "blame --reverse OLD" as "blame --reverse OLD.."
       am: refactor read_author_script()
@@ -323,8 +367,6 @@ Junio C Hamano (37):
       Third batch for 2.11
       Fourth batch for 2.11
       Fifth batch for 2.11
-      utf8: refactor code to decide fallback encoding
-      utf8: accept "latin-1" as ISO-8859-1
       Sixth batch for 2.11
       abbrev: add FALLBACK_DEFAULT_ABBREV to prepare for auto sizing
       abbrev: prepare for new world order
@@ -342,13 +384,7 @@ Junio C Hamano (37):
       transport: compute summary-width dynamically
       Eleventh batch for 2.11
       Getting ready for 2.11-rc0
-      push: do not use potentially ambiguous default refspec
       Git 2.11-rc0
-      A bit of updates post -rc0
-      Revert "t6026-merge-attr: ensure that the merge driver was called"
-      Revert "t6026-merge-attr: don't fail if sleep exits early"
-      t0021: remove debugging cruft
-      Git 2.11.0-rc1
 
 Karsten Blees (2):
       git-gui: unicode file name support on windows
@@ -358,7 +394,7 @@ Kirill Smelkov (2):
       pack-objects: respect --local/--honor-pack-keep/--incremental when bitmap is in use
       pack-objects: use reachability bitmap index when generating non-stdout pack
 
-Lars Schneider (19):
+Lars Schneider (17):
       convert: quote filter names in error messages
       convert: modernize tests
       run-command: move check_pipe() from write_or_die to run_command
@@ -376,8 +412,6 @@ Lars Schneider (19):
       sha1_file: rename git_open_noatime() to git_open()
       sha1_file: open window into packfiles with O_CLOEXEC
       read-cache: make sure file handles are not inherited by child processes
-      Makefile: set NO_OPENSSL on macOS by default
-      travis-ci: disable GIT_TEST_HTTPD for macOS
 
 Linus Torvalds (1):
       abbrev: auto size the default abbreviation
@@ -484,18 +518,14 @@ Pat Thoyts (7):
       git-gui: avoid persisting modified author identity
       git-gui: set version 0.21
 
-Patrick Steinhardt (1):
-      doc: fix location of 'info/' with $GIT_COMMON_DIR
-
 Petr Stodulka (1):
       http: control GSSAPI credential delegation
 
-Ralf Thielow (3):
+Ralf Thielow (2):
       help: introduce option --exclude-guides
       help: make option --help open man pages only for Git commands
-      fetch-pack.c: correct command at the beginning of an error message
 
-René Scharfe (13):
+René Scharfe (11):
       sha1_file: use llist_mergesort() for sorting packs
       introduce CHECKOUT_INIT
       add QSORT
@@ -507,8 +537,6 @@ René Scharfe (13):
       hex: make wraparound of the index into ring-buffer explicit
       valgrind: support test helpers
       commit: simplify building parents list
-      sha1_name: make wraparound of the index into ring-buffer explicit
-      cocci: avoid self-references in object_id transformations
 
 Ronnie Sahlberg (2):
       refs: add a backend method structure
