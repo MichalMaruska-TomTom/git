@@ -1,17 +1,34 @@
 Version next; changes since v2.11.0-rc1:
 ----------------------------------------
 
+Ben North (1):
+      git-worktree.txt: fix typo "to"/"two", and add comma
+
+Brandon Williams (2):
+      lib-proto-disable: variable name fix
+      transport: add protocol policy config option
+
 Dennis Kaarsemaker (1):
       push: test pushing ambiguously named branches
 
-Jeff King (1):
+Jeff King (2):
       setup_git_env: avoid blind fall-back to ".git"
+      create_branch: drop unused "head" parameter
+
+Jonathan Tan (1):
+      fetch: do not redundantly calculate tag refmap
 
 Junio C Hamano (4):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       utf8: refactor code to decide fallback encoding
       utf8: accept "latin-1" as ISO-8859-1
       push: do not use potentially ambiguous default refspec
+
+Matt McCutchen (1):
+      doc: mention transfer data leaks in more places
+
+Tobias Klauser (1):
+      diffcore-delta: remove unused parameter to diffcore_count_changes()
 
 
 Version v2.11.0-rc1; changes since v2.11.0-rc0:

@@ -1,4 +1,4 @@
-From 317f9b448513a9c347af1471c4e04aa7488662dd Mon Sep 17 00:00:00 2001
+From edab73079505fb6fbe722792324800516cffbf38 Mon Sep 17 00:00:00 2001
 From: Jonathan Nieder <jrnieder@gmail.com>
 Date: Sat, 12 Nov 2016 11:23:28 -0800
 Subject: record version
@@ -22,11 +22,11 @@ index 0000000..8854156
 +0.21.0
 diff --git a/version b/version
 new file mode 100644
-index 0000000..155d188
+index 0000000..5e944fc
 --- /dev/null
 +++ b/version
 @@ -0,0 +1 @@
-+2.11.0.rc1.147.g34139e2
++2.11.0.rc1.160.g51e66c2
 -- 
 2.8.0.rc3.226.g39d4020
 
