@@ -1,0 +1,142 @@
+From dc1c3f9017f65a7038a316b8bca3aa1967f33c66 Mon Sep 17 00:00:00 2001
+From: Jens Lehmann <Jens.Lehmann@web.de>
+Date: Tue, 19 Jun 2012 20:55:45 +0200
+Subject: submodule: teach unpack_trees() to remove submodule contents
+
+Implement the functionality needed to enable work tree manipulating
+commands to that a deleted submodule should not only affect the index
+(leaving all the files of the submodule in the work tree) but also to
+remove the work tree of the superproject (including any untracked
+files).
+
+That will only work properly when the submodule uses a gitfile instead of
+a .git directory and no untracked files are present. Otherwise the removal
+will fail with a warning (which is just what happened until now).
+
+Extend rmdir_or_warn() to remove the directories of those submodules which
+are scheduled for removal. Also teach verify_clean_submodule() to check
+that a submodule configured to be removed is not modified before scheduling
+it for removal.
+
+Signed-off-by: Jens Lehmann <Jens.Lehmann@web.de>
+Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
+---
+ submodule.c    | 37 +++++++++++++++++++++++++++++++++++++
+ submodule.h    |  1 +
+ unpack-trees.c |  6 ++----
+ wrapper.c      |  3 +++
+ 4 files changed, 43 insertions(+), 4 deletions(-)
+
+diff --git a/submodule.c b/submodule.c
+index 28a6a24..54eafc8 100644
+--- a/submodule.c
++++ b/submodule.c
+@@ -309,6 +309,43 @@ static void print_submodule_summary(struct rev_info *rev, FILE *f,
+ 	strbuf_release(&sb);
+ }
+ 
++int depopulate_submodule(const char *path)
++{
++	struct strbuf dot_git = STRBUF_INIT;
++	struct child_process cp;
++	const char *argv[] = {"rm", "-rf", path, NULL};
++
++	/* Is it populated? */
++	strbuf_addf(&dot_git, "%s/.git", path);
++	if (!resolve_gitdir(dot_git.buf)) {
++		strbuf_release(&dot_git);
++		return 0;
++	}
++	strbuf_release(&dot_git);
++
++	/* Does it have a .git directory? */
++	if (!submodule_uses_gitfile(path)) {
++		warning(_("cannot remove submodule '%s' because it (or one of "
++			  "its nested submodules) uses a .git directory"),
++			  path);
++		return -1;
++	}
++
++	/* Remove the whole submodule directory */
++	memset(&cp, 0, sizeof(cp));
++	cp.argv = argv;
++	cp.env = local_repo_env;
++	cp.git_cmd = 0;
++	cp.no_stdin = 1;
++	if (run_command(&cp)) {
++		warning("Could not remove submodule %s", path);
++		strbuf_release(&dot_git);
++		return -1;
++	}
++
++	return 0;
++}
++
+ /* Helper function to display the submodule header line prior to the full
+  * summary output. If it can locate the submodule objects directory it will
+  * attempt to lookup both the left and right commits and put them into the
+diff --git a/submodule.h b/submodule.h
+index df23758..8a8021b 100644
+--- a/submodule.h
++++ b/submodule.h
+@@ -55,6 +55,7 @@ void show_submodule_inline_diff(FILE *f, const char *path,
+ void set_config_fetch_recurse_submodules(int value);
+ void set_config_update_recurse_submodules(int default_value, int option_value);
+ int submodule_needs_update(const char *path);
++int depopulate_submodule(const char *path);
+ void check_for_new_submodule_commits(unsigned char new_sha1[20]);
+ int fetch_populated_submodules(const struct argv_array *options,
+ 			       const char *prefix, int command_line_option,
+diff --git a/unpack-trees.c b/unpack-trees.c
+index ea6bdd2..a50a2b1 100644
+--- a/unpack-trees.c
++++ b/unpack-trees.c
+@@ -9,6 +9,7 @@
+ #include "refs.h"
+ #include "attr.h"
+ #include "split-index.h"
++#include "submodule.h"
+ #include "dir.h"
+ 
+ /*
+@@ -1361,15 +1362,12 @@ static void invalidate_ce_path(const struct cache_entry *ce,
+ /*
+  * Check that checking out ce->sha1 in subdir ce->name is not
+  * going to overwrite any working files.
+- *
+- * Currently, git does not checkout subprojects during a superproject
+- * checkout, so it is not going to overwrite anything.
+  */
+ static int verify_clean_submodule(const struct cache_entry *ce,
+ 				  enum unpack_trees_error_types error_type,
+ 				  struct unpack_trees_options *o)
+ {
+-	return 0;
++	return submodule_needs_update(ce->name) && is_submodule_modified(ce->name, 0);
+ }
+ 
+ static int verify_clean_subdirectory(const struct cache_entry *ce,
+diff --git a/wrapper.c b/wrapper.c
+index e7f1979..1c6c08c 100644
+--- a/wrapper.c
++++ b/wrapper.c
+@@ -2,6 +2,7 @@
+  * Various trivial helper wrappers around standard functions
+  */
+ #include "cache.h"
++#include "submodule.h"
+ 
+ static void do_nothing(size_t size)
+ {
+@@ -592,6 +593,8 @@ int unlink_or_warn(const char *file)
+ 
+ int rmdir_or_warn(const char *file)
+ {
++	if (submodule_needs_update(file) && depopulate_submodule(file))
++		return -1;
+ 	return warn_if_unremovable("rmdir", file, rmdir(file));
+ }
+ 
+-- 
+2.8.0.rc3.226.g39d4020
+
