@@ -1,4 +1,4 @@
-From 9f836f3add6bc6a3598fad0ead0802722dd711ff Mon Sep 17 00:00:00 2001
+From 2a4dfdcb0f160841f9484530e2cdf467e7d51a34 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Wed, 13 Jun 2012 18:50:10 +0200
 Subject: Teach checkout to recursively checkout submodules
@@ -42,7 +42,7 @@ index 8e2c066..51029c0 100644
  	Branch to checkout; if it refers to a branch (i.e., a name that,
  	when prepended with "refs/heads/", is a valid ref), then that
 diff --git a/builtin/checkout.c b/builtin/checkout.c
-index 9b2a5b3..ca1f9d1 100644
+index 512492a..d168639 100644
 --- a/builtin/checkout.c
 +++ b/builtin/checkout.c
 @@ -21,6 +21,9 @@
@@ -81,7 +81,7 @@ index 9b2a5b3..ca1f9d1 100644
  		die(_("-b, -B and --orphan are mutually exclusive"));
  
 diff --git a/submodule-config.c b/submodule-config.c
-index 57eb067..ae72890 100644
+index 86e1af7..cbf92f8 100644
 --- a/submodule-config.c
 +++ b/submodule-config.c
 @@ -1,6 +1,7 @@
@@ -114,7 +114,7 @@ index 57eb067..ae72890 100644
  			       int die_on_error)
  {
 diff --git a/submodule-config.h b/submodule-config.h
-index f47aa26..8138a47 100644
+index c9b142b..4026675 100644
 --- a/submodule-config.h
 +++ b/submodule-config.h
 @@ -5,6 +5,8 @@
@@ -134,7 +134,7 @@ index f47aa26..8138a47 100644
 +		const char *arg, int unset);
  int parse_push_recurse_submodules_arg(const char *opt, const char *arg);
  int parse_submodule_config_option(const char *var, const char *value);
- const struct submodule *submodule_from_name(const unsigned char *commit_sha1,
+ const struct submodule *submodule_from_name(const unsigned char *commit_or_tree,
 diff --git a/t/lib-submodule-update.sh b/t/lib-submodule-update.sh
 index 711f55b..0db601e 100755
 --- a/t/lib-submodule-update.sh

@@ -1,4 +1,4 @@
-From 4fea0a8164060e2b9d9065abc7511fcf533fc64d Mon Sep 17 00:00:00 2001
+From 02a210667723dfc7f519b1082e2f77f7de8e8b4d Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Mon, 18 Jun 2012 22:11:45 +0200
 Subject: submodule: teach unpack_trees() to repopulate submodules
@@ -36,7 +36,7 @@ index c6eea24..d9852a0 100644
  	default:
  		return error("unknown file mode for %s in index", path);
 diff --git a/submodule.c b/submodule.c
-index 54eafc8..6b40217 100644
+index 66920af..c3f0c5f 100644
 --- a/submodule.c
 +++ b/submodule.c
 @@ -309,6 +309,42 @@ static void print_submodule_summary(struct rev_info *rev, FILE *f,
@@ -82,7 +82,7 @@ index 54eafc8..6b40217 100644
  int depopulate_submodule(const char *path)
  {
  	struct strbuf dot_git = STRBUF_INIT;
-@@ -1284,23 +1320,25 @@ void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir)
+@@ -1355,23 +1391,25 @@ void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir)
  {
  	struct strbuf file_name = STRBUF_INIT;
  	struct strbuf rel_path = STRBUF_INIT;
@@ -112,10 +112,10 @@ index 54eafc8..6b40217 100644
  
  int parallel_submodules(void)
 diff --git a/submodule.h b/submodule.h
-index 8a8021b..041ccd5 100644
+index 4a0c050..1476e64 100644
 --- a/submodule.h
 +++ b/submodule.h
-@@ -55,6 +55,7 @@ void show_submodule_inline_diff(FILE *f, const char *path,
+@@ -56,6 +56,7 @@ void show_submodule_inline_diff(FILE *f, const char *path,
  void set_config_fetch_recurse_submodules(int value);
  void set_config_update_recurse_submodules(int default_value, int option_value);
  int submodule_needs_update(const char *path);

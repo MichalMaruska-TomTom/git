@@ -1,34 +1,101 @@
 Version next; changes since v2.11.0-rc1:
 ----------------------------------------
 
+Alex Henrie (1):
+      l10n: ca.po: update translation
+
 Ben North (1):
       git-worktree.txt: fix typo "to"/"two", and add comma
 
-Brandon Williams (2):
-      lib-proto-disable: variable name fix
-      transport: add protocol policy config option
+Changwoo Ryu (1):
+      l10n: ko.po: Update Korean translation
+
+David Turner (2):
+      remote-curl: don't hang when a server dies before any output
+      upload-pack: optionally allow fetching any sha1
 
 Dennis Kaarsemaker (1):
       push: test pushing ambiguously named branches
 
-Jeff King (2):
+Dimitriy Ryazantcev (2):
+      l10n: ru.po: update Russian translation
+      l10n: ru.po: update Russian translation
+
+Heiko Voigt (4):
+      serialize collection of changed submodules
+      serialize collection of refs that contain submodule changes
+      batch check whether submodule needs pushing into one call
+      submodule_needs_pushing(): explain the behaviour when we cannot answer
+
+Jean-Noel Avila (1):
+      l10n: fr.po v2.11.0_rnd1
+
+Jeff King (3):
       setup_git_env: avoid blind fall-back to ".git"
       create_branch: drop unused "head" parameter
+      common-main: stop munging argv[0] path
 
-Jonathan Tan (1):
+Jiang Xin (6):
+      l10n: git.pot: v2.11.0 round 1 (209 new, 53 removed)
+      l10n: zh_CN: for git v2.11.0 l10n round 1
+      i18n: fix unmatched single quote in error message
+      l10n: git.pot: v2.11.0 round 2 (1 new, 1 removed)
+      l10n: Fixed typo of git fetch-pack command
+      l10n: fix unmatched single quote in error message
+
+Johannes Schindelin (3):
+      rebase -i: highlight problems with core.commentchar
+      stripspace: respect repository config
+      rebase -i: handle core.commentChar=auto
+
+Jonathan Tan (2):
       fetch: do not redundantly calculate tag refmap
+      doc: mention user-configured trailers
 
-Junio C Hamano (4):
+Junio C Hamano (13):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       utf8: refactor code to decide fallback encoding
       utf8: accept "latin-1" as ISO-8859-1
       push: do not use potentially ambiguous default refspec
+      compression: unify pack.compression configuration parsing
+      Git 2.11-rc2
+      for-each-ref: do not segv with %(HEAD) on an unborn branch
+      mailinfo: read local configuration
+      archive: read local configuration
+      Git 2.11-rc3
+      Git 2.11
+      preparing for 2.10.3
+      Start post 2.11 cycle
 
-Matt McCutchen (1):
+Marc Branchaud (1):
+      RelNotes: spelling and phrasing fixups
+
+Matt McCutchen (2):
       doc: mention transfer data leaks in more places
+      git-gc.txt: expand discussion of races with other processes
+
+Peter Krefting (1):
+      l10n: sv.po: Update Swedish translation (2913t0f0u)
+
+Ralf Thielow (1):
+      l10n: de.po: translate 210 new messages
+
+Stefan Beller (3):
+      submodule config: inline config_from_{name, path}
+      submodule-config: rename commit_sha1 to treeish_name
+      submodule-config: clarify parsing of null_sha1 element
 
 Tobias Klauser (1):
       diffcore-delta: remove unused parameter to diffcore_count_changes()
+
+Trần Ngọc Quân (1):
+      l10n: vi.po: Updated translation to v2.11.0 (2913t)
+
+Vasco Almeida (1):
+      l10n: pt_PT: update Portuguese translation
+
+jfbu (1):
+      l10n: fr.po fix grammar mistakes
 
 
 Version v2.11.0-rc1; changes since v2.11.0-rc0:

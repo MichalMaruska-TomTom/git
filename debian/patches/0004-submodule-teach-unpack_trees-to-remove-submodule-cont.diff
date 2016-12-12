@@ -1,4 +1,4 @@
-From dc1c3f9017f65a7038a316b8bca3aa1967f33c66 Mon Sep 17 00:00:00 2001
+From 3a4e90583c46dc3b1c86a6111fd146bd8c162077 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Tue, 19 Jun 2012 20:55:45 +0200
 Subject: submodule: teach unpack_trees() to remove submodule contents
@@ -28,7 +28,7 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  4 files changed, 43 insertions(+), 4 deletions(-)
 
 diff --git a/submodule.c b/submodule.c
-index 28a6a24..54eafc8 100644
+index 8ef2e04..66920af 100644
 --- a/submodule.c
 +++ b/submodule.c
 @@ -309,6 +309,43 @@ static void print_submodule_summary(struct rev_info *rev, FILE *f,
@@ -76,10 +76,10 @@ index 28a6a24..54eafc8 100644
   * summary output. If it can locate the submodule objects directory it will
   * attempt to lookup both the left and right commits and put them into the
 diff --git a/submodule.h b/submodule.h
-index df23758..8a8021b 100644
+index 92b3fa8..4a0c050 100644
 --- a/submodule.h
 +++ b/submodule.h
-@@ -55,6 +55,7 @@ void show_submodule_inline_diff(FILE *f, const char *path,
+@@ -56,6 +56,7 @@ void show_submodule_inline_diff(FILE *f, const char *path,
  void set_config_fetch_recurse_submodules(int value);
  void set_config_update_recurse_submodules(int default_value, int option_value);
  int submodule_needs_update(const char *path);

@@ -1,4 +1,4 @@
-From 49b270b2c0108de08cdb2495f925cc1de27467cf Mon Sep 17 00:00:00 2001
+From ada77c780b4f4beb7b17b3fd31b7da68d9635d13 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Fri, 5 Apr 2013 18:35:27 +0200
 Subject: submodule: teach unpack_trees() to update submodules
@@ -57,7 +57,7 @@ index d9852a0..47cef2f 100644
  				return error("%s is a directory", path.buf);
  			remove_subtree(&path);
 diff --git a/submodule.c b/submodule.c
-index 6b40217..97994a5 100644
+index c3f0c5f..3dcd1b5 100644
 --- a/submodule.c
 +++ b/submodule.c
 @@ -459,6 +459,42 @@ static void show_submodule_header(FILE *f, const char *path,
@@ -103,7 +103,7 @@ index 6b40217..97994a5 100644
  void show_submodule_summary(FILE *f, const char *path,
  		const char *line_prefix,
  		struct object_id *one, struct object_id *two,
-@@ -1007,6 +1043,17 @@ int fetch_populated_submodules(const struct argv_array *options,
+@@ -1078,6 +1114,17 @@ int fetch_populated_submodules(const struct argv_array *options,
  	return spf.result;
  }
  
@@ -121,7 +121,7 @@ index 6b40217..97994a5 100644
  unsigned is_submodule_modified(const char *path, int ignore_untracked)
  {
  	ssize_t len;
-@@ -1152,6 +1199,45 @@ int ok_to_remove_submodule(const char *path)
+@@ -1223,6 +1270,45 @@ int ok_to_remove_submodule(const char *path)
  	return ok_to_remove;
  }
  
@@ -168,10 +168,10 @@ index 6b40217..97994a5 100644
  		struct commit *a, struct commit *b)
  {
 diff --git a/submodule.h b/submodule.h
-index 041ccd5..9c57fd9 100644
+index 1476e64..9960373 100644
 --- a/submodule.h
 +++ b/submodule.h
-@@ -57,13 +57,16 @@ void set_config_update_recurse_submodules(int default_value, int option_value);
+@@ -58,13 +58,16 @@ void set_config_update_recurse_submodules(int default_value, int option_value);
  int submodule_needs_update(const char *path);
  int populate_submodule(const char *path, unsigned char sha1[20], int force);
  int depopulate_submodule(const char *path);
@@ -187,7 +187,7 @@ index 041ccd5..9c57fd9 100644
 +unsigned is_submodule_checkout_safe(const char *path, const unsigned char sha1[20]);
  int merge_submodule(unsigned char result[20], const char *path, const unsigned char base[20],
  		    const unsigned char a[20], const unsigned char b[20], int search);
- int find_unpushed_submodules(unsigned char new_sha1[20], const char *remotes_name,
+ int find_unpushed_submodules(struct sha1_array *commits, const char *remotes_name,
 diff --git a/unpack-trees.c b/unpack-trees.c
 index 12a2e37..e62cb1b 100644
 --- a/unpack-trees.c

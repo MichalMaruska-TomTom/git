@@ -1,4 +1,4 @@
-From bb9bb22d0935be3c9bfd40a9225e795814455d77 Mon Sep 17 00:00:00 2001
+From a7090bae830d8d3b42692b18750003c293a67bd6 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Mon, 18 Jun 2012 22:17:59 +0200
 Subject: submodule: prepare for recursive checkout of submodules
@@ -17,7 +17,7 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  4 files changed, 45 insertions(+)
 
 diff --git a/submodule-config.c b/submodule-config.c
-index 098085b..57eb067 100644
+index ec13ab5..86e1af7 100644
 --- a/submodule-config.c
 +++ b/submodule-config.c
 @@ -234,6 +234,28 @@ int parse_fetch_recurse_submodules_arg(const char *opt, const char *arg)
@@ -50,7 +50,7 @@ index 098085b..57eb067 100644
  			       int die_on_error)
  {
 diff --git a/submodule-config.h b/submodule-config.h
-index d05c542..f47aa26 100644
+index 99df8e5..c9b142b 100644
 --- a/submodule-config.h
 +++ b/submodule-config.h
 @@ -23,6 +23,7 @@ struct submodule {
@@ -60,9 +60,9 @@ index d05c542..f47aa26 100644
 +int parse_update_recurse_submodules_arg(const char *opt, const char *arg);
  int parse_push_recurse_submodules_arg(const char *opt, const char *arg);
  int parse_submodule_config_option(const char *var, const char *value);
- const struct submodule *submodule_from_name(const unsigned char *commit_sha1,
+ const struct submodule *submodule_from_name(const unsigned char *commit_or_tree,
 diff --git a/submodule.c b/submodule.c
-index 6f7d883..28a6a24 100644
+index 00dd655..8ef2e04 100644
 --- a/submodule.c
 +++ b/submodule.c
 @@ -16,6 +16,8 @@
@@ -100,10 +100,10 @@ index 6f7d883..28a6a24 100644
  		      int flags, void *cb_data)
  {
 diff --git a/submodule.h b/submodule.h
-index d9e197a..df23758 100644
+index 9454806..92b3fa8 100644
 --- a/submodule.h
 +++ b/submodule.h
-@@ -53,6 +53,8 @@ void show_submodule_inline_diff(FILE *f, const char *path,
+@@ -54,6 +54,8 @@ void show_submodule_inline_diff(FILE *f, const char *path,
  		const char *del, const char *add, const char *reset,
  		const struct diff_options *opt);
  void set_config_fetch_recurse_submodules(int value);
