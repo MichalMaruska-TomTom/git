@@ -5,4 +5,6 @@
 0005-submodule-teach-unpack_trees-to-repopulate-submodules.diff
 0006-submodule-teach-unpack_trees-to-update-submodules.diff
 0007-Teach-checkout-to-recursively-checkout-submodules.diff
-Documentation-omit-asciidoc-footer-on-generated-input.diff
+Normalize-generated-asciidoc-timestamps-with-SOURCE_D.diff
+git-gui-Sort-entries-in-optimized-tclIndex.diff
+xdiff-Do-not-enable-XDL_FAST_HASH-by-default.diff

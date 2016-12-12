@@ -1,14 +1,5 @@
-Version next; changes since v2.11.0-rc1:
-----------------------------------------
-
-Alex Henrie (1):
-      l10n: ca.po: update translation
-
-Ben North (1):
-      git-worktree.txt: fix typo "to"/"two", and add comma
-
-Changwoo Ryu (1):
-      l10n: ko.po: Update Korean translation
+Version next; changes since v2.11.0:
+------------------------------------
 
 David Turner (2):
       remote-curl: don't hang when a server dies before any output
@@ -17,76 +8,97 @@ David Turner (2):
 Dennis Kaarsemaker (1):
       push: test pushing ambiguously named branches
 
-Dimitriy Ryazantcev (2):
-      l10n: ru.po: update Russian translation
-      l10n: ru.po: update Russian translation
-
 Heiko Voigt (4):
       serialize collection of changed submodules
       serialize collection of refs that contain submodule changes
       batch check whether submodule needs pushing into one call
       submodule_needs_pushing(): explain the behaviour when we cannot answer
 
-Jean-Noel Avila (1):
-      l10n: fr.po v2.11.0_rnd1
-
-Jeff King (3):
+Jeff King (1):
       setup_git_env: avoid blind fall-back to ".git"
-      create_branch: drop unused "head" parameter
-      common-main: stop munging argv[0] path
 
-Jiang Xin (6):
-      l10n: git.pot: v2.11.0 round 1 (209 new, 53 removed)
-      l10n: zh_CN: for git v2.11.0 l10n round 1
-      i18n: fix unmatched single quote in error message
-      l10n: git.pot: v2.11.0 round 2 (1 new, 1 removed)
-      l10n: Fixed typo of git fetch-pack command
-      l10n: fix unmatched single quote in error message
-
-Johannes Schindelin (3):
-      rebase -i: highlight problems with core.commentchar
-      stripspace: respect repository config
-      rebase -i: handle core.commentChar=auto
-
-Jonathan Tan (2):
+Jonathan Tan (1):
       fetch: do not redundantly calculate tag refmap
-      doc: mention user-configured trailers
 
-Junio C Hamano (13):
+Junio C Hamano (7):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       utf8: refactor code to decide fallback encoding
       utf8: accept "latin-1" as ISO-8859-1
       push: do not use potentially ambiguous default refspec
       compression: unify pack.compression configuration parsing
-      Git 2.11-rc2
-      for-each-ref: do not segv with %(HEAD) on an unborn branch
-      mailinfo: read local configuration
-      archive: read local configuration
-      Git 2.11-rc3
-      Git 2.11
       preparing for 2.10.3
       Start post 2.11 cycle
-
-Marc Branchaud (1):
-      RelNotes: spelling and phrasing fixups
 
 Matt McCutchen (2):
       doc: mention transfer data leaks in more places
       git-gc.txt: expand discussion of races with other processes
-
-Peter Krefting (1):
-      l10n: sv.po: Update Swedish translation (2913t0f0u)
-
-Ralf Thielow (1):
-      l10n: de.po: translate 210 new messages
 
 Stefan Beller (3):
       submodule config: inline config_from_{name, path}
       submodule-config: rename commit_sha1 to treeish_name
       submodule-config: clarify parsing of null_sha1 element
 
-Tobias Klauser (1):
-      diffcore-delta: remove unused parameter to diffcore_count_changes()
+
+Version v2.11.0; changes since v2.11.0-rc3:
+-------------------------------------------
+
+Alex Henrie (1):
+      l10n: ca.po: update translation
+
+Dimitriy Ryazantcev (1):
+      l10n: ru.po: update Russian translation
+
+Jeff King (1):
+      common-main: stop munging argv[0] path
+
+Jiang Xin (1):
+      l10n: fix unmatched single quote in error message
+
+Junio C Hamano (1):
+      Git 2.11
+
+Marc Branchaud (1):
+      RelNotes: spelling and phrasing fixups
+
+Ralf Thielow (1):
+      l10n: de.po: translate 210 new messages
+
+
+Version v2.11.0-rc3; changes since v2.11.0-rc2:
+-----------------------------------------------
+
+Changwoo Ryu (1):
+      l10n: ko.po: Update Korean translation
+
+Dimitriy Ryazantcev (1):
+      l10n: ru.po: update Russian translation
+
+Jean-Noel Avila (1):
+      l10n: fr.po v2.11.0_rnd1
+
+Jiang Xin (5):
+      l10n: git.pot: v2.11.0 round 1 (209 new, 53 removed)
+      l10n: zh_CN: for git v2.11.0 l10n round 1
+      i18n: fix unmatched single quote in error message
+      l10n: git.pot: v2.11.0 round 2 (1 new, 1 removed)
+      l10n: Fixed typo of git fetch-pack command
+
+Johannes Schindelin (3):
+      rebase -i: highlight problems with core.commentchar
+      stripspace: respect repository config
+      rebase -i: handle core.commentChar=auto
+
+Jonathan Tan (1):
+      doc: mention user-configured trailers
+
+Junio C Hamano (4):
+      for-each-ref: do not segv with %(HEAD) on an unborn branch
+      mailinfo: read local configuration
+      archive: read local configuration
+      Git 2.11-rc3
+
+Peter Krefting (1):
+      l10n: sv.po: Update Swedish translation (2913t0f0u)
 
 Trần Ngọc Quân (1):
       l10n: vi.po: Updated translation to v2.11.0 (2913t)
@@ -96,6 +108,22 @@ Vasco Almeida (1):
 
 jfbu (1):
       l10n: fr.po fix grammar mistakes
+
+
+Version v2.11.0-rc2; changes since v2.11.0-rc1:
+-----------------------------------------------
+
+Ben North (1):
+      git-worktree.txt: fix typo "to"/"two", and add comma
+
+Jeff King (1):
+      create_branch: drop unused "head" parameter
+
+Junio C Hamano (1):
+      Git 2.11-rc2
+
+Tobias Klauser (1):
+      diffcore-delta: remove unused parameter to diffcore_count_changes()
 
 
 Version v2.11.0-rc1; changes since v2.11.0-rc0:
