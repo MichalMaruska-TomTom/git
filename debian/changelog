@@ -1,10 +1,18 @@
-git (1:2.11.0+next.20161222-0.1) experimental; urgency=low
+git (1:2.11.0+next.20161222-1) experimental; urgency=low
 
   * new snapshot, taken from upstream commit 1ede815b.
   * debian/patches/xdiff-Do-not-enable-XDL_FAST_HASH-by-default.diff:
     remove; fixed upstream.
+  * merge branch debian-sid.
 
- -- Jonathan Nieder <jrnieder@gmail.com>  Tue, 27 Dec 2016 15:26:19 -0800
+ -- Jonathan Nieder <jrnieder@gmail.com>  Tue, 27 Dec 2016 15:31:55 -0800
+
+git (1:2.11.0-2) unstable; urgency=medium
+
+  * gitweb: Depends: libcgi-pm-perl; Build-Depends: libcgi-pm-perl
+    (thx Mikko Rasa; closes: #847961).
+
+ -- Jonathan Nieder <jrnieder@gmail.com>  Tue, 27 Dec 2016 15:17:12 -0800
 
 git (1:2.11.0+next.20161205-1) experimental; urgency=low
 
