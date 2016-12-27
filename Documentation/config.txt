@@ -1893,6 +1893,16 @@ http.userAgent::
 	of common USER_AGENT strings (but not including those like git/1.7.1).
 	Can be overridden by the `GIT_HTTP_USER_AGENT` environment variable.
 
+http.followRedirects::
+	Whether git should follow HTTP redirects. If set to `true`, git
+	will transparently follow any redirect issued by a server it
+	encounters. If set to `false`, git will treat all redirects as
+	errors. If set to `initial`, git will follow redirects only for
+	the initial request to a remote, but not for subsequent
+	follow-up HTTP requests. Since git uses the redirected URL as
+	the base for the follow-up requests, this is generally
+	sufficient. The default is `initial`.
+
 http.<url>.*::
 	Any of the http.* options above can be applied selectively to some URLs.
 	For a config key to match a URL, each element of the config key is
@@ -2309,6 +2319,52 @@ pretty.<name>::
 	to be equivalent to running `git log "--pretty=format:* %H %s"`.
 	Note that an alias with the same name as a built-in format
 	will be silently ignored.
+
+protocol.allow::
+	If set, provide a user defined default policy for all protocols which
+	don't explicitly have a policy (`protocol.<name>.allow`).  By default,
+	if unset, known-safe protocols (http, https, git, ssh, file) have a
+	default policy of `always`, known-dangerous protocols (ext) have a
+	default policy of `never`, and all other protocols have a default
+	policy of `user`.  Supported policies:
++
+--
+
+* `always` - protocol is always able to be used.
+
+* `never` - protocol is never able to be used.
+
+* `user` - protocol is only able to be used when `GIT_PROTOCOL_FROM_USER` is
+  either unset or has a value of 1.  This policy should be used when you want a
+  protocol to be directly usable by the user but don't want it used by commands which
+  execute clone/fetch/push commands without user input, e.g. recursive
+  submodule initialization.
+
+--
+
+protocol.<name>.allow::
+	Set a policy to be used by protocol `<name>` with clone/fetch/push
+	commands. See `protocol.allow` above for the available policies.
++
+The protocol names currently used by git are:
++
+--
+  - `file`: any local file-based path (including `file://` URLs,
+    or local paths)
+
+  - `git`: the anonymous git protocol over a direct TCP
+    connection (or proxy, if configured)
+
+  - `ssh`: git over ssh (including `host:path` syntax,
+    `ssh://`, etc).
+
+  - `http`: git over http, both "smart http" and "dumb http".
+    Note that this does _not_ include `https`; if you want to configure
+    both, you must do so individually.
+
+  - any external helpers are named by their protocol (e.g., use
+    `hg` to allow the `git-remote-hg` helper)
+--
 
 pull.ff::
 	By default, Git does not create an extra merge commit when merging

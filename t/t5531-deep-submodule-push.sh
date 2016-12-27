@@ -65,7 +65,11 @@ test_expect_success 'push fails if submodule commit not on remote' '
 		git add gar/bage &&
 		git commit -m "Third commit for gar/bage" &&
 		# the push should fail with --recurse-submodules=check
-		# on the command line...
+		# on the command line. "check" is the default for repos in
+		# which submodules are detected by existence of config,
+		# .gitmodules file or an internal .git/modules/<submodule-repo>
+		git submodule add -f ../submodule.git gar/bage &&
+		test_must_fail git push ../pub.git master &&
 		test_must_fail git push --recurse-submodules=check ../pub.git master &&
 
 		# ...or if specified in the configuration..
@@ -427,7 +431,31 @@ test_expect_success 'push unpushable submodule recursively fails' '
 		cd submodule.git &&
 		git rev-parse master >../actual
 	) &&
+	test_when_finished git -C work reset --hard master^ &&
 	test_cmp expected actual
+'
+
+test_expect_success 'push --dry-run does not recursively update submodules' '
+	(
+		cd work/gar/bage &&
+		git checkout master &&
+		git rev-parse master >../../../expected_submodule &&
+		> junk9 &&
+		git add junk9 &&
+		git commit -m "Ninth junk" &&
+
+		# Go up to 'work' directory
+		cd ../.. &&
+		git checkout master &&
+		git rev-parse master >../expected_pub &&
+		git add gar/bage &&
+		git commit -m "Ninth commit for gar/bage" &&
+		git push --dry-run --recurse-submodules=on-demand ../pub.git master
+	) &&
+	git -C submodule.git rev-parse master >actual_submodule &&
+	git -C pub.git rev-parse master >actual_pub &&
+	test_cmp expected_pub actual_pub &&
+	test_cmp expected_submodule actual_submodule
 '
 
 test_done

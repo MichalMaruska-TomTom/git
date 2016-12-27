@@ -38,6 +38,9 @@ void set_diffopt_flags_from_submodule_config(struct diff_options *diffopt,
 		const char *path);
 int submodule_config(const char *var, const char *value, void *cb);
 void gitmodules_config(void);
+extern void gitmodules_config_sha1(const unsigned char *commit_sha1);
+extern int is_submodule_initialized(const char *path);
+extern int is_submodule_populated(const char *path);
 int parse_submodule_update_strategy(const char *value,
 		struct submodule_update_strategy *dst);
 const char *submodule_strategy_to_string(const struct submodule_update_strategy *s);
@@ -65,8 +68,9 @@ int merge_submodule(unsigned char result[20], const char *path, const unsigned c
 		    const unsigned char a[20], const unsigned char b[20], int search);
 int find_unpushed_submodules(struct sha1_array *commits, const char *remotes_name,
 		struct string_list *needs_pushing);
-int push_unpushed_submodules(struct sha1_array *commits, const char *remotes_name);
-void connect_work_tree_and_git_dir(const char *work_tree, const char *git_dir);
+extern int push_unpushed_submodules(struct sha1_array *commits,
+				    const char *remotes_name,
+				    int dry_run);
 int parallel_submodules(void);
 
 /*
@@ -76,4 +80,8 @@ int parallel_submodules(void);
  */
 void prepare_submodule_repo_env(struct argv_array *out);
 
+#define ABSORB_GITDIR_RECURSE_SUBMODULES (1<<0)
+extern void absorb_git_dir_into_superproject(const char *prefix,
+					     const char *path,
+					     unsigned flags);
 #endif
