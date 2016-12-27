@@ -7,4 +7,3 @@
 0007-Teach-checkout-to-recursively-checkout-submodules.diff
 Normalize-generated-asciidoc-timestamps-with-SOURCE_D.diff
 git-gui-Sort-entries-in-optimized-tclIndex.diff
-xdiff-Do-not-enable-XDL_FAST_HASH-by-default.diff

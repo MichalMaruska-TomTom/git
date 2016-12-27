@@ -1,12 +1,75 @@
 Version next; changes since v2.11.0:
 ------------------------------------
 
-David Turner (2):
+Alan Davies (1):
+      mingw: fix colourization on Cygwin pseudo terminals
+
+Alex Henrie (3):
+      bisect: improve English grammar of not-ancestors message
+      receive-pack: improve English grammar of denyCurrentBranch message
+      clone,fetch: explain the shallow-clone option a little more clearly
+
+Andreas Krey (2):
+      commit: make --only --allow-empty work without paths
+      commit: remove 'Clever' message for --only --amend
+
+Beat Bolli (6):
+      update_unicode.sh: move it into contrib/update-unicode
+      update_unicode.sh: remove an unnecessary subshell level
+      update_unicode.sh: pin the uniset repo to a known good commit
+      update_unicode.sh: automatically download newer definition files
+      update_unicode.sh: remove the plane filter
+      unicode_width.h: update the width tables to Unicode 9.0
+
+Brandon Williams (18):
+      push: --dry-run updates submodules when --recurse-submodules=on-demand
+      push: fix --dry-run to not push submodules
+      real_path: resolve symlinks by hand
+      real_path: convert real_path_internal to strbuf_realpath
+      real_path: create real_pathdup
+      real_path: have callers use real_pathdup and strbuf_realpath
+      lib-proto-disable: variable name fix
+      http: always warn if libcurl version is too old
+      transport: add protocol policy config option
+      http: create function to get curl allowed protocols
+      transport: add from_user parameter to is_transport_allowed
+      submodules: add helper to determine if a submodule is populated
+      submodules: add helper to determine if a submodule is initialized
+      submodules: load gitmodules file from commit sha1
+      grep: add submodules as a grep source type
+      grep: optionally recurse into submodules
+      grep: enable recurse-submodules to work on <tree> objects
+      grep: search history of moved submodules
+
+Chris Packham (3):
+      merge: add '--continue' option as a synonym for 'git commit'
+      completion: add --continue option for merge
+      merge: ensure '--abort' option takes no arguments
+
+David Aguilar (8):
+      mergetool: honor mergetool.$tool.trustExitCode for built-in tools
+      mergetools/vimdiff: trust Vim's exit code
+      difftool: fix dir-diff index creation when in a subdirectory
+      difftool: fix dir-diff index creation when in a subdirectory
+      difftool: sanitize $workdir as early as possible
+      difftool: chdir as early as possible
+      difftool: rename variables for consistency
+      mergetools: fix xxdiff hotkeys
+
+David Turner (3):
+      submodules: allow empty working-tree dirs in merge/cherry-pick
       remote-curl: don't hang when a server dies before any output
       upload-pack: optionally allow fetching any sha1
 
 Dennis Kaarsemaker (1):
       push: test pushing ambiguously named branches
+
+Eric Wong (2):
+      git-svn: allow "0" in SVN path components
+      git-svn: document useLogAuthor and addAuthorFrom config keys
+
+George Vanburgh (1):
+      git-p4: fix multi-path changelist empty commits
 
 Heiko Voigt (4):
       serialize collection of changed submodules
@@ -14,29 +77,190 @@ Heiko Voigt (4):
       batch check whether submodule needs pushing into one call
       submodule_needs_pushing(): explain the behaviour when we cannot answer
 
-Jeff King (1):
+Jack Bates (1):
+      diff: handle --no-abbrev in no-index case
+
+Jacob Keller (2):
+      pretty: add %(trailers) format for displaying trailers of a commit message
+      ref-filter: add support to display trailers as part of contents
+
+Jeff Hostetler (1):
+      mingw: replace isatty() hack
+
+Jeff King (26):
       setup_git_env: avoid blind fall-back to ".git"
+      rev-parse: fix parent shorthands with --symbolic
+      t7610: clean up foo.XXXXXX tmpdir
+      http: simplify update_url_from_redirect
+      http: always update the base URL for redirects
+      remote-curl: rename shadowed options variable
+      http: make redirects more obvious
+      http: treat http-alternates like redirects
+      http-walker: complain about non-404 loose object errors
+      xdiff: drop XDL_FAST_HASH
+      stash: prefer plumbing over git-diff
+      alternates: accept double-quoted paths
+      tmp-objdir: quote paths we add to alternates
+      Makefile: reformat FIND_SOURCE_FILES
+      Makefile: exclude test cruft from FIND_SOURCE_FILES
+      Makefile: match shell scripts in FIND_SOURCE_FILES
+      Makefile: exclude contrib from FIND_SOURCE_FILES
+      parse-options: print "fatal:" before usage_msg_opt()
+      http: respect protocol.*.allow=user for http-alternates
+      README: replace gmane link with public-inbox
+      merge: mark usage error strings for translation
+      t5000: extract nongit function to test-lib-functions.sh
+      index-pack: complain when --stdin is used outside of a repo
+      t: use nongit() function where applicable
+      shortlog: test and document --committer option
+      index-pack: skip collision check when not in repository
 
-Jonathan Tan (1):
+Johannes Schindelin (4):
+      cherry-pick: demonstrate a segmentation fault
+      merge-recursive: handle NULL in add_cacheinfo() correctly
+      mingw: intercept isatty() to handle /dev/null as Git expects it
+      mingw: adjust is_console() to work with stdin
+
+Johannes Sixt (4):
+      t5547-push-quarantine: run the path separator test on Windows, too
+      normalize_path_copy(): fix pushing to //server/share/dir on Windows
+      t5615-alternate-env: double-quotes in file names do not work on Windows
+      real_path: canonicalize directory separators in root parts
+
+Jonathan Tan (6):
       fetch: do not redundantly calculate tag refmap
+      trailer: be stricter in parsing separators
+      commit: make ignore_non_trailer take buf/len
+      trailer: avoid unnecessary splitting on lines
+      trailer: have function to describe trailer layout
+      sequencer: use trailer's trailer layout
 
-Junio C Hamano (7):
+Junio C Hamano (18):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       utf8: refactor code to decide fallback encoding
       utf8: accept "latin-1" as ISO-8859-1
       push: do not use potentially ambiguous default refspec
       compression: unify pack.compression configuration parsing
+      pull: fast-forward "pull --rebase=true"
       preparing for 2.10.3
       Start post 2.11 cycle
+      wt-status: implement opportunisitc index update correctly
+      hold_locked_index(): align error handling with hold_lockfile_for_update()
+      lockfile: LOCK_REPORT_ON_ERROR
+      Early fixes for 2.11.x series
+      Revert "sequencer: remove useless get_dir() function"
+      First batch for 2.12
+      Second batch for 2.12
+      i18n: fix misconversion in shell scripts
+      t4201: make tests work with and without the MINGW prerequiste
+      Third batch for 2.12
+
+Kristoffer Haugsbakk (4):
+      doc: add articles (grammar)
+      doc: add verb in front of command to run
+      doc: make the intent of sentence clearer
+      doc: omit needless "for"
+
+Kyle J. McKay (1):
+      mailinfo.c: move side-effects outside of assert
+
+Lars Schneider (7):
+      git-p4: add config to retry p4 commands; retry 3 times by default
+      travis-ci: update P4 to 16.2 and GitLFS to 1.5.2 in Linux build
+      git-p4: fix empty file processing for large file system backend GitLFS
+      t0021: minor filter process test cleanup
+      docs: warn about possible '=' in clean/smudge filter process values
+      t0021: fix flaky test
+      git-p4: add diff/merge properties to .gitattributes for GitLFS files
+
+Linus Torvalds (1):
+      shortlog: group by committer information
+
+Luis Ressel (1):
+      date-formats.txt: Typo fix
+
+Luke Diamand (3):
+      git-p4: support updating an existing shelved changelist
+      git-p4: support git worktrees
+      git-p4: avoid crash adding symlinked directory
 
 Matt McCutchen (2):
       doc: mention transfer data leaks in more places
       git-gc.txt: expand discussion of races with other processes
 
-Stefan Beller (3):
+Max Kirillov (1):
+      mingw: consider that UNICODE_STRING::Length counts bytes
+
+Nguyễn Thái Ngọc Duy (12):
+      worktree.c: zero new 'struct worktree' on allocation
+      worktree: reorder an if statement
+      get_worktrees() must return main worktree as first item even on error
+      worktree.c: get_worktrees() takes a new flag argument
+      worktree list: keep the list sorted
+      merge-recursive.c: use string_list_sort instead of qsort
+      tag, branch, for-each-ref: add --ignore-case for sorting and filtering
+      shallow.c: rename fields in paint_info to better express their purposes
+      shallow.c: stop abusing COMMIT_SLAB_SIZE for paint_info's memory pools
+      shallow.c: make paint_alloc slightly more robust
+      shallow.c: remove useless code
+      rebase: add --quit to cleanup rebase, leave everything else untouched
+
+Ramsay Jones (1):
+      GIT-VERSION-GEN: do not force abbreviation length used by 'describe'
+
+Rasmus Villemoes (2):
+      shallow.c: avoid theoretical pointer wrap-around
+      shallow.c: bit manipulation tweaks
+
+Stefan Beller (14):
       submodule config: inline config_from_{name, path}
       submodule-config: rename commit_sha1 to treeish_name
       submodule-config: clarify parsing of null_sha1 element
+      submodule add: extend force flag to add existing repos
+      push: change submodule default to check when submodules exist
+      unpack-trees: fix grammar for untracked files in directories
+      t3600: remove useless redirect
+      submodule: use absolute path for computing relative path connecting
+      submodule helper: support super prefix
+      test-lib-functions.sh: teach test_commit -C <dir>
+      worktree: check if a submodule uses worktrees
+      move connect_work_tree_and_git_dir to dir.h
+      submodule: add absorb-git-dir function
+      t3600: slightly modernize style
+
+Stephan Beyer (5):
+      am: fix filename in safe_to_abort() error message
+      am: change safe_to_abort()'s not rewinding error into a warning
+      t3510: test that cherry-pick --abort does not unsafely change HEAD
+      sequencer: make sequencer abort safer
+      sequencer: remove useless get_dir() function
+
+Torsten Bögershausen (1):
+      convert: git cherry-pick -Xrenormalize did not work
+
+Vasco Almeida (16):
+      Git.pm: add subroutines for commenting lines
+      i18n: add--interactive: mark strings for translation
+      i18n: add--interactive: mark simple here-documents for translation
+      i18n: add--interactive: mark strings with interpolation for translation
+      i18n: clean.c: match string with git-add--interactive.perl
+      i18n: add--interactive: mark plural strings
+      i18n: add--interactive: mark patch prompt for translation
+      i18n: add--interactive: i18n of help_patch_cmd
+      i18n: add--interactive: mark edit_hunk_manually message for translation
+      i18n: add--interactive: remove %patch_modes entries
+      i18n: add--interactive: mark status words for translation
+      i18n: send-email: mark strings for translation
+      i18n: send-email: mark warnings and errors for translation
+      i18n: send-email: mark string with interpolation for translation
+      i18n: send-email: mark composing message for translation
+      i18n: difftool: mark warnings for translation
+
+Vinicius Kursancew (1):
+      git-p4: allow submit to create shelved changelists.
+
+Vitaly "_Vi" Shukela (1):
+      submodule--helper: set alternateLocation for cloned submodules
 
 
 Version v2.11.0; changes since v2.11.0-rc3:

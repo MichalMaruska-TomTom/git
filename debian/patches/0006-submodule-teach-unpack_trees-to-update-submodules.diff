@@ -1,4 +1,4 @@
-From ada77c780b4f4beb7b17b3fd31b7da68d9635d13 Mon Sep 17 00:00:00 2001
+From 7439148150ebd930576706d9e2720ae1c628087c Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Fri, 5 Apr 2013 18:35:27 +0200
 Subject: submodule: teach unpack_trees() to update submodules
@@ -6,26 +6,17 @@ Subject: submodule: teach unpack_trees() to update submodules
 Signed-off-by: Jens Lehmann <Jens.Lehmann@web.de>
 Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
 ---
- entry.c        | 17 +++++++++---
- submodule.c    | 86 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- submodule.h    |  3 ++
- unpack-trees.c | 70 +++++++++++++++++++++++++++++++++++++----------
+ entry.c        | 15 +++++++++---
+ submodule.c    | 75 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ submodule.h    |  2 ++
+ unpack-trees.c | 70 +++++++++++++++++++++++++++++++++++++++++++-----------
  unpack-trees.h |  1 +
- 5 files changed, 159 insertions(+), 18 deletions(-)
+ 5 files changed, 146 insertions(+), 17 deletions(-)
 
 diff --git a/entry.c b/entry.c
-index d9852a0..47cef2f 100644
+index 31e79e1..47cef2f 100644
 --- a/entry.c
 +++ b/entry.c
-@@ -205,7 +205,7 @@ static int write_entry(struct cache_entry *ce,
- 		if (mkdir(path, 0777) < 0)
- 			return error("cannot create submodule directory %s", path);
- 		if (submodule_needs_update(path) &&
--		    populate_submodule(path, ce->sha1, state->force))
-+		    populate_submodule(path, ce->oid.hash, state->force))
- 			return error("cannot checkout submodule %s", path);
- 		break;
- 	default:
 @@ -264,7 +264,7 @@ int checkout_entry(struct cache_entry *ce,
  
  	if (!check_path(path.buf, path.len, &st, state->base_dir_len)) {
@@ -57,10 +48,10 @@ index d9852a0..47cef2f 100644
  				return error("%s is a directory", path.buf);
  			remove_subtree(&path);
 diff --git a/submodule.c b/submodule.c
-index c3f0c5f..3dcd1b5 100644
+index d23ab48..1102090 100644
 --- a/submodule.c
 +++ b/submodule.c
-@@ -459,6 +459,42 @@ static void show_submodule_header(FILE *f, const char *path,
+@@ -510,6 +510,42 @@ static void show_submodule_header(FILE *f, const char *path,
  	strbuf_release(&sb);
  }
  
@@ -103,25 +94,7 @@ index c3f0c5f..3dcd1b5 100644
  void show_submodule_summary(FILE *f, const char *path,
  		const char *line_prefix,
  		struct object_id *one, struct object_id *two,
-@@ -1078,6 +1114,17 @@ int fetch_populated_submodules(const struct argv_array *options,
- 	return spf.result;
- }
- 
-+int is_submodule_populated(const char *path)
-+{
-+	int retval = 0;
-+	struct strbuf gitdir = STRBUF_INIT;
-+	strbuf_addf(&gitdir, "%s/.git", path);
-+	if (resolve_gitdir(gitdir.buf))
-+		retval = 1;
-+	strbuf_release(&gitdir);
-+	return retval;
-+}
-+
- unsigned is_submodule_modified(const char *path, int ignore_untracked)
- {
- 	ssize_t len;
-@@ -1223,6 +1270,45 @@ int ok_to_remove_submodule(const char *path)
+@@ -1277,6 +1313,45 @@ int ok_to_remove_submodule(const char *path)
  	return ok_to_remove;
  }
  
@@ -168,10 +141,10 @@ index c3f0c5f..3dcd1b5 100644
  		struct commit *a, struct commit *b)
  {
 diff --git a/submodule.h b/submodule.h
-index 1476e64..9960373 100644
+index a74b0c3..b5fb031 100644
 --- a/submodule.h
 +++ b/submodule.h
-@@ -58,13 +58,16 @@ void set_config_update_recurse_submodules(int default_value, int option_value);
+@@ -61,6 +61,7 @@ void set_config_update_recurse_submodules(int default_value, int option_value);
  int submodule_needs_update(const char *path);
  int populate_submodule(const char *path, unsigned char sha1[20], int force);
  int depopulate_submodule(const char *path);
@@ -179,8 +152,7 @@ index 1476e64..9960373 100644
  void check_for_new_submodule_commits(unsigned char new_sha1[20]);
  int fetch_populated_submodules(const struct argv_array *options,
  			       const char *prefix, int command_line_option,
- 			       int quiet, int max_parallel_jobs);
-+int is_submodule_populated(const char *path);
+@@ -68,6 +69,7 @@ int fetch_populated_submodules(const struct argv_array *options,
  unsigned is_submodule_modified(const char *path, int ignore_untracked);
  int submodule_uses_gitfile(const char *path);
  int ok_to_remove_submodule(const char *path);
@@ -189,7 +161,7 @@ index 1476e64..9960373 100644
  		    const unsigned char a[20], const unsigned char b[20], int search);
  int find_unpushed_submodules(struct sha1_array *commits, const char *remotes_name,
 diff --git a/unpack-trees.c b/unpack-trees.c
-index 12a2e37..e62cb1b 100644
+index 6dadd37..f05773f 100644
 --- a/unpack-trees.c
 +++ b/unpack-trees.c
 @@ -29,6 +29,9 @@ static const char *unpack_plumbing_errors[NB_UNPACK_TREES_ERROR_TYPES] = {
@@ -204,7 +176,7 @@ index 12a2e37..e62cb1b 100644
  
 @@ -81,6 +84,9 @@ void setup_unpack_trees_porcelain(struct unpack_trees_options *opts,
  	msgs[ERROR_NOT_UPTODATE_DIR] =
- 		_("Updating the following directories would lose untracked files in it:\n%s");
+ 		_("Updating the following directories would lose untracked files in them:\n%s");
  
 +	msgs[ERROR_NOT_UPTODATE_SUBMODULE] =
 +		"Updating the following submodules would lose modifications in it:\n%s";
