@@ -135,11 +135,14 @@ Jonathan Tan (6):
       trailer: have function to describe trailer layout
       sequencer: use trailer's trailer layout
 
-Junio C Hamano (18):
+Junio C Hamano (25):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       utf8: refactor code to decide fallback encoding
       utf8: accept "latin-1" as ISO-8859-1
+      git_open(): untangle possible NOATIME and CLOEXEC interactions
       push: do not use potentially ambiguous default refspec
+      git_open_cloexec(): use fcntl(2) w/ FD_CLOEXEC fallback
+      sha1_file: stop opening files with O_NOATIME
       compression: unify pack.compression configuration parsing
       pull: fast-forward "pull --rebase=true"
       preparing for 2.10.3
@@ -154,6 +157,10 @@ Junio C Hamano (18):
       i18n: fix misconversion in shell scripts
       t4201: make tests work with and without the MINGW prerequiste
       Third batch for 2.12
+      config.abbrev: document the new default that auto-scales
+      diff: retire "compaction" heuristics
+      lockfile: move REPORT_ON_ERROR bit elsewhere
+      Fourth batch for 2.12
 
 Kristoffer Haugsbakk (4):
       doc: add articles (grammar)
@@ -191,7 +198,10 @@ Matt McCutchen (2):
 Max Kirillov (1):
       mingw: consider that UNICODE_STRING::Length counts bytes
 
-Nguyễn Thái Ngọc Duy (12):
+Mike Hommey (1):
+      fast-import: properly fanout notes when tree is imported
+
+Nguyễn Thái Ngọc Duy (15):
       worktree.c: zero new 'struct worktree' on allocation
       worktree: reorder an if statement
       get_worktrees() must return main worktree as first item even on error
@@ -204,6 +214,9 @@ Nguyễn Thái Ngọc Duy (12):
       shallow.c: make paint_alloc slightly more robust
       shallow.c: remove useless code
       rebase: add --quit to cleanup rebase, leave everything else untouched
+      config.c: handle error case for fstat() calls
+      config.c: rename label unlock_and_out
+      config.c: handle lock file in error case in git_config_rename_...
 
 Ramsay Jones (1):
       GIT-VERSION-GEN: do not force abbreviation length used by 'describe'
@@ -212,7 +225,7 @@ Rasmus Villemoes (2):
       shallow.c: avoid theoretical pointer wrap-around
       shallow.c: bit manipulation tweaks
 
-Stefan Beller (14):
+Stefan Beller (15):
       submodule config: inline config_from_{name, path}
       submodule-config: rename commit_sha1 to treeish_name
       submodule-config: clarify parsing of null_sha1 element
@@ -227,6 +240,7 @@ Stefan Beller (14):
       move connect_work_tree_and_git_dir to dir.h
       submodule: add absorb-git-dir function
       t3600: slightly modernize style
+      worktree: initialize return value for submodule_uses_worktrees
 
 Stephan Beyer (5):
       am: fix filename in safe_to_abort() error message
