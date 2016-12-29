@@ -1,6 +1,7 @@
 git (1:2.11.0+next.20161227-0.1) experimental; urgency=low
 
   * new snapshot, taken from upstream commit c69c2f50.
+  * debian/rules: run tests once and always produce verbose output.
 
  -- Jonathan Nieder <jrnieder@gmail.com>  Thu, 29 Dec 2016 09:57:03 -0800
 
