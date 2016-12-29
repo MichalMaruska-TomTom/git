@@ -1,3 +1,19 @@
+git (1:2.11.0-2maruska) unstable; urgency=medium
+
+  * Invoke hooks on rebase finished or aborted.
+  * colorful info on applying a patch, via cecho!
+  * colorize the native-code version of 'am'
+  * Use color conditionally
+  * comments to understand gitk.
+  * useless test to color-highlight mmc-all & mmc-keep-time
+  * comments on how the ref labels are drawn (rectangles & text)
+  * all for sums/start/base
+  * empty lines
+  * be_verbose only when requested by option (-v --verbose)
+  * gitk: search for which Refs are shown.
+
+ -- Michal Maruska <mmaruska@gmail.com>  Thu, 29 Dec 2016 14:18:30 +0100
+
 git (1:2.11.0-2) unstable; urgency=medium
 
   * gitweb: Depends: libcgi-pm-perl; Build-Depends: libcgi-pm-perl
