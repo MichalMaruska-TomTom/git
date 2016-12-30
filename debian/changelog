@@ -1,6 +1,9 @@
 git (1:2.11.0+next.20161227-0.1) experimental; urgency=low
 
   * new snapshot, taken from upstream commit c69c2f50.
+  * debian/patches/0010-remote-helpers-avoid-blind-fall-back-...diff:
+    new from upstream: allow "git ls-remote" and "archive --remote"
+    to run outside of any git repository again (closes: #849681).
   * debian/rules: run tests once and always produce verbose output.
 
  -- Jonathan Nieder <jrnieder@gmail.com>  Thu, 29 Dec 2016 09:57:03 -0800

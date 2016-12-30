@@ -1,0 +1,257 @@
+From 382de5fdb81403874766f8d6c3025d03bf9e9d76 Mon Sep 17 00:00:00 2001
+From: Jonathan Nieder <jrnieder@gmail.com>
+Date: Thu, 29 Dec 2016 15:53:38 -0800
+Subject: remote helpers: avoid blind fall-back to ".git" when setting GIT_DIR
+
+To push from or fetch to the current repository, remote helpers need
+to know what repository that is.  Accordingly, Git sets the GIT_DIR
+environment variable to the path to the current repository when
+invoking remote helpers.
+
+There is a special case it does not handle: "git ls-remote" and "git
+archive --remote" can be run to inspect a remote repository without
+being run from any local repository.  GIT_DIR is not useful in this
+scenario:
+
+- if we are not in a repository, we don't need to set GIT_DIR to
+  override an existing GIT_DIR value from the environment.  If GIT_DIR
+  is present then we would be in a repository if it were valid and
+  would have called die() if it weren't.
+
+- not setting GIT_DIR may cause a helper to do the usual discovery
+  walk to find the repository.  But we know we're not in one, or we
+  would have found it ourselves.  So in the worst case it may expend
+  a little extra effort to try to find a repository and fail (for
+  example, remote-curl would do this to try to find repository-level
+  configuration).
+
+So leave GIT_DIR unset in this case.  This makes GIT_DIR easier to
+understand for remote helper authors and makes transport code less of
+a special case for repository discovery.
+
+Noticed using b1ef400e (setup_git_env: avoid blind fall-back to
+".git", 2016-10-20) from 'next':
+
+ $ cd /tmp
+ $ git ls-remote https://kernel.googlesource.com/pub/scm/git/git
+ fatal: BUG: setup_git_env called without repository
+
+While at it, add some tests for other variables in the environment of
+commands run by git-remote-ext.
+
+Helped-by: Jeff King <peff@peff.net>
+Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
+---
+ t/t5550-http-fetch-dumb.sh  | 15 ++++++++
+ t/t5551-http-fetch-smart.sh | 15 ++++++++
+ t/t5570-git-daemon.sh       | 15 ++++++++
+ t/t5802-connect-helper.sh   | 84 ++++++++++++++++++++++++++++++++++++++++++++-
+ transport-helper.c          |  5 +--
+ 5 files changed, 131 insertions(+), 3 deletions(-)
+
+diff --git a/t/t5550-http-fetch-dumb.sh b/t/t5550-http-fetch-dumb.sh
+index aeb3a63..a86fca3 100755
+--- a/t/t5550-http-fetch-dumb.sh
++++ b/t/t5550-http-fetch-dumb.sh
+@@ -34,6 +34,21 @@ test_expect_success 'clone http repository' '
+ 	test_cmp file clone/file
+ '
+ 
++test_expect_success 'list refs from outside any repository' '
++	cat >expect <<-EOF &&
++	$(git rev-parse master)	HEAD
++	$(git rev-parse master)	refs/heads/master
++	EOF
++	mkdir lsremote-root &&
++	(
++		GIT_CEILING_DIRECTORIES=$(pwd) &&
++		export GIT_CEILING_DIRECTORIES &&
++		cd lsremote-root &&
++		git ls-remote "$HTTPD_URL/dumb/repo.git" >../actual
++	) &&
++	test_cmp expect actual
++'
++
+ test_expect_success 'create password-protected repository' '
+ 	mkdir -p "$HTTPD_DOCUMENT_ROOT_PATH/auth/dumb/" &&
+ 	cp -Rf "$HTTPD_DOCUMENT_ROOT_PATH/repo.git" \
+diff --git a/t/t5551-http-fetch-smart.sh b/t/t5551-http-fetch-smart.sh
+index a51b7e2..28efbb4 100755
+--- a/t/t5551-http-fetch-smart.sh
++++ b/t/t5551-http-fetch-smart.sh
+@@ -163,6 +163,21 @@ test_expect_success 'redirects send auth to new location' '
+ 	expect_askpass both user@host auth/smart/repo.git
+ '
+ 
++test_expect_success 'list refs from outside any repository' '
++	cat >expect <<-EOF &&
++	$(git rev-parse master)	HEAD
++	$(git rev-parse master)	refs/heads/master
++	EOF
++	mkdir lsremote-root &&
++	(
++		GIT_CEILING_DIRECTORIES=$(pwd) &&
++		export GIT_CEILING_DIRECTORIES &&
++		cd lsremote-root &&
++		git ls-remote "$HTTPD_URL/smart/repo.git" >../actual
++	) &&
++	test_cmp expect actual
++'
++
+ test_expect_success 'disable dumb http on server' '
+ 	git --git-dir="$HTTPD_DOCUMENT_ROOT_PATH/repo.git" \
+ 		config http.getanyfile false
+diff --git a/t/t5570-git-daemon.sh b/t/t5570-git-daemon.sh
+index 225a022..4573d98 100755
+--- a/t/t5570-git-daemon.sh
++++ b/t/t5570-git-daemon.sh
+@@ -35,6 +35,21 @@ test_expect_success 'clone git repository' '
+ 	test_cmp file clone/file
+ '
+ 
++test_expect_success 'list refs from outside any repository' '
++	cat >expect <<-EOF &&
++	$(git rev-parse master)	HEAD
++	$(git rev-parse master)	refs/heads/master
++	EOF
++	mkdir lsremote-root &&
++	(
++		GIT_CEILING_DIRECTORIES=$(pwd) &&
++		export GIT_CEILING_DIRECTORIES &&
++		cd lsremote-root &&
++		git ls-remote "$GIT_DAEMON_URL/repo.git" >../actual
++	) &&
++	test_cmp expect actual
++'
++
+ test_expect_success 'fetch changes via git protocol' '
+ 	echo content >>file &&
+ 	git commit -a -m two &&
+diff --git a/t/t5802-connect-helper.sh b/t/t5802-connect-helper.sh
+index c6c2661..7232032 100755
+--- a/t/t5802-connect-helper.sh
++++ b/t/t5802-connect-helper.sh
+@@ -3,6 +3,10 @@
+ test_description='ext::cmd remote "connect" helper'
+ . ./test-lib.sh
+ 
++escape_spaces () {
++	echo "$*" | sed -e "s/ /% /g"
++}
++
+ test_expect_success setup '
+ 	git config --global protocol.ext.allow user &&
+ 	test_tick &&
+@@ -19,7 +23,7 @@ test_expect_success setup '
+ '
+ 
+ test_expect_success clone '
+-	cmd=$(echo "echo >&2 ext::sh invoked && %S .." | sed -e "s/ /% /g") &&
++	cmd=$(escape_spaces "echo >&2 ext::sh invoked && %S ..") &&
+ 	git clone "ext::sh -c %S% ." dst &&
+ 	git for-each-ref refs/heads/ refs/tags/ >expect &&
+ 	(
+@@ -70,6 +74,84 @@ test_expect_success 'update backfilled tag without primary transfer' '
+ 	test_cmp expect actual
+ '
+ 
++test_expect_success 'GIT_EXT_SERVICE for clone, ls-remote, push, archive' '
++	rm -rf dst &&
++	>actual &&
++	cat >expect <<-\EOF &&
++	git-upload-pack
++	git-upload-pack
++	git-receive-pack
++	git-upload-archive
++	EOF
++	git archive HEAD >expect.tar &&
++	cmd=$(escape_spaces "echo >>actual \$GIT_EXT_SERVICE && %S .") &&
++
++	git clone "ext::sh -c $cmd" dst &&
++	git ls-remote "ext::sh -c $cmd" &&
++	test_when_finished "git update-ref -d refs/heads/newbranch" &&
++	git push "ext::sh -c $cmd" master:newbranch &&
++	git archive --remote="ext::sh -c $cmd" HEAD >actual.tar &&
++
++	test_cmp expect actual &&
++	test_cmp expect.tar actual.tar
++'
++
++test_expect_success 'GIT_EXT_SERVICE_NOPREFIX for clone, ls-remote, push, archive' '
++	rm -rf dst &&
++	>actual &&
++	cat >expect <<-\EOF &&
++	upload-pack
++	upload-pack
++	receive-pack
++	upload-archive
++	EOF
++	git archive HEAD >expect.tar &&
++	cmd=$(escape_spaces "echo >>actual \$GIT_EXT_SERVICE_NOPREFIX && %S .") &&
++
++	git clone "ext::sh -c $cmd" dst &&
++	git ls-remote "ext::sh -c $cmd" &&
++	test_when_finished "git update-ref -d refs/heads/newbranch" &&
++	git push "ext::sh -c $cmd" master:newbranch &&
++	git archive --remote="ext::sh -c $cmd" HEAD >actual.tar &&
++
++	test_cmp expect actual &&
++	test_cmp expect.tar actual.tar
++'
++
++test_expect_success 'GIT_DIR is set to the enclosing repo for ls-remote' '
++	git rev-parse --git-dir >expect &&
++	cmd=$(escape_spaces "echo \$GIT_DIR >actual && %S .") &&
++	git ls-remote "ext::sh -c $cmd" &&
++	test_cmp expect actual
++'
++
++test_expect_success 'GIT_DIR is set to the enclosing repo for archive' '
++	git rev-parse --git-dir >expect &&
++	git archive HEAD >expect.tar &&
++	cmd=$(escape_spaces "echo \$GIT_DIR >actual && %S .") &&
++	git archive --remote="ext::sh -c $cmd" HEAD >actual.tar &&
++	test_cmp expect actual &&
++	test_cmp expect.tar actual.tar
++'
++
++test_expect_success 'GIT_DIR is not set if there is no enclosing repo' '
++	rm -rf subdir &&
++	>actual &&
++	printf "%s\n" unset unset >expect &&
++	git archive HEAD >expect.tar &&
++
++	mkdir subdir &&
++	cmd=$(escape_spaces "echo \${GIT_DIR-unset} >>../actual && %S ..") &&
++	(
++		GIT_CEILING_DIRECTORIES=$(pwd) &&
++		export GIT_CEILING_DIRECTORIES &&
++		cd subdir &&
++		git ls-remote "ext::sh -c $cmd" &&
++		git archive --remote="ext::sh -c $cmd" HEAD >../actual.tar
++	) &&
++	test_cmp expect actual &&
++	test_cmp expect.tar actual.tar
++'
+ 
+ test_expect_success 'set up fake git-daemon' '
+ 	mkdir remote &&
+diff --git a/transport-helper.c b/transport-helper.c
+index 91aed35..e4fd982 100644
+--- a/transport-helper.c
++++ b/transport-helper.c
+@@ -124,8 +124,9 @@ static struct child_process *get_helper(struct transport *transport)
+ 	helper->git_cmd = 0;
+ 	helper->silent_exec_failure = 1;
+ 
+-	argv_array_pushf(&helper->env_array, "%s=%s", GIT_DIR_ENVIRONMENT,
+-			 get_git_dir());
++	if (have_git_dir())
++		argv_array_pushf(&helper->env_array, "%s=%s",
++				 GIT_DIR_ENVIRONMENT, get_git_dir());
+ 
+ 	code = start_command(helper);
+ 	if (code < 0 && errno == ENOENT)
+-- 
+2.11.0.355.g1ede815
+
