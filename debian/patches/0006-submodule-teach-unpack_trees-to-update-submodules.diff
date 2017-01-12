@@ -1,4 +1,4 @@
-From 7439148150ebd930576706d9e2720ae1c628087c Mon Sep 17 00:00:00 2001
+From b48cd937bc945e3a0e6357116671a016daa46cb8 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Fri, 5 Apr 2013 18:35:27 +0200
 Subject: submodule: teach unpack_trees() to update submodules
@@ -48,7 +48,7 @@ index 31e79e1..47cef2f 100644
  				return error("%s is a directory", path.buf);
  			remove_subtree(&path);
 diff --git a/submodule.c b/submodule.c
-index d23ab48..1102090 100644
+index 5325bac..ac121c6 100644
 --- a/submodule.c
 +++ b/submodule.c
 @@ -510,6 +510,42 @@ static void show_submodule_header(FILE *f, const char *path,
@@ -94,8 +94,8 @@ index d23ab48..1102090 100644
  void show_submodule_summary(FILE *f, const char *path,
  		const char *line_prefix,
  		struct object_id *one, struct object_id *two,
-@@ -1277,6 +1313,45 @@ int ok_to_remove_submodule(const char *path)
- 	return ok_to_remove;
+@@ -1296,6 +1332,45 @@ int bad_to_remove_submodule(const char *path, unsigned flags)
+ 	return ret;
  }
  
 +unsigned is_submodule_checkout_safe(const char *path, const unsigned char sha1[20])
@@ -141,27 +141,25 @@ index d23ab48..1102090 100644
  		struct commit *a, struct commit *b)
  {
 diff --git a/submodule.h b/submodule.h
-index a74b0c3..b5fb031 100644
+index 14dc520..9084716 100644
 --- a/submodule.h
 +++ b/submodule.h
-@@ -61,6 +61,7 @@ void set_config_update_recurse_submodules(int default_value, int option_value);
- int submodule_needs_update(const char *path);
- int populate_submodule(const char *path, unsigned char sha1[20], int force);
- int depopulate_submodule(const char *path);
-+int update_submodule(const char *path, const unsigned char sha1[20], int force);
- void check_for_new_submodule_commits(unsigned char new_sha1[20]);
- int fetch_populated_submodules(const struct argv_array *options,
+@@ -61,11 +61,13 @@ extern void set_config_update_recurse_submodules(int default_value, int option_v
+ extern int submodule_needs_update(const char *path);
+ extern int populate_submodule(const char *path, unsigned char sha1[20], int force);
+ extern int depopulate_submodule(const char *path);
++extern int update_submodule(const char *path, const unsigned char sha1[20], int force);
+ extern void check_for_new_submodule_commits(unsigned char new_sha1[20]);
+ extern int fetch_populated_submodules(const struct argv_array *options,
  			       const char *prefix, int command_line_option,
-@@ -68,6 +69,7 @@ int fetch_populated_submodules(const struct argv_array *options,
- unsigned is_submodule_modified(const char *path, int ignore_untracked);
- int submodule_uses_gitfile(const char *path);
- int ok_to_remove_submodule(const char *path);
-+unsigned is_submodule_checkout_safe(const char *path, const unsigned char sha1[20]);
- int merge_submodule(unsigned char result[20], const char *path, const unsigned char base[20],
- 		    const unsigned char a[20], const unsigned char b[20], int search);
- int find_unpushed_submodules(struct sha1_array *commits, const char *remotes_name,
+ 			       int quiet, int max_parallel_jobs);
+ extern unsigned is_submodule_modified(const char *path, int ignore_untracked);
++extern unsigned is_submodule_checkout_safe(const char *path, const unsigned char sha1[20]);
+ extern int submodule_uses_gitfile(const char *path);
+ 
+ #define SUBMODULE_REMOVAL_DIE_ON_ERROR (1<<0)
 diff --git a/unpack-trees.c b/unpack-trees.c
-index 6dadd37..f05773f 100644
+index ba3b5f6..0287c60 100644
 --- a/unpack-trees.c
 +++ b/unpack-trees.c
 @@ -29,6 +29,9 @@ static const char *unpack_plumbing_errors[NB_UNPACK_TREES_ERROR_TYPES] = {
@@ -184,7 +182,7 @@ index 6dadd37..f05773f 100644
  	if (!strcmp(cmd, "checkout"))
  		msg = advice_commit_before_merge
  		      ? _("The following untracked working tree files would be removed by checkout:\n%%s"
-@@ -1317,17 +1323,15 @@ static int verify_uptodate_1(const struct cache_entry *ce,
+@@ -1324,17 +1330,15 @@ static int verify_uptodate_1(const struct cache_entry *ce,
  	if (!lstat(ce->name, &st)) {
  		int flags = CE_MATCH_IGNORE_VALID|CE_MATCH_IGNORE_SKIP_WORKTREE;
  		unsigned changed = ie_match_stat(o->src_index, ce, &st, flags);
@@ -211,7 +209,7 @@ index 6dadd37..f05773f 100644
  		errno = 0;
  	}
  	if (errno == ENOENT)
-@@ -1350,6 +1354,36 @@ static int verify_uptodate_sparse(const struct cache_entry *ce,
+@@ -1357,6 +1361,36 @@ static int verify_uptodate_sparse(const struct cache_entry *ce,
  	return verify_uptodate_1(ce, o, ERROR_SPARSE_NOT_UPTODATE_FILE);
  }
  
@@ -248,7 +246,7 @@ index 6dadd37..f05773f 100644
  static void invalidate_ce_path(const struct cache_entry *ce,
  			       struct unpack_trees_options *o)
  {
-@@ -1627,9 +1661,17 @@ static int merged_entry(const struct cache_entry *ce,
+@@ -1634,9 +1668,17 @@ static int merged_entry(const struct cache_entry *ce,
  			copy_cache_entry(merge, old);
  			update = 0;
  		} else {
@@ -282,5 +280,5 @@ index 36a73a6..bee8740 100644
  	ERROR_WOULD_LOSE_UNTRACKED_REMOVED,
  	ERROR_BIND_OVERLAP,
 -- 
-2.8.0.rc3.226.g39d4020
+2.11.0.390.gc69c2f50cf
 

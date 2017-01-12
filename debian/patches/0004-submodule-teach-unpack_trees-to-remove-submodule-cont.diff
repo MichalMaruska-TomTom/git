@@ -1,4 +1,4 @@
-From b9bbafa74f3352676cac29849dfe3f0af6f63d21 Mon Sep 17 00:00:00 2001
+From ea05220b5f214a319fe2277741ec400ebe5f9f38 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Tue, 19 Jun 2012 20:55:45 +0200
 Subject: submodule: teach unpack_trees() to remove submodule contents
@@ -28,7 +28,7 @@ Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
  4 files changed, 43 insertions(+), 4 deletions(-)
 
 diff --git a/submodule.c b/submodule.c
-index 629fa45..67ce1b7 100644
+index 7da0c37..82501e8 100644
 --- a/submodule.c
 +++ b/submodule.c
 @@ -360,6 +360,43 @@ static void print_submodule_summary(struct rev_info *rev, FILE *f,
@@ -76,19 +76,19 @@ index 629fa45..67ce1b7 100644
   * summary output. If it can locate the submodule objects directory it will
   * attempt to lookup both the left and right commits and put them into the
 diff --git a/submodule.h b/submodule.h
-index fcad87f..8e5ce72 100644
+index 42c0524..10d1840 100644
 --- a/submodule.h
 +++ b/submodule.h
-@@ -59,6 +59,7 @@ void show_submodule_inline_diff(FILE *f, const char *path,
- void set_config_fetch_recurse_submodules(int value);
- void set_config_update_recurse_submodules(int default_value, int option_value);
- int submodule_needs_update(const char *path);
-+int depopulate_submodule(const char *path);
- void check_for_new_submodule_commits(unsigned char new_sha1[20]);
- int fetch_populated_submodules(const struct argv_array *options,
+@@ -59,6 +59,7 @@ extern void show_submodule_inline_diff(FILE *f, const char *path,
+ extern void set_config_fetch_recurse_submodules(int value);
+ extern void set_config_update_recurse_submodules(int default_value, int option_value);
+ extern int submodule_needs_update(const char *path);
++extern int depopulate_submodule(const char *path);
+ extern void check_for_new_submodule_commits(unsigned char new_sha1[20]);
+ extern int fetch_populated_submodules(const struct argv_array *options,
  			       const char *prefix, int command_line_option,
 diff --git a/unpack-trees.c b/unpack-trees.c
-index 7a6df99..6f6af16 100644
+index 129d49f..f36cb74 100644
 --- a/unpack-trees.c
 +++ b/unpack-trees.c
 @@ -9,6 +9,7 @@
@@ -99,7 +99,7 @@ index 7a6df99..6f6af16 100644
  #include "dir.h"
  
  /*
-@@ -1361,15 +1362,12 @@ static void invalidate_ce_path(const struct cache_entry *ce,
+@@ -1368,15 +1369,12 @@ static void invalidate_ce_path(const struct cache_entry *ce,
  /*
   * Check that checking out ce->sha1 in subdir ce->name is not
   * going to overwrite any working files.
@@ -138,5 +138,5 @@ index e7f1979..1c6c08c 100644
  }
  
 -- 
-2.8.0.rc3.226.g39d4020
+2.11.0.390.gc69c2f50cf
 

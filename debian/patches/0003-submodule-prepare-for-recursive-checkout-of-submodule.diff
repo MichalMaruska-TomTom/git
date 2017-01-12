@@ -1,4 +1,4 @@
-From eddddbb9b7085e06c79f12b66ee69aa272aee0db Mon Sep 17 00:00:00 2001
+From a159f9b5d7b915b41b012be6b5ac4d08ca1c1722 Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Mon, 18 Jun 2012 22:17:59 +0200
 Subject: submodule: prepare for recursive checkout of submodules
@@ -62,7 +62,7 @@ index 70f1936..c9c4719 100644
  int parse_submodule_config_option(const char *var, const char *value);
  const struct submodule *submodule_from_name(const unsigned char *commit_or_tree,
 diff --git a/submodule.c b/submodule.c
-index f8fee3d..629fa45 100644
+index 4c4f033..7da0c37 100644
 --- a/submodule.c
 +++ b/submodule.c
 @@ -17,6 +17,8 @@
@@ -100,18 +100,18 @@ index f8fee3d..629fa45 100644
  		      int flags, void *cb_data)
  {
 diff --git a/submodule.h b/submodule.h
-index 1ccaf0e..fcad87f 100644
+index b7fe4d2..42c0524 100644
 --- a/submodule.h
 +++ b/submodule.h
-@@ -57,6 +57,8 @@ void show_submodule_inline_diff(FILE *f, const char *path,
+@@ -57,6 +57,8 @@ extern void show_submodule_inline_diff(FILE *f, const char *path,
  		const char *del, const char *add, const char *reset,
  		const struct diff_options *opt);
- void set_config_fetch_recurse_submodules(int value);
-+void set_config_update_recurse_submodules(int default_value, int option_value);
-+int submodule_needs_update(const char *path);
- void check_for_new_submodule_commits(unsigned char new_sha1[20]);
- int fetch_populated_submodules(const struct argv_array *options,
+ extern void set_config_fetch_recurse_submodules(int value);
++extern void set_config_update_recurse_submodules(int default_value, int option_value);
++extern int submodule_needs_update(const char *path);
+ extern void check_for_new_submodule_commits(unsigned char new_sha1[20]);
+ extern int fetch_populated_submodules(const struct argv_array *options,
  			       const char *prefix, int command_line_option,
 -- 
-2.8.0.rc3.226.g39d4020
+2.11.0.390.gc69c2f50cf
 

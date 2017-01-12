@@ -1,4 +1,4 @@
-From 1a8fc757246d98dadb4e5a5dee6420c52f76aecb Mon Sep 17 00:00:00 2001
+From fc38fcbd2e957be08f813995f5ebc6c3956ea94e Mon Sep 17 00:00:00 2001
 From: Jens Lehmann <Jens.Lehmann@web.de>
 Date: Mon, 18 Jun 2012 22:11:45 +0200
 Subject: submodule: teach unpack_trees() to repopulate submodules
@@ -36,7 +36,7 @@ index c6eea24..31e79e1 100644
  	default:
  		return error("unknown file mode for %s in index", path);
 diff --git a/submodule.c b/submodule.c
-index 67ce1b7..d23ab48 100644
+index 82501e8..5325bac 100644
 --- a/submodule.c
 +++ b/submodule.c
 @@ -360,6 +360,42 @@ static void print_submodule_summary(struct rev_info *rev, FILE *f,
@@ -83,17 +83,17 @@ index 67ce1b7..d23ab48 100644
  {
  	struct strbuf dot_git = STRBUF_INIT;
 diff --git a/submodule.h b/submodule.h
-index 8e5ce72..a74b0c3 100644
+index 10d1840..14dc520 100644
 --- a/submodule.h
 +++ b/submodule.h
-@@ -59,6 +59,7 @@ void show_submodule_inline_diff(FILE *f, const char *path,
- void set_config_fetch_recurse_submodules(int value);
- void set_config_update_recurse_submodules(int default_value, int option_value);
- int submodule_needs_update(const char *path);
-+int populate_submodule(const char *path, unsigned char sha1[20], int force);
- int depopulate_submodule(const char *path);
- void check_for_new_submodule_commits(unsigned char new_sha1[20]);
- int fetch_populated_submodules(const struct argv_array *options,
+@@ -59,6 +59,7 @@ extern void show_submodule_inline_diff(FILE *f, const char *path,
+ extern void set_config_fetch_recurse_submodules(int value);
+ extern void set_config_update_recurse_submodules(int default_value, int option_value);
+ extern int submodule_needs_update(const char *path);
++extern int populate_submodule(const char *path, unsigned char sha1[20], int force);
+ extern int depopulate_submodule(const char *path);
+ extern void check_for_new_submodule_commits(unsigned char new_sha1[20]);
+ extern int fetch_populated_submodules(const struct argv_array *options,
 diff --git a/t/lib-submodule-update.sh b/t/lib-submodule-update.sh
 index 79cdd34..711f55b 100755
 --- a/t/lib-submodule-update.sh
@@ -126,10 +126,10 @@ index 79cdd34..711f55b 100755
  		reset_work_tree_to add_sub1 &&
  		(
 diff --git a/unpack-trees.c b/unpack-trees.c
-index 6f6af16..6dadd37 100644
+index f36cb74..ba3b5f6 100644
 --- a/unpack-trees.c
 +++ b/unpack-trees.c
-@@ -1461,6 +1461,7 @@ static int check_ok_to_remove(const char *name, int len, int dtype,
+@@ -1468,6 +1468,7 @@ static int check_ok_to_remove(const char *name, int len, int dtype,
  			      struct unpack_trees_options *o)
  {
  	const struct cache_entry *result;
@@ -137,7 +137,7 @@ index 6f6af16..6dadd37 100644
  
  	/*
  	 * It may be that the 'lstat()' succeeded even though
-@@ -1503,6 +1504,24 @@ static int check_ok_to_remove(const char *name, int len, int dtype,
+@@ -1510,6 +1511,24 @@ static int check_ok_to_remove(const char *name, int len, int dtype,
  			return 0;
  	}
  
@@ -163,5 +163,5 @@ index 6f6af16..6dadd37 100644
  		add_rejected_path(o, error_type, name);
  }
 -- 
-2.8.0.rc3.226.g39d4020
+2.11.0.390.gc69c2f50cf
 

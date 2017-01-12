@@ -21,7 +21,7 @@ Beat Bolli (6):
       update_unicode.sh: remove the plane filter
       unicode_width.h: update the width tables to Unicode 9.0
 
-Brandon Williams (18):
+Brandon Williams (36):
       push: --dry-run updates submodules when --recurse-submodules=on-demand
       push: fix --dry-run to not push submodules
       real_path: resolve symlinks by hand
@@ -40,6 +40,24 @@ Brandon Williams (18):
       grep: optionally recurse into submodules
       grep: enable recurse-submodules to work on <tree> objects
       grep: search history of moved submodules
+      mv: remove use of deprecated 'get_pathspec()'
+      dir: remove struct path_simplify
+      dir: convert fill_directory to use the pathspec struct interface
+      ls-tree: convert show_recursive to use the pathspec struct interface
+      pathspec: remove the deprecated get_pathspec function
+      pathspec: copy and free owned memory
+      pathspec: remove unused variable from unsupported_magic
+      pathspec: always show mnemonic and name in unsupported_magic
+      pathspec: simpler logic to prefix original pathspec elements
+      pathspec: factor global magic into its own function
+      pathspec: create parse_short_magic function
+      pathspec: create parse_long_magic function
+      pathspec: create parse_element_magic helper
+      pathspec: create strip submodule slash helpers
+      pathspec: small readability changes
+      pathspec: rename prefix_pathspec to init_pathspec_item
+      real_path: prevent redefinition of MAXSYMLINKS
+      real_path: set errno when max number of symlinks is exceeded
 
 Chris Packham (3):
       merge: add '--continue' option as a synonym for 'git commit'
@@ -56,10 +74,12 @@ David Aguilar (8):
       difftool: rename variables for consistency
       mergetools: fix xxdiff hotkeys
 
-David Turner (3):
+David Turner (5):
       submodules: allow empty working-tree dirs in merge/cherry-pick
       remote-curl: don't hang when a server dies before any output
       upload-pack: optionally allow fetching any sha1
+      auto gc: don't write bitmaps for incremental repacks
+      repack: die on incremental + write-bitmap-index
 
 Dennis Kaarsemaker (1):
       push: test pushing ambiguously named branches
@@ -77,6 +97,9 @@ Heiko Voigt (4):
       batch check whether submodule needs pushing into one call
       submodule_needs_pushing(): explain the behaviour when we cannot answer
 
+Igor Kushnir (1):
+      git-p4: do not pass '-r 0' to p4 commands
+
 Jack Bates (1):
       diff: handle --no-abbrev in no-index case
 
@@ -87,7 +110,7 @@ Jacob Keller (2):
 Jeff Hostetler (1):
       mingw: replace isatty() hack
 
-Jeff King (26):
+Jeff King (34):
       setup_git_env: avoid blind fall-back to ".git"
       rev-parse: fix parent shorthands with --symbolic
       t7610: clean up foo.XXXXXX tmpdir
@@ -114,12 +137,22 @@ Jeff King (26):
       t: use nongit() function where applicable
       shortlog: test and document --committer option
       index-pack: skip collision check when not in repository
+      archive-zip: load userdiff config
+      rebase--interactive: count squash commits above 10 correctly
+      blame: fix alignment with --abbrev=40
+      blame: handle --no-abbrev
+      blame: output porcelain "previous" header for each file
+      execv_dashed_external: use child_process struct
+      execv_dashed_external: stop exiting with negative code
+      execv_dashed_external: wait for child on signal death
 
-Johannes Schindelin (4):
+Johannes Schindelin (6):
       cherry-pick: demonstrate a segmentation fault
       merge-recursive: handle NULL in add_cacheinfo() correctly
       mingw: intercept isatty() to handle /dev/null as Git expects it
       mingw: adjust is_console() to work with stdin
+      mingw: add a regression test for pushing to UNC paths
+      giteveryday: unbreak rendering with AsciiDoctor
 
 Johannes Sixt (4):
       t5547-push-quarantine: run the path separator test on Windows, too
@@ -135,7 +168,7 @@ Jonathan Tan (6):
       trailer: have function to describe trailer layout
       sequencer: use trailer's trailer layout
 
-Junio C Hamano (25):
+Junio C Hamano (26):
       merge: drop 'git merge <message> HEAD <commit>' syntax
       utf8: refactor code to decide fallback encoding
       utf8: accept "latin-1" as ISO-8859-1
@@ -161,6 +194,7 @@ Junio C Hamano (25):
       diff: retire "compaction" heuristics
       lockfile: move REPORT_ON_ERROR bit elsewhere
       Fourth batch for 2.12
+      Fifth batch 2.12
 
 Kristoffer Haugsbakk (4):
       doc: add articles (grammar)
@@ -170,6 +204,9 @@ Kristoffer Haugsbakk (4):
 
 Kyle J. McKay (1):
       mailinfo.c: move side-effects outside of assert
+
+Kyle Meyer (1):
+      branch_get_push: do not segfault when HEAD is detached
 
 Lars Schneider (7):
       git-p4: add config to retry p4 commands; retry 3 times by default
@@ -218,6 +255,10 @@ Nguyễn Thái Ngọc Duy (15):
       config.c: rename label unlock_and_out
       config.c: handle lock file in error case in git_config_rename_...
 
+Pranit Bauva (2):
+      don't use test_must_fail with grep
+      t9813: avoid using pipes
+
 Ramsay Jones (1):
       GIT-VERSION-GEN: do not force abbreviation length used by 'describe'
 
@@ -225,7 +266,23 @@ Rasmus Villemoes (2):
       shallow.c: avoid theoretical pointer wrap-around
       shallow.c: bit manipulation tweaks
 
-Stefan Beller (15):
+Richard Hansen (14):
+      .mailmap: record canonical email for Richard Hansen
+      rev-parse doc: pass "--" to rev-parse in the --prefix example
+      t7610: update branch names to match test number
+      t7610: move setup code to the 'setup' test case
+      t7610: use test_when_finished for cleanup tasks
+      t7610: don't rely on state from previous test
+      t7610: run 'git reset --hard' after each test to clean up
+      t7610: delete some now-unnecessary 'git reset --hard' lines
+      t7610: always work on a test-specific branch
+      t7610: don't assume the checked-out commit
+      t7610: spell 'git reset --hard' consistently
+      t7610: add test case for rerere+mergetool+subdir bug
+      mergetool: take the "-O" out of $orderfile
+      mergetool: fix running in subdir when rerere enabled
+
+Stefan Beller (25):
       submodule config: inline config_from_{name, path}
       submodule-config: rename commit_sha1 to treeish_name
       submodule-config: clarify parsing of null_sha1 element
@@ -241,6 +298,16 @@ Stefan Beller (15):
       submodule: add absorb-git-dir function
       t3600: slightly modernize style
       worktree: initialize return value for submodule_uses_worktrees
+      submodule.h: add extern keyword to functions
+      submodule: modernize ok_to_remove_submodule to use argv_array
+      submodule: rename and add flags to ok_to_remove_submodule
+      rm: absorb a submodules git dir before deletion
+      submodule.c: use GIT_DIR_ENVIRONMENT consistently
+      contrib: remove gitview
+      pathspec: give better message for submodule related pathspec error
+      unpack-trees: move checkout state into check_updates
+      unpack-trees: remove unneeded continue
+      unpack-trees: factor progress setup out of check_updates
 
 Stephan Beyer (5):
       am: fix filename in safe_to_abort() error message
@@ -248,6 +315,10 @@ Stephan Beyer (5):
       t3510: test that cherry-pick --abort does not unsafely change HEAD
       sequencer: make sequencer abort safer
       sequencer: remove useless get_dir() function
+
+Steven Penny (2):
+      Makefile: POSIX windres
+      Makefile: put LIBS after LDFLAGS for imap-send
 
 Torsten Bögershausen (1):
       convert: git cherry-pick -Xrenormalize did not work
