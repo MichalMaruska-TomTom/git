@@ -1,3 +1,11 @@
+git (1:2.11.0+next.20170110-1maruska) experimental; urgency=medium
+
+  * Invoke hooks on rebase finished or aborted.
+  * Use color when reporting on applying a patch, via cecho! Only when GIT_USE_COLOR is set
+  * Colorize the native-code version of 'am', conditionally on GIT_USE_COLOR
+
+ -- Michal Maruska <mmaruska@gmail.com>  Wed, 01 Feb 2017 13:07:04 +0100
+
 git (1:2.11.0+next.20170110-1) experimental; urgency=low
 
   * new snapshot, taken from upstream commit 087da7b7.
