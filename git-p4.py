@@ -1015,6 +1015,7 @@ def extractLogMessageFromGitCommit(commit):
     return logMessage
 
 
+# mmc: from the log!
 def extractSettingsGitLog(log):
     values = {}
     for line in log.split("\n"):
@@ -1038,6 +1039,7 @@ def extractSettingsGitLog(log):
         paths = values.get("depot-path")
     if paths:
         values['depot-paths'] = paths.split(',')
+        sys.stderr.write('Found depot paths in the commit message %s\n' % values['depot-paths'])
     return values
 
 
@@ -1179,6 +1181,9 @@ def branch_exists(branch):
 
 def findUpstreamBranchPoint(head="HEAD"):
     branches = p4BranchesInGit()
+    # first create a mapping from Depot to git-branch name.
+    # then see which of the depots is in HEAD~n .... very vague (for merges).
+
     # map from depot-path to branch name
     branchByDepotPath = {}
     for branch in branches.keys():
@@ -1196,6 +1201,7 @@ def findUpstreamBranchPoint(head="HEAD"):
     settings = None
     parent = 0
     while parent < 65535:
+        # from the previous? why?
         commit = head + "~%s" % parent
         log = extractLogMessageFromGitCommit(commit)
         settings = extractSettingsGitLog(log)
@@ -2602,8 +2608,9 @@ class P4Submit(Command, P4UserMap):
             if new_client_dir:
                 # old one was destroyed, and maybe nobody told p4
                 p4_sync("...", "-f")
-            else:
-                p4_sync("...")
+            # else:
+                # I don't want to sync now.
+                # p4_sync("...")# mmc!
         self.check()
 
         commits = []
