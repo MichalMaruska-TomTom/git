@@ -20,7 +20,8 @@ proc reponame {} {
     if {[string match "*/.git" $n]} {
         set n [string range $n 0 end-5]
     }
-    return [file tail $n]
+    return $n
+    # [file tail $n]
 }
 
 proc gitworktree {} {
