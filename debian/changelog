@@ -1,3 +1,9 @@
+git (1:2.19.1-1-maruska3) unstable; urgency=medium
+
+  * gitk: use the full repo path
+
+ -- Michal Maruska <mmaruska@gmail.com>  Mon, 19 Nov 2018 18:05:10 +0100
+
 git (1:2.19.1-1-maruska2) unstable; urgency=medium
 
   * Invoke hooks on rebase finished or aborted.

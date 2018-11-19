@@ -208,8 +208,8 @@ cat >cookies.txt <<EOF
 EOF
 cat >expect_cookies.txt <<EOF
 
-127.0.0.1	FALSE	/smart_cookies/	FALSE	0	othername	othervalue
 127.0.0.1	FALSE	/smart_cookies/repo.git/info/	FALSE	0	name	value
+127.0.0.1	FALSE	/smart_cookies/	FALSE	0	othername	othervalue
 EOF
 test_expect_success 'cookies stored in http.cookiefile when http.savecookies set' '
 	git config http.cookiefile cookies.txt &&
