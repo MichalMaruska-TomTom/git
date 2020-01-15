@@ -1,3 +1,21 @@
+git (1:2.25.0-1-maruska) unstable; urgency=medium
+
+  * Colorize the native-code version of 'am', conditionally on GIT_USE_COLOR
+  * drop cvs
+  * git-p4.py: comments & suppress "sync" when submitting!
+  * comments to understand gitk.
+  * useless test to color-highlight mmc-all & mmc-keep-time
+  * comments on how the ref labels are drawn (rectangles & text)
+  * all for sums/start/base
+  * empty lines
+  * be_verbose only when requested by option (-v --verbose)
+  * gitk: search for which Refs are shown.
+  * --title=* to set the X window title
+  * Fix gitk -- treat the cmdline as optional
+  * gitk: use the full repo path
+
+ -- Michal Maruska <michal@ubuntu>  Wed, 15 Jan 2020 11:55:47 +0100
+
 git (1:2.25.0-1) unstable; urgency=low
 
   * new upstream release (see RelNotes/2.25.0.txt).
