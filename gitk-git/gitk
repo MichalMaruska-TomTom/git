@@ -3140,6 +3140,9 @@ proc savestuff {w} {
             }
         }
 
+        #mmc:
+        puts "Saving geometry!"
+
         puts $f "set geometry(main) [wm geometry .]"
         puts $f "set geometry(state) [wm state .]"
         puts $f "set geometry(topwidth) [winfo width ${tf}]"
