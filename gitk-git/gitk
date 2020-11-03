@@ -157,7 +157,7 @@ proc parseviewargs {n arglist} {
     global vdatemode vmergeonly vflags vdflags vrevs vfiltered vorigargs env
     global vinlinediff
     global worddiff git_version
-
+    global be_verbose
     set vdatemode($n) 0
     set vmergeonly($n) 0
     set vinlinediff($n) 0
@@ -169,6 +169,7 @@ proc parseviewargs {n arglist} {
     set allknown 1
     set filtered 0
     set i -1
+    set be_verbose 0
     foreach arg $arglist {
         incr i
         if {$nextisval} {
@@ -259,6 +260,9 @@ proc parseviewargs {n arglist} {
             }
             "--no-replace-objects" {
                 set env(GIT_NO_REPLACE_OBJECTS) "1"
+            }
+            "-v" - "--verbose" {
+                set be_verbose 1
             }
             "-*" {
                 # Other flag arguments including -<n>
@@ -6618,8 +6622,8 @@ proc drawtags {id x xt y1} {
     global headbgcolor headfgcolor headoutlinecolor remotebgcolor
     global tagbgcolor tagfgcolor tagoutlinecolor
     global reflinecolor
-
     global startrefbgcolor summandrefbgcolor baserefbgcolor
+    global be_verbose
 
     set marks {}
     set ntags 0
@@ -6683,6 +6687,9 @@ proc drawtags {id x xt y1} {
         set font mainfont
         if {[incr ntags -1] >= 0} {
             # draw a tag
+            if {$be_verbose} {
+                puts "drawtags: tag $tag"
+            }
             set t [$canv create polygon $x [expr {$yt + $delta}] $xl $yt \
                        $xr $yt $xr $yb $xl $yb $x [expr {$yb - $delta}] \
                        -width 1 -outline $tagoutlinecolor -fill $tagbgcolor \
@@ -6727,7 +6734,10 @@ proc drawtags {id x xt y1} {
                 set tag [string range $tag [ expr {$last_slash_index + 1}] end]
                 ## changed. see below for "create text"
 
-                puts "drawtags: start/base !!!!  $remoteprefix"
+
+                if {$be_verbose} {
+                    puts "drawtags: start/base !!!!  $remoteprefix"
+                }
 
                 # trying to DROP the prefix, and rely on distinction by color!
 
