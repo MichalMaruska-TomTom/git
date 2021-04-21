@@ -1,3 +1,63 @@
+git (1:2.31.1-1-maruska) unstable; urgency=medium
+
+  [ Torsten Bögershausen ]
+  * git mv foo FOO ; git mv foo bar gave an assert
+
+  [ René Scharfe ]
+  * fix xcalloc() argument order
+
+  [ Andrzej Hunt ]
+  * Makefile: update 'make fuzz-all' docs to reflect modern clang
+
+  [ René Scharfe ]
+  * git-compat-util.h: drop trailing semicolon from macro definition
+  * use CALLOC_ARRAY
+  * vcs-svn: remove header files as well
+
+  [ Junio C Hamano ]
+  * xcalloc: use CALLOC_ARRAY() when applicable
+  * cocci: allow xcalloc(1, size)
+
+  [ Michal Maruska ]
+  * Colorize the native-code version of 'am', conditionally on GIT_USE_COLOR
+  * drop cvs
+  * comments to understand gitk.
+  * useless test to color-highlight mmc-all & mmc-keep-time
+  * comments on how the ref labels are drawn (rectangles & text)
+  * git-p4.py: comments & suppress "sync" when submitting!
+  * all for sums/start/base
+  * empty lines
+  * be_verbose only when requested by option (-v --verbose)
+  * gitk: search for which Refs are shown.
+  * --title=* to set the X window title
+  * Fix gitk -- treat the cmdline as optional
+  * gitk: use the full repo path
+
+  [ Andrzej Hunt ]
+  * fsmonitor: avoid global-buffer-overflow READ when checking trivial response
+
+  [ René Scharfe ]
+  * block-sha1: drop trailing semicolon from macro definition
+  * mem-pool: drop trailing semicolon from macro definition
+
+  [ Jonathan Tan ]
+  * t5606: run clone branch name test with protocol v2
+
+  [ Jeff King ]
+  * bisect: peel annotated tags to commits
+
+  [ Kyle Meyer ]
+  * config.txt: add missing period
+
+  [ Johannes Schindelin ]
+  * fsmonitor: fix memory corruption in some corner cases
+  * fsmonitor: do not forget to release the token in `discard_index()`
+
+  [ Junio C Hamano ]
+  * Git 2.31.1
+
+ --  <mmaruska@gmail.com>  Wed, 21 Apr 2021 09:28:41 +0200
+
 git (1:2.31.0-1) unstable; urgency=low
 
   * new upstream release (see RelNotes/2.31.0.txt).
