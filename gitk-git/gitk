@@ -1798,6 +1798,7 @@ proc readrefs {} {
         set ref [string range $line 41 end]
         if {![string match "refs/*" $ref]} continue
         set name [string range $ref 5 end]
+
         if {[string match "remotes/*" $name]} {
             if {![string match "*/HEAD" $name] && !$hideremotes} {
                 set headids($name) $id
@@ -1807,6 +1808,22 @@ proc readrefs {} {
             set name [string range $name 6 end]
             set headids($name) $id
             lappend idheads($id) $name
+        } elseif {[string match "start/*" $name]} {
+            set name [concat "^:" [string range $name 6 end]]
+
+            # into HASH?
+            set headids($name) $id
+            # ?
+            lappend idotherrefs($id) $name
+        } elseif {[string match "base/*" $name]} {
+            set name [concat "B:" [string range $name 5 end]]
+            set headids($name) $id
+            lappend idotherrefs($id) $name
+        } elseif {[string match "sums/*" $name]} {
+            set name [concat "S:" [string range $name 4 end]]
+            set headids($name) $id
+            lappend idotherrefs($id) $name
+
         } elseif {[string match "tags/*" $name]} {
             # this lets refs/tags/foo^{} overwrite refs/tags/foo,
             # which is what we want since the former is the commit ID
@@ -6585,6 +6602,7 @@ proc drawtags {id x xt y1} {
     global headbgcolor headfgcolor headoutlinecolor remotebgcolor
     global tagbgcolor tagfgcolor tagoutlinecolor
     global reflinecolor
+    global startrefbgcolor summandrefbgcolor baserefbgcolor
     global be_verbose
 
     set marks {}
@@ -6671,11 +6689,15 @@ proc drawtags {id x xt y1} {
                     set font mainfontbold
                 }
             } else {
-                set col "#ddddff"
+                set col "Olive"
+                # "#ddddff"
+                #"black"
             }
             set xl [expr {$xl - $delta/2}]
+
             $canv create polygon $x $yt $xr $yt $xr $yb $x $yb \
                 -width 1 -outline black -fill $col -tags tag.$id
+
             if {[regexp {^(remotes/.*/|remotes/)} $tag match remoteprefix]} {
                 set rwid [font measure mainfont $remoteprefix]
                 set xi [expr {$x + 1}]
@@ -6683,7 +6705,63 @@ proc drawtags {id x xt y1} {
                 set xri [expr {$x + $rwid}]
                 $canv create polygon $xi $yti $xri $yti $xri $yb $xi $yb \
                         -width 0 -fill $remotebgcolor -tags tag.$id
+            } elseif {[regexp {^(start/|base/|sums/)} $tag match remoteprefix]} {
+
+                # mmc: here I naively change the label:
+                # how to drop it?
+
+                set last_slash_index [string last "/" $tag]
+                set tag [string range $tag [ expr {$last_slash_index + 1}] end]
+                ## changed. see below for "create text"
+
+
+                if {$be_verbose} {
+                    puts "drawtags: start/base !!!!  $remoteprefix"
+                }
+
+                # trying to DROP the prefix, and rely on distinction by color!
+
+                # set tag [string range $tag [string length $remoteprefix ] -1 ]
+
+                # width of the first part text
+                set rwid [font measure mainfont $remoteprefix]
+
+                set xi [expr {$x + 1}]
+                set yti [expr {$yt + 1}]
+
+                set xri [expr {$x + $rwid}]
+
+
+                # I think  start:xx,yy,zz would be enough
+
+                # Select the BG color:
+                if {[string equal $remoteprefix "start/"]} {
+                    set prefixbgcolor $startrefbgcolor
+                    # "IndianRed"
+                } elseif {[string equal $remoteprefix "sums/"]} {
+                    set prefixbgcolor $summandrefbgcolor
+                } else {
+                    set prefixbgcolor $baserefbgcolor
+                }
+
+
+                # mmc: ZERO boundary line, but FILLed with remote
+                # color!
+                # ytop  ybottom
+                $canv create polygon \
+                    $xi $yti \
+                    $xri $yti \
+                    $xri $yb \
+                    $xi $yb \
+                    -width 0 -fill $prefixbgcolor -tags tag.$id
+                # https://www.tutorialspoint.com/tcl-tk/tk_canvas_polygon.htm
+                # is that a hyperlink?            ^^^^^^^^^^^^^
+
+                # the rest will be:
+                # set col "#ddddff"
+                # "#00ddff"
             }
+            # elseif  sums/xxx/digit
         }
         set t [$canv create text $xl $y1 -anchor w -text $tag -fill $headfgcolor \
                    -font $font -tags [list tag.$id text]]
@@ -12427,6 +12505,11 @@ set headbgcolor "#00ff00"
 set headfgcolor black
 set headoutlinecolor black
 set remotebgcolor #ffddaa
+
+set startrefbgcolor #00ddbb
+set summandrefbgcolor #aadd00
+set baserefbgcolor #aaddbb
+
 set tagbgcolor yellow
 set tagfgcolor black
 set tagoutlinecolor black
@@ -12489,6 +12572,7 @@ set config_variables {
     linehoveroutlinecolor mainheadcirclecolor workingfilescirclecolor
     indexcirclecolor circlecolors linkfgcolor circleoutlinecolor diffbgcolors
     web_browser
+    startrefbgcolor summandrefbgcolor baserefbgcolor
 }
 foreach var $config_variables {
     config_init_trace $var
