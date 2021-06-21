@@ -2204,7 +2204,7 @@ proc create_history_pane {} {
     set canv3 ${tf}.histframe.pwclist.canv3
     canvas $canv3 \
         -selectbackground $selectbgcolor \
-        -background $bgcolor -bd 0 -yscrollincr $linespc
+        -background $bgcolor -bd 0 -yscrollincr $linespc -width 5
     if ($original_layout) {
         ${tf}.histframe.pwclist add $canv3 -weight 2
     } else {
