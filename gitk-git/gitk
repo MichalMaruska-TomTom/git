@@ -2125,6 +2125,9 @@ proc makedroplist {w varname args} {
     return $gm
 }
 
+# proc ::tk::mac::ShowPreferences {} {doprefs}
+# proc ::tk::mac::Quit {} {doquit}
+
 set tfpath .tf
 # Originally on the right in the bottom half
 # mmc: creates cflist
