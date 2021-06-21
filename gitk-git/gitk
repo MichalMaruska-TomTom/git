@@ -2778,14 +2778,15 @@ proc makewindow {} {
                 %W sashpos 0 $::geometry(botwidth)
             }
         }
+        # bind .narrow <Configure> {resizecdetpanes %W %w}
         bind .pwbottom <Configure> {resizecdetpanes %W %w}
     }
-
     pack .ctop -fill both -expand 1
     bindall <1> {selcanvline %W %x %y}
     #bindall <B1-Motion> {selcanvline %W %x %y}
     if {[tk windowingsystem] == "win32"} {
         bind . <MouseWheel> { windows_mousewheel_redirector %W %X %Y %D }
+        # mmc: what is this: %W %X/Y %D ?
         bind $ctext <MouseWheel> { windows_mousewheel_redirector %W %X %Y %D ; break }
     } else {
         bindall <ButtonRelease-4> "allcanvs yview scroll -5 units"
@@ -3154,6 +3155,8 @@ proc savestuff {w} {
             puts $f "set geometry(pwsash0) \"[${tf}.histframe.pwclist sash coord 0]\""
             puts $f "set geometry(pwsash1) \"[${tf}.histframe.pwclist sash coord 1]\""
         }
+
+        # diff area:
         puts $f "set geometry(botwidth) [winfo width .bleft]"
         puts $f "set geometry(botheight) [winfo height .bleft]"
 
@@ -6939,10 +6942,13 @@ proc drawtags {id x xt y1} {
         # wid is the width (allocated)
 
         set tag_quoted [string map {% %%} $tag]
+
+
         set xl [expr {$x + $delta}]
         # here the width of the rectangle:
         # note: how $extra ... in the xwals is composed of $lthickness!
         set xr [expr {$x + $delta + $wid + $lthickness}]
+
         set font mainfont
         # mmc: first are tags, then heads, then the rest?
         if {[incr ntags -1] >= 0} {
@@ -6971,8 +6977,10 @@ proc drawtags {id x xt y1} {
             # mmc: can is a canvas .tf.histframe.pwclist.canv
             # so an object w/ bind method?
             $canv bind $t <1> $tagclick
+
             set rowtextx([rowofcommit $id]) [expr {$xr + $linespc}]
         } else {
+
             # draw a head or other ref
             if {[incr nheads -1] >= 0} {
                 # mmc: the only use of $headbgcolor:
@@ -10085,6 +10093,7 @@ proc exec_citool {tool_args {baseid {}}} {
     array set env $save_env
 }
 
+# mmc: wow!
 proc cherrypick {} {
     global rowmenuid curview
     global mainhead mainheadid
@@ -11764,6 +11773,7 @@ proc showtags {id isnew} {
     init_flist {}
 }
 
+# 
 proc doquit {} {
     global stopped
     global gitktmpdir
@@ -12231,6 +12241,7 @@ proc prefscan {} {
     fontcan
 }
 
+# edit > preferences
 proc prefsok {} {
     global maxwidth maxgraphpct
     global oldprefs prefstop showneartags showlocalchanges
