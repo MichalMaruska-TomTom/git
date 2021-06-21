@@ -2225,7 +2225,8 @@ proc create_tf {} {
     set canv3 ${tf}.histframe.pwclist.canv3
     canvas $canv3 \
         -selectbackground $selectbgcolor \
-        -background $bgcolor -bd 0 -yscrollincr $linespc
+        -background $bgcolor -bd 0 -yscrollincr $linespc \
+        -width 5
     # -weight 2
     # Why weight 2?
     ${tf}.histframe.pwclist add $canv3
