@@ -154,11 +154,13 @@ proc unmerged_files {files} {
     return $mlist
 }
 
+set original_layout 0
 proc parseviewargs {n arglist} {
     global vdatemode vmergeonly vflags vdflags vrevs vfiltered vorigargs env
     global vinlinediff
     global worddiff git_version
     global be_verbose
+    global original_layout
     set vdatemode($n) 0
     set vmergeonly($n) 0
     set vinlinediff($n) 0
@@ -171,6 +173,8 @@ proc parseviewargs {n arglist} {
     set filtered 0
     set i -1
     set be_verbose 0
+    set original_layout 0
+
     foreach arg $arglist {
         incr i
         if {$nextisval} {
@@ -2128,7 +2132,6 @@ proc create_file_list {parent} {
     $cflist tag configure bold -font mainfontbold
 }
 
-set original_layout 1
 # .narrow
 
 # commit-history ...is a frame!
