@@ -269,6 +269,13 @@ proc parseviewargs {n arglist} {
             "-v" - "--verbose" {
                 set be_verbose 1
             }
+
+            # doesn't work!
+            "-V" - "--vertical" {
+                set original_layout 1
+                puts "original_layout 1"
+            }
+
             "-*" {
                 # Other flag arguments including -<n>
                 if {[string is digit -strict [string range $arg 1 end]]} {
