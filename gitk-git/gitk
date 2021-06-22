@@ -2576,9 +2576,9 @@ proc makewindow {} {
 
         #${NS}::label .narrow.blabel -text "original_layout"
         #pack .narrow.blabel -in .narrow -side bottom -fill none
-
-        .ctop add .tf
-        .ctop add .narrow
+        .ctop add ${tfpath}
+        #.tf
+        # .ctop add .narrow
     } else {
         .ctop add ${tfpath}
     }
