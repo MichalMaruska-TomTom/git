@@ -2122,6 +2122,44 @@ proc makedroplist {w varname args} {
 }
 
 set tfpath .tf
+# Originally on the right in the bottom half
+proc create_file_list {parent} {
+    global use_ttk NS have_tk85
+    # set:
+    global cflist
+    global bgcolor bglist selectbgcolor fgcolor
+
+    #mmc:
+    set top ${parent}
+
+    # lower right
+    ${NS}::frame ${top}
+    ${NS}::frame ${top}.mode
+    ${NS}::radiobutton ${top}.mode.patch -text [mc "Patch"] \
+        -command reselectline -variable cmitmode -value "patch"
+    ${NS}::radiobutton ${top}.mode.tree -text [mc "Tree"] \
+        -command reselectline -variable cmitmode -value "tree"
+    grid ${top}.mode.patch ${top}.mode.tree -sticky ew
+    pack ${top}.mode -side top -fill x
+    set cflist ${top}.cfiles
+    set indent [font measure mainfont "nn"]
+    text $cflist \
+        -selectbackground $selectbgcolor \
+        -background $bgcolor -foreground $fgcolor \
+        -font mainfont \
+        -tabs [list $indent [expr {2 * $indent}]] \
+        -yscrollcommand "${top}.sb set" \
+        -cursor [. cget -cursor] \
+        -spacing1 1 -spacing3 1
+    lappend bglist $cflist
+    lappend fglist $cflist
+    ${NS}::scrollbar ${top}.sb -command "$cflist yview"
+    pack ${top}.sb -side right -fill y
+    pack $cflist -side left -fill both -expand 1
+    $cflist tag configure highlight \
+        -background [$cflist cget -selectbackground]
+    $cflist tag configure bold -font mainfontbold
+}
 
 proc makewindow {} {
     global canv canv2 canv3 linespc charspc ctext cflist cscroll
@@ -2541,33 +2579,8 @@ proc makewindow {} {
         .pwbottom paneconfigure .bleft -width $geometry(botwidth)
     }
 
-    # lower right
-    ${NS}::frame .bright
-    ${NS}::frame .bright.mode
-    ${NS}::radiobutton .bright.mode.patch -text [mc "Patch"] \
-        -command reselectline -variable cmitmode -value "patch"
-    ${NS}::radiobutton .bright.mode.tree -text [mc "Tree"] \
-        -command reselectline -variable cmitmode -value "tree"
-    grid .bright.mode.patch .bright.mode.tree -sticky ew
-    pack .bright.mode -side top -fill x
-    set cflist .bright.cfiles
-    set indent [font measure mainfont "nn"]
-    text $cflist \
-        -selectbackground $selectbgcolor \
-        -background $bgcolor -foreground $fgcolor \
-        -font mainfont \
-        -tabs [list $indent [expr {2 * $indent}]] \
-        -yscrollcommand ".bright.sb set" \
-        -cursor [. cget -cursor] \
-        -spacing1 1 -spacing3 1
-    lappend bglist $cflist
-    lappend fglist $cflist
-    ${NS}::scrollbar .bright.sb -command "$cflist yview"
-    pack .bright.sb -side right -fill y
-    pack $cflist -side left -fill both -expand 1
-    $cflist tag configure highlight \
-        -background [$cflist cget -selectbackground]
-    $cflist tag configure bold -font mainfontbold
+    # .bright
+    create_file_list .bright
 
     .pwbottom add .bright
     .ctop add .pwbottom
