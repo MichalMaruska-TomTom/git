@@ -3188,6 +3188,7 @@ proc resizeclistpanes {win w} {
     puts "resizeclistpanes"
     global oldwidth oldsash use_ttk
     if {[info exists oldwidth($win)]} {
+        # Get the s0/s1
         if {[info exists oldsash($win)]} {
             set s0 [lindex $oldsash($win) 0]
             set s1 [lindex $oldsash($win) 1]
@@ -3198,16 +3199,21 @@ proc resizeclistpanes {win w} {
             set s0 [$win sash coord 0]
             set s1 [$win sash coord 1]
         }
+
+        # is w `width'?
         if {$w < 60} {
             set sash0 [expr {int($w/2 - 2)}]
             set sash1 [expr {int($w*5/6 - 2)}]
         } else {
+            # zoom factor:
             set factor [expr {1.0 * $w / $oldwidth($win)}]
+            # adapt/scale
             set sash0 [expr {int($factor * [lindex $s0 0])}]
             set sash1 [expr {int($factor * [lindex $s1 0])}]
             if {$sash0 < 30} {
                 set sash0 30
             }
+
             set maximum_name 500
             set date_width 420
             # minimum
