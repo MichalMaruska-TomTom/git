@@ -13024,6 +13024,9 @@ set use_ttk [expr {$have_ttk && $want_ttk}]
 set NS [expr {$use_ttk ? "ttk" : ""}]
 
 if {$use_ttk} {
+    set us 10000
+    puts [format "%d seconds to execute" $us ]
+    puts "using ttk!"
     setttkstyle
 }
 
