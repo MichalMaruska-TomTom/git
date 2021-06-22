@@ -6739,6 +6739,9 @@ proc drawtags {id x xt y1} {
             if {[incr nheads -1] >= 0} {
                 # mmc: the only use of $headbgcolor:
                 set col $headbgcolor
+                if {$be_verbose} {
+                    puts "drawtags: head $tag"
+                }
                 if {$tag eq $mainhead} {
                     set font mainfontbold
                 }
