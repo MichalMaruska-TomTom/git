@@ -2212,13 +2212,15 @@ proc create_tf {} {
         -background $bgcolor -bd 0 \
         -yscrollincr $linespc -yscrollcommand "scrollcanv $cscroll"
     ${tf}.histframe.pwclist add $canv
-
+    # mmc: re-enabled:
     set canv2 ${tf}.histframe.pwclist.canv2
     canvas $canv2 \
         -selectbackground $selectbgcolor \
         -background $bgcolor -bd 0 -yscrollincr $linespc
+        #  -width 70
+    # mmc: the width should be minimal to see first 5 letters.
     ${tf}.histframe.pwclist add $canv2
-
+    # mmc: so here we have abstraction!
     set canv3 ${tf}.histframe.pwclist.canv3
     canvas $canv3 \
         -selectbackground $selectbgcolor \
@@ -2229,6 +2231,7 @@ proc create_tf {} {
         ${tf}.histframe.pwclist add $canv3
         # -weight 2
         ## Why weight 2?
+        # mmc: to see the date.
     }
 
     if {$use_ttk} {
@@ -2280,6 +2283,7 @@ proc create_tf {} {
     set sha1entry ${tf}.bar.sha1
     set entries $sha1entry
     set sha1but ${tf}.bar.sha1label
+    # mmc: what is this?
     button $sha1but -text "[mc "SHA1 ID:"] " -state disabled -relief flat \
         -command gotocommit -width 8
     $sha1but conf -disabledforeground [$sha1but cget -foreground]
@@ -2311,6 +2315,7 @@ proc create_tf {} {
     image create bitmap bm-right -data $bm_right_data -foreground $uifgcolor
     image create bitmap bm-right-gray -data $bm_right_data -foreground $uifgdisabledcolor
 
+    # 2 buttons
     ${NS}::button ${tf}.bar.leftbut -command goback -state disabled -width 26
 
     if {$use_ttk} {
@@ -2368,6 +2373,7 @@ proc create_tf {} {
     # build up the bottom bar of upper window
     ${NS}::label ${tf}.lbar.flabel -text "[mc "Find"] "
 
+    # other up/down arrays?
     set bm_down_data {
         #define down_width 16
         #define down_height 16
@@ -2379,6 +2385,7 @@ proc create_tf {} {
     }
     image create bitmap bm-down -data $bm_down_data -foreground $uifgcolor
 
+    # 2 buttons?
     ${NS}::button ${tf}.lbar.fnext -width 26 -command {dofind 1 1}
     ${tf}.lbar.fnext configure -image bm-down
 
@@ -2609,10 +2616,10 @@ proc makewindow {} {
     if ($original_layout) {
         ${NS}::panedwindow .ctop -orient vertical
     } else {
+        # ${NS}::panedwindow .narrow -orient vertical
         ${NS}::panedwindow .ctop -orient horizontal
     }
 
-    # mmc: vertical
     create_tf
 
     # Finish putting the upper half of the viewer together
