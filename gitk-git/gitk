@@ -3224,14 +3224,24 @@ proc resizeclistpanes {win w} {
             if {$sash0 < 30} {
                 set sash0 30
             }
+            set maximum_name 500
+            set date_width 420
+            # minimum
             if {$sash1 < $sash0 + 20} {
                 set sash1 [expr {$sash0 + 20}]
+            } elseif {$sash1 > $sash0 + $maximum_name } {
+                set sash0 [expr {$w - $maximum_name - $date_width }]
             }
+            # the last is the date, not needed to be big!
             if {$sash1 > $w - 10} {
                 set sash1 [expr {$w - 10}]
+
+                # once more:
                 if {$sash0 > $sash1 - 20} {
                     set sash0 [expr {$sash1 - 20}]
                 }
+            } elseif {$sash1 < $w - $date_width} {
+                set sash1 [expr {$w - $date_width}]
             }
         }
         if {$use_ttk} {
