@@ -2262,7 +2262,10 @@ proc create_history_pane {} {
 
     if {$use_ttk} {
         bind ${tf}.histframe.pwclist <Map> {
-            bind %W <Map> {}
+            bind %W <Map> {
+                puts "bound inside the history widget"
+            }
+
             if ($original_layout) {
                 ${tfpath}.histframe.pwclist sashpos 1 [lindex $::geometry(pwsash1) 0]
                 ${tfpath}.histframe.pwclist sashpos 0 [lindex $::geometry(pwsash0) 0]
@@ -3202,6 +3205,7 @@ proc savestuff {w} {
 }
 
 proc resizeclistpanes {win w} {
+    puts "resizeclistpanes"
     global oldwidth oldsash use_ttk
     if {[info exists oldwidth($win)]} {
         if {[info exists oldsash($win)]} {
@@ -3244,6 +3248,8 @@ proc resizeclistpanes {win w} {
                 set sash1 [expr {$w - $date_width}]
             }
         }
+
+        puts [ format "resizeclistpanes: factor: %f %d %d %d\n" $factor $sash0 $sash1 $w ]
         if {$use_ttk} {
             $win sashpos 0 $sash0
             $win sashpos 1 $sash1
