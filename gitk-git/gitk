@@ -12683,6 +12683,8 @@ foreach arg $argv {
         }
         "--title=*" {
             set cmdline_title [string range $arg 8 end]
+            # not yet curview !
+            # set_window_title
         }
         default {
             lappend revtreeargs $arg
