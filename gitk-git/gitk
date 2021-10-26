@@ -2406,15 +2406,7 @@ proc create_history_pane {} {
     pack ${tf}.lbar.findtype -side right
     pack $fstring -side left -expand 1 -fill x
 
-    # Finish putting the upper half of the viewer together
-    if ($original_layout) {
-        .ctop add ${tf}
-
-        if {!$use_ttk} {
-            .ctop paneconfigure ${tf} -height $geometry(topheight)
-            .ctop paneconfigure ${tf} -width $geometry(topwidth)
-        }
-    }
+    # mmc: removed from here!
     pack ${tf}.lbar -in ${tf} -side bottom -fill x
     pack ${tf}.bar -in ${tf} -side bottom -fill x
     pack ${tf}.histframe -fill both -side top -expand 1
@@ -2600,17 +2592,17 @@ proc makewindow {} {
     # mmc: vertical
     create_history_pane
 
+    # Finish putting the upper half of the viewer together
     if ($original_layout) {
-        ${NS}::frame .narrow -height $geometry(topheight) \
-            -width [ expr {int($geometry(topwidth) / 2)} ]
+        .ctop add ${tfpath}
 
-        # .narrow add .tf
-        pack ${tfpath} -in .narrow -side top
-        # -fill both
-        # y
+        if {!$use_ttk} {
+            .ctop paneconfigure ${tf} -height $geometry(topheight)
+            .ctop paneconfigure ${tf} -width $geometry(topwidth)
+        }
+    }
 
-        #${NS}::label .narrow.blabel -text "original_layout"
-        #pack .narrow.blabel -in .narrow -side bottom -fill none
+    if ($original_layout) {
 
         .ctop add ${tfpath}
         .ctop add .narrow
