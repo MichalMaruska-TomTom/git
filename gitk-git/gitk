@@ -154,6 +154,9 @@ proc unmerged_files {files} {
     return $mlist
 }
 
+# This also declares the variable!
+set original_layout 0
+
 proc parseviewargs {n arglist} {
     global vdatemode vmergeonly vflags vdflags vrevs vfiltered vorigargs env
     global vinlinediff
@@ -264,6 +267,9 @@ proc parseviewargs {n arglist} {
             }
             "-v" - "--verbose" {
                 set be_verbose 1
+            }
+            "-V" - "--vertical" {
+                # too late, so just ignore!
             }
             "-*" {
                 # Other flag arguments including -<n>
@@ -12666,17 +12672,49 @@ if {[tk windowingsystem] eq "aqua"} {
     set ctxbut <Button-3>
 }
 
+foreach arg $argv {
+    switch -glob -- $arg {
+        "--" {
+            break
+        }
+        "--title=*" {
+            set cmdline_title [string range $arg 8 end]
+            # not yet curview !
+            # set_window_title
+        }
+        "-V" {
+            # doesn't work!
+            set original_layout 1
+            puts "(late) original_layout $original_layout"
+        }
+        "--vertical" {
+            # doesn't work!
+            set original_layout 1
+            puts "(late) original_layout $original_layout"
+        }
+        default {
+            # lappend revtreeargs $arg
+        }
+    }
+}
+
+set config_file_name "gitk"
+
+if ($original_layout) {
+    set config_file_name "gitk-vertical"
+}
+
 catch {
     # follow the XDG base directory specification by default. See
     # http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
     if {[info exists env(XDG_CONFIG_HOME)] && $env(XDG_CONFIG_HOME) ne ""} {
         # XDG_CONFIG_HOME environment variable is set
-        set config_file [file join $env(XDG_CONFIG_HOME) git gitk]
-        set config_file_tmp [file join $env(XDG_CONFIG_HOME) git gitk-tmp]
+        set config_file [file join $env(XDG_CONFIG_HOME) git $config_file_name ]
+        set config_file_tmp [file join $env(XDG_CONFIG_HOME) git "${config_file_name}-tmp"]
     } else {
         # default XDG_CONFIG_HOME
-        set config_file "~/.config/git/gitk"
-        set config_file_tmp "~/.config/git/gitk-tmp"
+        set config_file "~/.config/git/$config_file_name"
+        set config_file_tmp "~/.config/git/${config_file_name}-tmp"
     }
     if {![file exists $config_file]} {
         # for backward compatibility use the old config file if it exists
@@ -12754,6 +12792,14 @@ foreach arg $argv {
         }
         "--title=*" {
             set cmdline_title [string range $arg 8 end]
+        }
+        "-V" {
+            set original_layout 1
+            puts "original_layout $original_layout"
+        }
+        "--vertical" {
+            set original_layout 1
+            puts "original_layout $original_layout"
         }
         default {
             lappend revtreeargs $arg
