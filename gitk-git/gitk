@@ -12878,6 +12878,7 @@ set cmdline_files {}
 set i 0
 set revtreeargscmd {}
 set cmdline_title ""
+
 foreach arg $argv {
     switch -glob -- $arg {
         "" { }
