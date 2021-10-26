@@ -1904,6 +1904,9 @@ proc ttk_toplevel {w args} {
     eval [linsert $args 0 ::toplevel $w]
     if {$use_ttk} {
         place [ttk::frame $w._toplevel_background] -x 0 -y 0 -relwidth 1 -relheight 1
+
+        puts "set scrollbar color"
+        ttk::style configure TScrollbar -background blue
     }
     return $w
 }
@@ -2009,6 +2012,18 @@ proc setttkstyle {} {
     eval font configure TkIconFont    [fontflags uifont]
     eval font configure TkMenuFont    [fontflags uifont]
     eval font configure TkSmallCaptionFont [fontflags uifont]
+
+    puts "set scrollbar color"
+    ttk::style configure TScrollbar -background blue
+    # ttk::style configure TScrollbar -troughcolor color
+    #ttk::style configure TScrollbar -arrowcolor color
+    #ttk::style configure TScrollbar -bordercolor color
+    #ttk::style configure TScrollbar -darkcolor color
+    #ttk::style configure TScrollbar -lightcolor color
+    #ttk::style configure TScrollbar -sliderrelief relief
+    ttk::style map TScrollbar -background [list active blue disabled blue]
+    # blue blue blue blue
+
 }
 
 # Make a menu and submenus.
