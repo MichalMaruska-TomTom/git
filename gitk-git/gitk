@@ -2640,7 +2640,6 @@ proc makewindow {} {
         .ctop add ${tfpath}
         # .ctop add .narrow
     } else {
-        # pack ${tfpath} -in .narrow -side leftktop
         .ctop add ${tfpath}
     }
 
