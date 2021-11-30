@@ -1,3 +1,43 @@
+git (1:2.34.1-1-maruska) unstable; urgency=medium
+
+  * indent-tabs-mode
+  * Colorize the native-code version of 'am', conditionally on GIT_USE_COLOR
+  * Recognize sums/start/base and treat specially
+  * drop cvs
+  * be_verbose only when requested by option (-v --verbose)
+  * git-p4.py: comments & suppress "sync" when submitting!
+  * comments to understand gitk.
+  * useless test to color-highlight mmc-all & mmc-keep-time
+  * comments on how the ref labels are drawn (rectangles & text)
+  * drawtags only if verbose
+  * empty lines
+  * gitk: search for which Refs are shown.
+  * Set the middle part of window title by --title= option
+  * gitk: use the full repo path
+  * untabify ....oldsash
+  * sq cmdline --title.
+  * Refer to the FRAME .tf through a variable. $tf (hierarchy address $tfpath)
+  * Extract the Bottom-Right frame creation (with file list)
+  * Extract from makewindow: create_tf (history frame), create_bleft,
+  * Move logical attaching out of creation
+  * .narrow ????
+  * part 2: based on original_layout ... create_tf, makewindow .... again
+  * process the cmdline early & decide for the config file
+  * drop
+  * add line
+  * put limits on the width of name/date of commits (sash)
+  * verbose in callbacks due to resizing
+  * comment on the size decision
+  * Comments! changes
+  * limit width of canvas
+  * fix emacs alignment -- don't use local functions?
+  * Verbose on save the dimensions
+  * comments
+  * report on ttk
+  * make scrollbars blue
+
+ -- Michal Maruska <mmaruska@gmail.com>  Tue, 30 Nov 2021 07:31:18 +0100
+
 git (1:2.34.1-1) unstable; urgency=low
 
   * new upstream point release (see RelNotes/2.34.1.txt).
