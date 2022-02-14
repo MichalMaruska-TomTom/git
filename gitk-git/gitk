@@ -6692,8 +6692,16 @@ proc drawtags {id x xt y1} {
             if {$be_verbose} {
                 puts "drawtags: tag $tag"
             }
-            set t [$canv create polygon $x [expr {$yt + $delta}] $xl $yt \
-                       $xr $yt $xr $yb $xl $yb $x [expr {$yb - $delta}] \
+
+            # the fish form! 5 points
+
+            set t [$canv create polygon \
+                       $x [expr {$yt + $delta}] \
+                       $xl $yt \
+                       $xr $yt \
+                       $xr $yb \
+                       $xl $yb \
+                       $x [expr {$yb - $delta}] \
                        -width 1 -outline $tagoutlinecolor -fill $tagbgcolor \
                        -tags tag.$id]
             if {$singletag} {
