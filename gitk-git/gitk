@@ -2668,16 +2668,29 @@ proc makewindow {} {
     }
 
     if ($original_layout) {
+        if (true) {
+            # new widget:
             ${NS}::frame .narrow -height $geometry(topheight) \
                 -width [ expr {int($geometry(topwidth) / 2)} ]
 
+            # .narrow add .tf
             pack ${tfpath} -in .narrow -side top
+            # -fill both
+            # y
+
+            #${NS}::label .narrow.blabel -text "original_layout"
+            #pack .narrow.blabel -in .narrow -side bottom -fill none
+        }
+
+        # Finish putting the upper half of the viewer together
         .ctop add ${tfpath}
+        # .ctop add .narrow
     } else {
         .ctop add ${tfpath}
     }
 
     if {!$use_ttk} {
+        # not used!
         return 0
         .ctop paneconfigure ${tfpath} -height $geometry(topheight)
         .ctop paneconfigure ${tfpath} -width $geometry(topwidth)
