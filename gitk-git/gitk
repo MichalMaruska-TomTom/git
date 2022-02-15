@@ -2559,10 +2559,9 @@ proc makewindow {} {
         .pwbottom paneconfigure .bleft -width $geometry(botwidth)
     }
 
-    # .bright
-    create_file_list .bright
+    create_file_list .file_list
 
-    .pwbottom add .bright
+    .pwbottom add .file_list
     .ctop add .pwbottom
 
     # restore window width & height if known
