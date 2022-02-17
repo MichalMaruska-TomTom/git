@@ -1,3 +1,42 @@
+git (1:2.35.1-1-maruska) unstable; urgency=medium
+
+  * indent-tabs-mode
+  * Recognize sums/start/base and treat specially
+  * be_verbose only when requested by option (-v --verbose)
+  * comments to understand gitk.
+  * comments on how the ref labels are drawn (rectangles & text)
+  * Expand how the fish form is drawn
+  * Colorize the native-code version of 'am', conditionally on GIT_USE_COLOR
+  * verbose on drawing tags (fish)
+  * drop cvs
+  * gitk: search for which Refs are shown.
+  * git-p4.py: comments & suppress "sync" when submitting!
+  * gitk: use the full repo path
+  * Set the middle part of window title by --title= option
+  * untabify ....oldsash
+  * make scrollbars blue
+  * Refer to the FRAME .tf through a variable.
+  * Extract the Change-File-list frame creation
+  * sq. rename as such
+  * Extract create_history_pane and create_diff_pane (from makewindow)
+  * Move logical attaching of history_pane out of creation
+  * When vertical: interpose a frame to contain history -- use pack?
+  * part 2: based on original_layout ... create_tf, makewindow .... again
+  * add line
+  * process the cmdline early & decide for the config file
+  * put limits on the width of name/date of commits (sash)
+  * verbose in callbacks due to resizing
+  * comment on the size decision
+  * Comments! changes
+  * limit width of canvas
+  * fix emacs alignment -- don't use local functions?
+  * Verbose on save the dimensions
+  * comments
+  * report on ttk
+  * comments on ".narrow ??"
+
+ -- Michal Maruska <mmaruska@gmail.com>  Thu, 17 Feb 2022 13:43:36 +0100
+
 git (1:2.35.1-1) unstable; urgency=low
 
   * new upstream release (see RelNotes/2.35.0.txt, RelNotes/2.35.1.txt).
