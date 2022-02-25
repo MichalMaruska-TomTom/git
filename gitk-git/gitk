@@ -3216,6 +3216,7 @@ proc savestuff {w} {
 
 proc resizeclistpanes {win w} {
     puts "resizeclistpanes"
+    # mmc: what is `oldwidth' ?
     global oldwidth oldsash use_ttk
     if {[info exists oldwidth($win)]} {
         # Get the s0/s1
