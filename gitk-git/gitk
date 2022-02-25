@@ -2466,73 +2466,73 @@ proc create_diff_pane {} {
     # if we know window height, then that will set the lower text height, otherwise
     # we set lower text height which will drive window height
     if {[info exists geometry(main)]} {
-        ${NS}::frame .bleft -width $geometry(botwidth)
+        ${NS}::frame .diffWidget -width $geometry(botwidth)
     } else {
-        ${NS}::frame .bleft -width $geometry(botwidth) -height $geometry(botheight)
+        ${NS}::frame .diffWidget -width $geometry(botwidth) -height $geometry(botheight)
     }
-    ${NS}::frame .bleft.top
-    ${NS}::frame .bleft.mid
-    ${NS}::frame .bleft.bottom
+    ${NS}::frame .diffWidget.top
+    ${NS}::frame .diffWidget.mid
+    ${NS}::frame .diffWidget.bottom
 
     # gap between sub-widgets
     set wgap [font measure uifont "i"]
 
-    ${NS}::button .bleft.top.search -text [mc "Search"] -command dosearch
-    pack .bleft.top.search -side left -padx 5
-    set sstring .bleft.top.sstring
+    ${NS}::button .diffWidget.top.search -text [mc "Search"] -command dosearch
+    pack .diffWidget.top.search -side left -padx 5
+    set sstring .diffWidget.top.sstring
     set searchstring ""
     ${NS}::entry $sstring -width 20 -textvariable searchstring
     lappend entries $sstring
     trace add variable searchstring write incrsearch
     pack $sstring -side left -expand 1 -fill x
-    ${NS}::radiobutton .bleft.mid.diff -text [mc "Diff"] \
+    ${NS}::radiobutton .diffWidget.mid.diff -text [mc "Diff"] \
         -command changediffdisp -variable diffelide -value {0 0}
-    ${NS}::radiobutton .bleft.mid.old -text [mc "Old version"] \
+    ${NS}::radiobutton .diffWidget.mid.old -text [mc "Old version"] \
         -command changediffdisp -variable diffelide -value {0 1}
-    ${NS}::radiobutton .bleft.mid.new -text [mc "New version"] \
+    ${NS}::radiobutton .diffWidget.mid.new -text [mc "New version"] \
         -command changediffdisp -variable diffelide -value {1 0}
 
-    ${NS}::label .bleft.mid.labeldiffcontext -text "      [mc "Lines of context"]: "
-    pack .bleft.mid.diff .bleft.mid.old .bleft.mid.new -side left -ipadx $wgap
-    spinbox .bleft.mid.diffcontext -width 5 \
+    ${NS}::label .diffWidget.mid.labeldiffcontext -text "      [mc "Lines of context"]: "
+    pack .diffWidget.mid.diff .diffWidget.mid.old .diffWidget.mid.new -side left -ipadx $wgap
+    spinbox .diffWidget.mid.diffcontext -width 5 \
         -from 0 -increment 1 -to 10000000 \
         -validate all -validatecommand "diffcontextvalidate %P" \
         -textvariable diffcontextstring
-    .bleft.mid.diffcontext set $diffcontext
+    .diffWidget.mid.diffcontext set $diffcontext
     trace add variable diffcontextstring write diffcontextchange
-    lappend entries .bleft.mid.diffcontext
-    pack .bleft.mid.labeldiffcontext .bleft.mid.diffcontext -side left -ipadx $wgap
-    ${NS}::checkbutton .bleft.mid.ignspace -text [mc "Ignore space change"] \
+    lappend entries .diffWidget.mid.diffcontext
+    pack .diffWidget.mid.labeldiffcontext .diffWidget.mid.diffcontext -side left -ipadx $wgap
+    ${NS}::checkbutton .diffWidget.mid.ignspace -text [mc "Ignore space change"] \
         -command changeignorespace -variable ignorespace
-    pack .bleft.mid.ignspace -side left -padx 5
+    pack .diffWidget.mid.ignspace -side left -padx 5
 
     set worddiff [mc "Line diff"]
     if {[package vcompare $git_version "1.7.2"] >= 0} {
-        makedroplist .bleft.mid.worddiff worddiff [mc "Line diff"] \
+        makedroplist .diffWidget.mid.worddiff worddiff [mc "Line diff"] \
             [mc "Markup words"] [mc "Color words"]
         trace add variable worddiff write changeworddiff
-        pack .bleft.mid.worddiff -side left -padx 5
+        pack .diffWidget.mid.worddiff -side left -padx 5
     }
 
 # mmc:
-    set ctext .bleft.bottom.ctext
+    set ctext .diffWidget.bottom.ctext
     text $ctext -background $bgcolor -foreground $fgcolor \
         -state disabled -undo 0 -font textfont \
         -yscrollcommand scrolltext -wrap none \
-        -xscrollcommand ".bleft.bottom.sbhorizontal set"
+        -xscrollcommand ".diffWidget.bottom.sbhorizontal set"
     if {$have_tk85} {
         $ctext conf -tabstyle wordprocessor
     }
-    ${NS}::scrollbar .bleft.bottom.sb -command "$ctext yview"
-    ${NS}::scrollbar .bleft.bottom.sbhorizontal -command "$ctext xview" -orient h
-    pack .bleft.top -side top -fill x
-    pack .bleft.mid -side top -fill x
-    grid $ctext .bleft.bottom.sb -sticky nsew
-    grid .bleft.bottom.sbhorizontal -sticky ew
-    grid columnconfigure .bleft.bottom 0 -weight 1
-    grid rowconfigure .bleft.bottom 0 -weight 1
-    grid rowconfigure .bleft.bottom 1 -weight 0
-    pack .bleft.bottom -side top -fill both -expand 1
+    ${NS}::scrollbar .diffWidget.bottom.sb -command "$ctext yview"
+    ${NS}::scrollbar .diffWidget.bottom.sbhorizontal -command "$ctext xview" -orient h
+    pack .diffWidget.top -side top -fill x
+    pack .diffWidget.mid -side top -fill x
+    grid $ctext .diffWidget.bottom.sb -sticky nsew
+    grid .diffWidget.bottom.sbhorizontal -sticky ew
+    grid columnconfigure .diffWidget.bottom 0 -weight 1
+    grid rowconfigure .diffWidget.bottom 0 -weight 1
+    grid rowconfigure .diffWidget.bottom 1 -weight 0
+    pack .diffWidget.bottom -side top -fill both -expand 1
 }
 
 proc makewindow {} {
@@ -2724,20 +2724,20 @@ proc makewindow {} {
     $ctext tag lower dresult
     $ctext tag lower d0
 
-    # .narrow add .bleft
+    # .narrow add .diffWidget
     # mmc:
     if ($original_layout) {
-        pack .bleft -in .narrow -side bottom -fill y
-        # mmc: I think .bleft is the DIFF window.
-        .commitWidget add .bleft
+        pack .diffWidget -in .narrow -side bottom -fill y
+        # mmc: I think .diffWidget is the DIFF window.
+        .commitWidget add .diffWidget
     } else {
         # Add the file-list column
         # if [expr {! $original_layout}]
-        .commitWidget add .bleft
+        .commitWidget add .diffWidget
     }
 
     if {!$use_ttk} {
-        .commitWidget paneconfigure .bleft -width $geometry(botwidth)
+        .commitWidget paneconfigure .diffWidget -width $geometry(botwidth)
     }
 
 
@@ -2751,7 +2751,7 @@ proc makewindow {} {
     } else {
         .commitWidget add .file_list
         .ctop add .commitWidget
-        #.ctop add .bleft
+        #.ctop add .diffWidget
     }
 
     # restore window width & height if known
@@ -3170,8 +3170,8 @@ proc savestuff {w} {
         }
 
         # diff area:
-        puts $f "set geometry(botwidth) [winfo width .bleft]"
-        puts $f "set geometry(botheight) [winfo height .bleft]"
+        puts $f "set geometry(botwidth) [winfo width .diffWidget]"
+        puts $f "set geometry(botheight) [winfo height .diffWidget]"
 
         array set view_save {}
         array set views {}
@@ -9018,7 +9018,7 @@ proc scrolltext {f0 f1} {
 
     unset -nocomplain suppress_highlighting_file_for_this_scrollpos
 
-    .bleft.bottom.sb set $f0 $f1
+    .diffWidget.bottom.sb set $f0 $f1
     if {$searchstring ne {}} {
         searchmarkvisible 0
     }
