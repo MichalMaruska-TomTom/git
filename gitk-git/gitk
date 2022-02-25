@@ -2233,7 +2233,7 @@ proc create_history_pane {} {
     ${NS}::scrollbar $cscroll -command {allcanvs yview}
     if {!$use_ttk} {$cscroll configure -highlightthickness 0}
     pack $cscroll -side right -fill y
-    bind ${tf}.histframe.pwclist <Configure> {resizeclistpanes %W %w}
+    # bind ${tf}.histframe.pwclist <Configure> {resizeclistpanes %W %w}
     lappend bglist $canv $canv2 $canv3
     pack ${tf}.histframe.pwclist -fill both -expand 1 -side left
 
