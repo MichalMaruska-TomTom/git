@@ -2679,7 +2679,7 @@ proc makewindow {} {
     # mmc: bright & bleft.
 
     # now build up the bottom
-    ${NS}::panedwindow .pwbottom -orient horizontal
+    ${NS}::panedwindow .commitWidget -orient horizontal
 
     create_diff_pane
 
@@ -2729,15 +2729,15 @@ proc makewindow {} {
     if ($original_layout) {
         pack .bleft -in .narrow -side bottom -fill y
         # mmc: I think .bleft is the DIFF window.
-        .pwbottom add .bleft
+        .commitWidget add .bleft
     } else {
         # Add the file-list column
         # if [expr {! $original_layout}]
-        .pwbottom add .bleft
+        .commitWidget add .bleft
     }
 
     if {!$use_ttk} {
-        .pwbottom paneconfigure .bleft -width $geometry(botwidth)
+        .commitWidget paneconfigure .bleft -width $geometry(botwidth)
     }
 
 
@@ -2745,12 +2745,12 @@ proc makewindow {} {
     create_file_list .file_list
 
     if [expr {! $original_layout}] {
-        .pwbottom add .file_list
+        .commitWidget add .file_list
     #mmc:
-        .ctop add .pwbottom
+        .ctop add .commitWidget
     } else {
-        .pwbottom add .file_list
-        .ctop add .pwbottom
+        .commitWidget add .file_list
+        .ctop add .commitWidget
         #.ctop add .bleft
     }
 
@@ -2784,7 +2784,7 @@ proc makewindow {} {
             bind %W <Map> {}
             %W sashpos 0 $::geometry(topheight)
         }
-        bind .pwbottom <Map> {
+        bind .commitWidget <Map> {
             bind %W <Map> {}
             ## if [expr {! $original_layout}]
             if ($original_layout) {
@@ -2792,7 +2792,7 @@ proc makewindow {} {
             }
         }
         # bind .narrow <Configure> {resizecdetpanes %W %w}
-        bind .pwbottom <Configure> {resizecdetpanes %W %w}
+        bind .commitWidget <Configure> {resizecdetpanes %W %w}
     }
     pack .ctop -fill both -expand 1
     bindall <1> {selcanvline %W %x %y}
