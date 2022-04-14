@@ -2181,7 +2181,7 @@ proc create_history_pane {} {
     set tf $tfpath
 
     # possibly use assumed geometry
-    if {![info exists geometry(pwsash0)]} {
+    if {![info exists geometry(pwsash0)]} { # pw ?
         puts "geometry does not exist, inventing one"
         set geometry(topheight) [expr {15 * $linespc}]
         set geometry(topwidth) [expr {80 * $charspc}]
@@ -2189,6 +2189,7 @@ proc create_history_pane {} {
         set geometry(botwidth) [expr {50 * $charspc}]
 
         set geometry(pwsash0) [list [expr {40 * $charspc}] 2]
+        # pwsash1 ? 1 vs 0?
         set geometry(pwsash1) [list [expr {60 * $charspc}] 2]
     }
 
@@ -2208,8 +2209,10 @@ proc create_history_pane {} {
     # pwc list .... canv canv2 canv3
 
     # this is like treeview!  `sash' is divisors?
+    #  panedwindow   subject-author-date  p-w-c ?
     ${NS}::panedwindow ${tf}.histframe.pwclist -orient horizontal
     if {!$use_ttk} {
+        # mmc: so is this?
         ${tf}.histframe.pwclist configure -sashpad 0 -handlesize 4
     }
 
@@ -2248,11 +2251,13 @@ proc create_history_pane {} {
 
     if {$use_ttk} {
         bind ${tf}.histframe.pwclist <Map> {
+            # mmc: inline callack! when mapped!
             bind %W <Map> {
                 puts "bound inside the history widget"
             }
 
             if ($original_layout) {
+                # position of column ?
                 ${tfpath}.histframe.pwclist sashpos 1 [lindex $::geometry(pwsash1) 0]
                 ${tfpath}.histframe.pwclist sashpos 0 [lindex $::geometry(pwsash0) 0]
 
@@ -2842,6 +2847,7 @@ proc makewindow {} {
     bind . <$M1B-Key-Down> "allcanvs yview scroll 1 units"
     bind . <$M1B-Key-Prior> "allcanvs yview scroll -1 pages"
     bind . <$M1B-Key-Next> "allcanvs yview scroll 1 pages"
+    # what's the difference ??
     bindkey <Key-Delete> "$ctext yview scroll -1 pages"
     bindkey <Key-BackSpace> "$ctext yview scroll -1 pages"
     bindkey <Key-space> "$ctext yview scroll 1 pages"
@@ -2853,6 +2859,7 @@ proc makewindow {} {
     bindkey j "selnextline 1"
     bindkey h "goback"
     bindkey l "goforw"
+    # only when a file is selected!
     bindkey b prevfile
     bindkey d "$ctext yview scroll 18 units"
     bindkey u "$ctext yview scroll -18 units"
@@ -3215,6 +3222,8 @@ proc savestuff {w} {
     set stuffsaved 1
 }
 
+# so this is currently not used at all!
+# but it should be at the beginning?
 proc resizeclistpanes {win w} {
     puts "resizeclistpanes"
     # mmc: what is `oldwidth' ?
@@ -8842,9 +8851,11 @@ proc nextfile {} {
     global difffilestart ctext cmitmode
 
     if {$cmitmode eq "tree"} return
+    # HERE is the position in the diff at the left/top corner:
     set here [$ctext index @0,0]
     foreach loc $difffilestart {
         if {[$ctext compare $loc > $here]} {
+            # this moves the viewport:
             $ctext yview $loc
             return
         }
@@ -13058,6 +13069,8 @@ set have_tk85 [expr {[package vcompare $tk_version "8.5"] >= 0}]
 if {![info exists have_ttk]} {
     set have_ttk [llength [info commands ::ttk::style]]
 }
+
+# mmc: yes!
 set use_ttk [expr {$have_ttk && $want_ttk}]
 set NS [expr {$use_ttk ? "ttk" : ""}]
 
