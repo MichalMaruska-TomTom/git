@@ -157,6 +157,7 @@ proc unmerged_files {files} {
 # This also declares the variable!
 set original_layout 0
 
+# This is run after the window is created!
 proc parseviewargs {n arglist} {
     global vdatemode vmergeonly vflags vdflags vrevs vfiltered vorigargs env
     global vinlinediff
@@ -2177,7 +2178,7 @@ proc create_history_pane {} {
     set tf $tfpath
 
     # possibly use assumed geometry
-    if {![info exists geometry(pwsash0)]} {
+    if {![info exists geometry(pwsash0)]} { # pw ?
         puts "geometry does not exist, inventing one"
         set geometry(topheight) [expr {15 * $linespc}]
         set geometry(topwidth) [expr {80 * $charspc}]
@@ -2185,6 +2186,7 @@ proc create_history_pane {} {
         set geometry(botwidth) [expr {50 * $charspc}]
 
         set geometry(pwsash0) [list [expr {40 * $charspc}] 2]
+        # pwsash1 ? 1 vs 0?
         set geometry(pwsash1) [list [expr {60 * $charspc}] 2]
     }
 
@@ -2203,8 +2205,10 @@ proc create_history_pane {} {
     # pwc list .... canv canv2 canv3
 
     # this is like treeview!  `sash' is divisors?
+    #  panedwindow   subject-author-date  p-w-c ?
     ${NS}::panedwindow ${tf}.histframe.pwclist -orient horizontal
     if {!$use_ttk} {
+        # mmc: so is this?
         ${tf}.histframe.pwclist configure -sashpad 0 -handlesize 4
     }
 
@@ -2219,13 +2223,15 @@ proc create_history_pane {} {
         -background $bgcolor -bd 0 \
         -yscrollincr $linespc -yscrollcommand "scrollcanv $cscroll"
     ${tf}.histframe.pwclist add $canv
-
+    # mmc: re-enabled:
     set canv2 ${tf}.histframe.pwclist.canv2
     canvas $canv2 \
         -selectbackground $selectbgcolor \
         -background $bgcolor -bd 0 -yscrollincr $linespc
+        #  -width 70
+    # mmc: the width should be minimal to see first 5 letters.
     ${tf}.histframe.pwclist add $canv2
-
+    # mmc: so here we have abstraction!
     set canv3 ${tf}.histframe.pwclist.canv3
     canvas $canv3 \
         -selectbackground $selectbgcolor \
@@ -2234,7 +2240,7 @@ proc create_history_pane {} {
         ${tf}.histframe.pwclist add $canv3 -weight 2
     } else {
         ${tf}.histframe.pwclist add $canv3
-        ## mmc: Why weight 2?
+        ## mmc: Why weight 2? -- mmc: to see the date.
     }
 
     if {$use_ttk} {
@@ -2246,6 +2252,7 @@ proc create_history_pane {} {
             # }
 
             if ($original_layout) {
+                # position of column ?
                 ${tf}.histframe.pwclist sashpos 1 [lindex $::geometry(pwsash1) 0]
                 ${tf}.histframe.pwclist sashpos 0 [lindex $::geometry(pwsash0) 0]
             } else {
@@ -2328,6 +2335,7 @@ proc create_history_pane {} {
     image create bitmap bm-right -data $bm_right_data -foreground $uifgcolor
     image create bitmap bm-right-gray -data $bm_right_data -foreground $uifgdisabledcolor
 
+    # 2 buttons
     ${NS}::button ${tf}.bar.leftbut -command goback -state disabled -width 26
 
     if {$use_ttk} {
@@ -2385,6 +2393,7 @@ proc create_history_pane {} {
     # build up the bottom bar of upper window
     ${NS}::label ${tf}.lbar.flabel -text "[mc \"Find\"] "
 
+    # other up/down arrays?
     set bm_down_data {
         #define down_width 16
         #define down_height 16
@@ -2396,6 +2405,7 @@ proc create_history_pane {} {
     }
     image create bitmap bm-down -data $bm_down_data -foreground $uifgcolor
 
+    # 2 buttons?
     ${NS}::button ${tf}.lbar.fnext -width 26 -command {dofind 1 1}
     ${tf}.lbar.fnext configure -image bm-down
 
@@ -2512,6 +2522,7 @@ proc create_diff_pane {} {
         pack .diffWidget.mid.worddiff -side left -padx 5
     }
 
+# mmc:
     set ctext .diffWidget.bottom.ctext
     text $ctext -background $bgcolor -foreground $fgcolor \
         -state disabled -undo 0 -font textfont \
@@ -2643,6 +2654,7 @@ proc makewindow {} {
             .ctop paneconfigure ${tf} -height $geometry(topheight)
             .ctop paneconfigure ${tf} -width $geometry(topwidth)
         }
+
     } else {
         .ctop add ${tfpath}
     }
@@ -2763,12 +2775,12 @@ proc makewindow {} {
         }
         bind .commitWidget <Configure> {resizecdetpanes %W %w}
     }
-
     pack .ctop -fill both -expand 1
     bindall <1> {selcanvline %W %x %y}
     #bindall <B1-Motion> {selcanvline %W %x %y}
     if {[tk windowingsystem] == "win32"} {
         bind . <MouseWheel> { windows_mousewheel_redirector %W %X %Y %D }
+        # mmc: what is this: %W %X/Y %D ?
         bind $ctext <MouseWheel> { windows_mousewheel_redirector %W %X %Y %D ; break }
     } else {
         bindall <ButtonRelease-4> "allcanvs yview scroll -5 units"
@@ -2811,6 +2823,7 @@ proc makewindow {} {
     bind . <$M1B-Key-Down> "allcanvs yview scroll 1 units"
     bind . <$M1B-Key-Prior> "allcanvs yview scroll -1 pages"
     bind . <$M1B-Key-Next> "allcanvs yview scroll 1 pages"
+    # what's the difference ??
     bindkey <Key-Delete> "$ctext yview scroll -1 pages"
     bindkey <Key-BackSpace> "$ctext yview scroll -1 pages"
     bindkey <Key-space> "$ctext yview scroll 1 pages"
@@ -2822,6 +2835,7 @@ proc makewindow {} {
     bindkey j "selnextline 1"
     bindkey h "goback"
     bindkey l "goforw"
+    # only when a file is selected!
     bindkey b prevfile
     bindkey d "$ctext yview scroll 18 units"
     bindkey u "$ctext yview scroll -18 units"
@@ -3138,6 +3152,7 @@ proc savestuff {w} {
             puts $f "set geometry(pwsash0) \"[${tf}.histframe.pwclist sash coord 0]\""
             puts $f "set geometry(pwsash1) \"[${tf}.histframe.pwclist sash coord 1]\""
         }
+        # diff area:
         puts $f "set geometry(botwidth) [winfo width .diffWidget]"
         puts $f "set geometry(botheight) [winfo height .diffWidget]"
 
@@ -3182,10 +3197,14 @@ proc savestuff {w} {
     set stuffsaved 1
 }
 
+# so this is currently not used at all!
+# but it should be at the beginning?
 proc resizeclistpanes {win w} {
     puts "resizeclistpanes"
+    # mmc: what is `oldwidth' ?
     global oldwidth oldsash use_ttk
     if {[info exists oldwidth($win)]} {
+        # Get the s0/s1
         if {[info exists oldsash($win)]} {
             set s0 [lindex $oldsash($win) 0]
             set s1 [lindex $oldsash($win) 1]
@@ -3196,16 +3215,21 @@ proc resizeclistpanes {win w} {
             set s0 [$win sash coord 0]
             set s1 [$win sash coord 1]
         }
+
+        # is w `width'?
         if {$w < 60} {
             set sash0 [expr {int($w/2 - 2)}]
             set sash1 [expr {int($w*5/6 - 2)}]
         } else {
+            # zoom factor:
             set factor [expr {1.0 * $w / $oldwidth($win)}]
+            # adapt/scale
             set sash0 [expr {int($factor * [lindex $s0 0])}]
             set sash1 [expr {int($factor * [lindex $s1 0])}]
             if {$sash0 < 30} {
                 set sash0 30
             }
+
             set maximum_name 500
             set date_width 420
             # minimum
@@ -6917,10 +6941,12 @@ proc drawtags {id x xt y1} {
         # wid is the width (allocated)
 
         set tag_quoted [string map {% %%} $tag]
+
         set xl [expr {$x + $delta}]
         # here the width of the rectangle:
         # note: how $extra ... in the xwals is composed of $lthickness!
         set xr [expr {$x + $delta + $wid + $lthickness}]
+
         set font mainfont
         # mmc: first are tags, then heads, then the rest?
         if {[incr ntags -1] >= 0} {
@@ -6949,8 +6975,10 @@ proc drawtags {id x xt y1} {
             # mmc: can is a canvas .tf.histframe.pwclist.canv
             # so an object w/ bind method?
             $canv bind $t <1> $tagclick
+
             set rowtextx([rowofcommit $id]) [expr {$xr + $linespc}]
         } else {
+
             # draw a head or other ref
             if {[incr nheads -1] >= 0} {
                 # mmc: the only use of $headbgcolor:
@@ -8797,9 +8825,11 @@ proc nextfile {} {
     global difffilestart ctext cmitmode
 
     if {$cmitmode eq "tree"} return
+    # HERE is the position in the diff at the left/top corner:
     set here [$ctext index @0,0]
     foreach loc $difffilestart {
         if {[$ctext compare $loc > $here]} {
+            # this moves the viewport:
             $ctext yview $loc
             return
         }
@@ -10086,6 +10116,7 @@ proc exec_citool {tool_args {baseid {}}} {
     array set env $save_env
 }
 
+# mmc: wow!
 proc cherrypick {} {
     global rowmenuid curview
     global mainhead mainheadid
@@ -11765,6 +11796,7 @@ proc showtags {id isnew} {
     init_flist {}
 }
 
+# 
 proc doquit {} {
     global stopped
     global gitktmpdir
@@ -12232,6 +12264,7 @@ proc prefscan {} {
     fontcan
 }
 
+# edit > preferences
 proc prefsok {} {
     global maxwidth maxgraphpct
     global oldprefs prefstop showneartags showlocalchanges
@@ -13017,6 +13050,8 @@ set have_tk85 [expr {[package vcompare $tk_version "8.5"] >= 0}]
 if {![info exists have_ttk]} {
     set have_ttk [llength [info commands ::ttk::style]]
 }
+
+# mmc: yes!
 set use_ttk [expr {$have_ttk && $want_ttk}]
 set NS [expr {$use_ttk ? "ttk" : ""}]
 
