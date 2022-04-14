@@ -2284,14 +2284,18 @@ proc create_history_pane {} {
                 #${tfpath}.histframe.pwclist sashpos 0 $offset0
                 #${tfpath}.histframe.pwclist sashpos 1 $offset1
             } else {
-                puts "changed sash?"
+                puts "The history is mapped: allocating widths/offsets:"
 
                 # mmc: this is a callback! it must have its variables.
                 # so what is this?
                 set offset1 [lindex $::geometry(pwsash1) 0]
                 set offset0 [lindex $::geometry(pwsash0) 0]
 
-                puts [format "now applying! %%d %%d"  ${offset0} ${offset1}  ]
+                # the original is still visible! :(
+                ${tfpath}.histframe.pwclist sashpos 1 $offset1
+                ${tfpath}.histframe.pwclist sashpos 0 $offset0
+
+                puts [format "now would apply %%d %%d"  ${offset0} ${offset1}  ]
                 # [lindex $::geometry(pwsash0) 0]
 
                 #set geometry(pwsash0) [list [expr {40 * $charspc}] 2]
@@ -8830,7 +8834,6 @@ proc highlightfile_for_scrollpos {topidx} {
 
 proc prevfile {} {
     global difffilestart ctext cmitmode
-
     if {$cmitmode eq "tree"} return
     set prev 0.0
     set here [$ctext index @0,0]
