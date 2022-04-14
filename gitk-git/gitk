@@ -2742,6 +2742,7 @@ proc makewindow {} {
     bindkey <Key-Return> {dofind 1 1}
     bindkey ? {dofind -1 1}
     bindkey f nextfile
+    bindkey v enlarge_subject
     bind . <F5> updatecommits
     bindmodfunctionkey Shift 5 reloadcommits
     bind . <F2> showrefs
@@ -8671,6 +8672,29 @@ proc prevfile {} {
         set prev $loc
     }
     $ctext yview $prev
+}
+
+
+set saved_sashpos(0) 0
+proc enlarge_subject {} {
+    global tfpath
+    global saved_sashpos
+
+    # Have to save it somehow, as percentage?
+    if { $saved_sashpos(0) eq 0 } {
+        # set it:
+        set saved_sashpos(0) [${tfpath}.histframe.pwclist sashpos 0]
+        set saved_sashpos(1) [${tfpath}.histframe.pwclist sashpos 1]
+
+        # puts "saved $saved_sashpos"
+        ${tfpath}.histframe.pwclist sashpos 1 [winfo width ${tfpath}.histframe.pwclist ]
+        ${tfpath}.histframe.pwclist sashpos 0 [winfo width ${tfpath}.histframe.pwclist ]
+    } else {
+        # restore it:
+        ${tfpath}.histframe.pwclist sashpos 0 $saved_sashpos(0)
+        ${tfpath}.histframe.pwclist sashpos 1 $saved_sashpos(1)
+        set saved_sashpos(0) 0
+    }
 }
 
 proc nextfile {} {
