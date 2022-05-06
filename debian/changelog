@@ -1,3 +1,49 @@
+git (1:2.36.0-1-maruska) unstable; urgency=medium
+
+  * indent-tabs-mode
+  * Recognize sums/start/base and treat specially
+  * be_verbose only when requested by option (-v --verbose)
+  * Colorize the native-code version of 'am', conditionally on GIT_USE_COLOR
+  * comments to understand gitk.
+  * comments on how the ref labels are drawn (rectangles & text)
+  * Expand how the fish form is drawn
+  * verbose on drawing tags (fish)
+  * gitk: search for which Refs are shown.
+  * drop cvs
+  * gitk: use the full repo path
+  * git-p4.py: comments & suppress "sync" when submitting!
+  * Set the middle part of window title by --title= option
+  * make scrollbars blue
+  * untabify ....oldsash
+  * Refer to the FRAME .tf through a variable.
+  * Extract the Change-File-list frame creation
+  * sq. rename as such
+  * Extract create_history_pane and create_diff_pane (from makewindow)
+  * Move logical attaching of history_pane out of creation
+  * When vertical: interpose a frame to contain history -- use pack?
+  * part 2: based on original_layout ... create_tf, makewindow .... again
+  * add line
+  * process the cmdline early & decide for the config file
+  * put limits on the width of name/date of commits (sash)
+  * verbose in callbacks due to resizing
+  * comment on the size decision
+  * Comments! changes
+  * limit width of canvas
+  * fix emacs alignment -- don't use local functions?
+  * Verbose on save the dimensions
+  * comments
+  * report on ttk
+  * comments on ".narrow ??"
+  * Don't recompute the history 3 columns on resize (of the history windowd)
+  * comment
+  * Use .commitWidget as the name (contains list_list, and .bleft = diff?)
+  * name it as .diffWidget -- contains the diff of the commit
+  * Bind "v" to enlarge/shrink the 2 columns
+  * comments
+  * Setup the width of columns in history, at start
+
+ -- Michal Maruska <mmaruska@gmail.com>  Fri, 06 May 2022 14:58:54 +0200
+
 git (1:2.36.0-1) unstable; urgency=low
 
   * new upstream release (see RelNotes/2.36.0.txt).
