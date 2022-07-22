@@ -3298,7 +3298,7 @@ proc resizeclistpanes {win w} {
 proc resizecdetpanes {win w} {
     global original_layout
     if [expr {! $original_layout}] {
-        puts "resizecdetpanes (the bottom reconfigured)"
+        # puts "resizecdetpanes (the bottom reconfigured)"
         return
     }
 
