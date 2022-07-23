@@ -2708,7 +2708,11 @@ proc makewindow {} {
     # mmc: bright & bleft.
 
     # now build up the bottom
-    ${NS}::panedwindow .commitWidget -orient horizontal
+    if ($original_layout) {
+        ${NS}::panedwindow .commitWidget -orient horizontal
+    } else {
+        ${NS}::panedwindow .commitWidget -orient vertical
+    }
 
     create_diff_pane
 
