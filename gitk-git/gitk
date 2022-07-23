@@ -2484,6 +2484,7 @@ proc makewindow {} {
     global git_version
     global worddiff
 
+    global original_layout
     # The "mc" arguments here are purely so that xgettext
     # sees the following string as needing to be translated
     set file {
@@ -2538,19 +2539,33 @@ proc makewindow {} {
     }
 
     # the gui has upper and lower half, parts of a paned window.
-    ${NS}::panedwindow .ctop -orient vertical
+    if ($original_layout) {
+        ${NS}::panedwindow .ctop -orient vertical
+    } else {
+        ${NS}::panedwindow .ctop -orient horizontal
+    }
 
     create_history_pane
 
-    .ctop add ${tfpath}
-    if {!$use_ttk} {
-        return 0
-        .ctop paneconfigure ${tfpath} -height $geometry(topheight)
-        .ctop paneconfigure ${tfpath} -width $geometry(topwidth)
+    # Finish putting the upper half of the viewer together
+    if ($original_layout) {
+        .ctop add ${tfpath}
+
+        if {!$use_ttk} {
+            return 0
+            .ctop paneconfigure ${tf} -height $geometry(topheight)
+            .ctop paneconfigure ${tf} -width $geometry(topwidth)
+        }
+    } else {
+        .ctop add ${tfpath}
     }
 
     # now build up the bottom
-    ${NS}::panedwindow .commitWidget -orient horizontal
+    if ($original_layout) {
+        ${NS}::panedwindow .commitWidget -orient horizontal
+    } else {
+        ${NS}::panedwindow .commitWidget -orient vertical
+    }
 
     create_diff_pane
 
