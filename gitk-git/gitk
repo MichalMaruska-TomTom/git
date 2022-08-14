@@ -269,6 +269,9 @@ proc parseviewargs {n arglist} {
             "-v" - "--verbose" {
                 set be_verbose 1
             }
+            "-V" - "--vertical" {
+                # too late, so just ignore!
+            }
             "-*" {
                 # Other flag arguments including -<n>
                 if {[string is digit -strict [string range $arg 1 end]]} {
@@ -13027,6 +13030,16 @@ foreach arg $argv {
         }
         "--title=*" {
             set cmdline_title [string range $arg 8 end]
+        }
+        "-V" {
+            # doesn't work!
+            set original_layout 1
+            puts "original_layout $original_layout"
+        }
+        "--vertical" {
+            # doesn't work!
+            set original_layout 1
+            puts "original_layout $original_layout"
         }
         default {
             lappend revtreeargs $arg
