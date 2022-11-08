@@ -6649,7 +6649,7 @@ proc drawtags {id x xt y1} {
     set nheads 0
     set singletag 0
     set maxtags 3
-    set maxtagpct 25
+    set maxtagpct 100
     set maxwidth [expr {[graph_pane_width] * $maxtagpct / 100}]
     set delta [expr {int(0.5 * ($linespc - $lthickness))}]
     set extra [expr {$delta + $lthickness + $linespc}]
@@ -6663,6 +6663,7 @@ proc drawtags {id x xt y1} {
             # show just a single "n tags..." tag
             set singletag 1
             if {$ntags == 1} {
+                # maybe just use the prefix?
                 set marks [list "tag..."]
             } else {
                 set marks [list [format "%d tags..." $ntags]]
