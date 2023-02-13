@@ -2159,6 +2159,7 @@ proc create_history_pane {} {
 
     global progresscanv progressitem progresscoords statusw
     global use_ttk NS
+    global original_layout
 
     set tf $tfpath
 
@@ -2174,7 +2175,13 @@ proc create_history_pane {} {
     }
 
     # the upper half will have a paned window, a scroll bar to the right, and some stuff below
-    ${NS}::frame ${tf} -height $geometry(topheight) -width $geometry(topwidth)
+    if ($original_layout) {
+        ${NS}::frame ${tf} -height $geometry(topheight) -width $geometry(topwidth)
+    } else {
+        # Instead of taking over the whole top half, we take narrow:
+        ${NS}::frame ${tf} -height $geometry(topheight) -width [ expr {int($geometry(topwidth) / 2)} ]
+    }
+
     ${NS}::frame ${tf}.histframe
     ${NS}::panedwindow ${tf}.histframe.pwclist -orient horizontal
     if {!$use_ttk} {
@@ -2198,15 +2205,24 @@ proc create_history_pane {} {
     canvas $canv3 \
         -selectbackground $selectbgcolor \
         -background $bgcolor -bd 0 -yscrollincr $linespc
-    ${tf}.histframe.pwclist add $canv3 -weight 2
+    if ($original_layout) {
+        ${tf}.histframe.pwclist add $canv3 -weight 2
+    } else {
+        ${tf}.histframe.pwclist add $canv3
+    }
 
     if {$use_ttk} {
         bind ${tf}.histframe.pwclist <Map> {
             set tf $tfpath
             bind %W <Map> {}
 
-            ${tf}.histframe.pwclist sashpos 1 [lindex $::geometry(pwsash1) 0]
-            ${tf}.histframe.pwclist sashpos 0 [lindex $::geometry(pwsash0) 0]
+            if ($original_layout) {
+                ${tf}.histframe.pwclist sashpos 1 [lindex $::geometry(pwsash1) 0]
+                ${tf}.histframe.pwclist sashpos 0 [lindex $::geometry(pwsash0) 0]
+            } else {
+                set offset1 [lindex $::geometry(pwsash1) 0]
+                set offset0 [lindex $::geometry(pwsash0) 0]
+            }
         }
     } else {
         eval ${tf}.histframe.pwclist sash place 0 $geometry(pwsash0)
@@ -2652,7 +2668,9 @@ proc makewindow {} {
         }
         bind .commitWidget <Map> {
             bind %W <Map> {}
-            %W sashpos 0 $::geometry(botwidth)
+            if ($original_layout) {
+                %W sashpos 0 $::geometry(botwidth)
+            }
         }
         bind .commitWidget <Configure> {resizecdetpanes %W %w}
     }
@@ -3119,6 +3137,11 @@ proc resizeclistpanes {win w} {
 }
 
 proc resizecdetpanes {win w} {
+    global original_layout
+    if [expr {! $original_layout}] {
+        return
+    }
+
     global oldwidth oldsash use_ttk
     if {[info exists oldwidth($win)]} {
         if {[info exists oldsash($win)]} {
