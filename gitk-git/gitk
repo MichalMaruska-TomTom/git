@@ -2178,6 +2178,7 @@ proc create_history_pane {} {
 
     # possibly use assumed geometry
     if {![info exists geometry(pwsash0)]} {
+        puts "geometry does not exist, inventing one"
         set geometry(topheight) [expr {15 * $linespc}]
         set geometry(topwidth) [expr {80 * $charspc}]
         set geometry(botheight) [expr {15 * $linespc}]
