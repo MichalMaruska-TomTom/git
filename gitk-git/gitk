@@ -2544,7 +2544,7 @@ proc makewindow {} {
     }
 
     # now build up the bottom
-    ${NS}::panedwindow .pwbottom -orient horizontal
+    ${NS}::panedwindow .commitWidget -orient horizontal
 
     create_diff_pane
 
@@ -2589,15 +2589,15 @@ proc makewindow {} {
     $ctext tag lower dresult
     $ctext tag lower d0
 
-    .pwbottom add .bleft
+    .commitWidget add .bleft
     if {!$use_ttk} {
-        .pwbottom paneconfigure .bleft -width $geometry(botwidth)
+        .commitWidget paneconfigure .bleft -width $geometry(botwidth)
     }
 
     create_file_list .file_list
 
-    .pwbottom add .file_list
-    .ctop add .pwbottom
+    .commitWidget add .file_list
+    .ctop add .commitWidget
 
     # restore window width & height if known
     if {[info exists geometry(main)]} {
@@ -2629,11 +2629,11 @@ proc makewindow {} {
             bind %W <Map> {}
             %W sashpos 0 $::geometry(topheight)
         }
-        bind .pwbottom <Map> {
+        bind .commitWidget <Map> {
             bind %W <Map> {}
             %W sashpos 0 $::geometry(botwidth)
         }
-        bind .pwbottom <Configure> {resizecdetpanes %W %w}
+        bind .commitWidget <Configure> {resizecdetpanes %W %w}
     }
 
     pack .ctop -fill both -expand 1
