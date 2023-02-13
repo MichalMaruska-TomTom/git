@@ -12745,7 +12745,7 @@ if {[package vcompare $git_version "1.6.6.2"] >= 0} {
 }
 
 set appname "gitk"
-
+set be_verbose 0
 set runq {}
 set history {}
 set historyindex 0
