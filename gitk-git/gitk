@@ -2246,6 +2246,7 @@ proc create_history_pane {} {
                 ${tf}.histframe.pwclist sashpos 0 [lindex $::geometry(pwsash0) 0]
             } else {
                 if {$be_verbose} {
+                    puts "changed sash?"
                     puts "The history is mapped: allocating widths/offsets:"
                 }
                 # mmc: this is a callback! it must have its variables.
@@ -2259,6 +2260,10 @@ proc create_history_pane {} {
                 # the original is still visible! :(
                 ${tf}.histframe.pwclist sashpos 1 $offset1
                 ${tf}.histframe.pwclist sashpos 0 $offset0
+
+                if {$be_verbose} {
+                    puts [format "now would apply %%d %%d"  ${offset0} ${offset1}  ]
+                }
                 # [lindex $::geometry(pwsash0) 0]
 
                 #set geometry(pwsash0) [list [expr {40 * $charspc}] 2]
