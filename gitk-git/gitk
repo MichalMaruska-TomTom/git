@@ -2139,86 +2139,21 @@ proc create_file_list {fl_path} {
     $cflist tag configure bold -font mainfontbold
 }
 
-proc makewindow {} {
-    global canv canv2 canv3 linespc charspc ctext cflist cscroll
-    global tabstop
-    global findtype findtypemenu findloc findstring fstring geometry
+# commit-history ...is a frame!
+# and possibly attach to .ctop
+proc create_history_pane {} {
+    global tfpath
+    global canv canv2 canv3 linespc charspc cscroll
+    global geometry
+    global findtype findtypemenu findloc findstring fstring
     global entries sha1entry sha1string sha1but
-    global diffcontextstring diffcontext
-    global ignorespace
-    global maincursor textcursor curtextcursor
-    global rowctxmenu fakerowmenu mergemax wrapcomment
-    global highlight_files gdttype
-    global searchstring sstring
-    global bgcolor fgcolor bglist fglist diffcolors diffbgcolors selectbgcolor
+    global bgcolor bglist selectbgcolor
     global uifgcolor uifgdisabledcolor
-    global filesepbgcolor filesepfgcolor
-    global mergecolors foundbgcolor currentsearchhitbgcolor
-    global headctxmenu progresscanv progressitem progresscoords statusw
     global fprogitem fprogcoord lastprogupdate progupdatepending
-    global rprogitem rprogcoord rownumsel numcommits
-    global have_tk85 use_ttk NS
-    global git_version
-    global worddiff
-    global tfpath  ## I use this global variable
 
-    # The "mc" arguments here are purely so that xgettext
-    # sees the following string as needing to be translated
-    set file {
-        mc "&File" cascade {
-            {mc "&Update" command updatecommits -accelerator F5}
-            {mc "&Reload" command reloadcommits -accelerator Shift-F5}
-            {mc "Reread re&ferences" command rereadrefs}
-            {mc "&List references" command showrefs -accelerator F2}
-            {xx "" separator}
-            {mc "Start git &gui" command {exec git gui &}}
-            {xx "" separator}
-            {mc "&Quit" command doquit -accelerator Meta1-Q}
-        }}
-    set edit {
-        mc "&Edit" cascade {
-            {mc "&Preferences" command doprefs}
-        }}
-    set view {
-        mc "&View" cascade {
-            {mc "&New view..." command {newview 0} -accelerator Shift-F4}
-            {mc "&Edit view..." command editview -state disabled -accelerator F4}
-            {mc "&Delete view" command delview -state disabled}
-            {xx "" separator}
-            {mc "&All files" radiobutton {selectedview 0} -command {showview 0}}
-        }}
-    if {[tk windowingsystem] ne "aqua"} {
-        set help {
-        mc "&Help" cascade {
-            {mc "&About gitk" command about}
-            {mc "&Key bindings" command keys}
-        }}
-        set bar [list $file $edit $view $help]
-    } else {
-        proc ::tk::mac::ShowPreferences {} {doprefs}
-        proc ::tk::mac::Quit {} {doquit}
-        lset file end [lreplace [lindex $file end] end-1 end]
-        set apple {
-        xx "&Apple" cascade {
-            {mc "&About gitk" command about}
-            {xx "" separator}
-        }}
-        set help {
-        mc "&Help" cascade {
-            {mc "&Key bindings" command keys}
-        }}
-        set bar [list $apple $file $view $help]
-    }
-    makemenu .bar $bar
-    . configure -menu .bar
+    global progresscanv progressitem progresscoords statusw
+    global use_ttk NS
 
-    if {$use_ttk} {
-        # cover the non-themed toplevel with a themed frame.
-        place [ttk::frame ._main_background] -x 0 -y 0 -relwidth 1 -relheight 1
-    }
-
-    # the gui has upper and lower half, parts of a paned window.
-    ${NS}::panedwindow .ctop -orient vertical
     set tf $tfpath
 
     # possibly use assumed geometry
@@ -2227,6 +2162,7 @@ proc makewindow {} {
         set geometry(topwidth) [expr {80 * $charspc}]
         set geometry(botheight) [expr {15 * $linespc}]
         set geometry(botwidth) [expr {50 * $charspc}]
+
         set geometry(pwsash0) [list [expr {40 * $charspc}] 2]
         set geometry(pwsash1) [list [expr {60 * $charspc}] 2]
     }
@@ -2434,14 +2370,18 @@ proc makewindow {} {
     pack ${tf}.lbar -in ${tf} -side bottom -fill x
     pack ${tf}.bar -in ${tf} -side bottom -fill x
     pack ${tf}.histframe -fill both -side top -expand 1
-    .ctop add ${tf}
-    if {!$use_ttk} {
-        .ctop paneconfigure ${tf} -height $geometry(topheight)
-        .ctop paneconfigure ${tf} -width $geometry(topwidth)
-    }
+}
 
-    # now build up the bottom
-    ${NS}::panedwindow .pwbottom -orient horizontal
+# file content/diff pane
+proc create_diff_pane {} {
+    global ctext
+    global use_ttk NS have_tk85
+    global geometry
+    global diffcontextstring diffcontext
+    global git_version
+    global bgcolor bglist selectbgcolor fgcolor
+    global searchstring
+    global worddiff
 
     # lower left, a text box over search bar, scroll bar to the right
     # if we know window height, then that will set the lower text height, otherwise
@@ -2513,6 +2453,101 @@ proc makewindow {} {
     grid rowconfigure .bleft.bottom 0 -weight 1
     grid rowconfigure .bleft.bottom 1 -weight 0
     pack .bleft.bottom -side top -fill both -expand 1
+}
+
+proc makewindow {} {
+    global tfpath ## I use this global variable
+    global canv ctext cflist
+    global fstring geometry
+    global entries sha1entry sha1string sha1but
+    global diffcontextstring diffcontext
+    global ignorespace
+    global maincursor textcursor curtextcursor
+    global rowctxmenu fakerowmenu mergemax wrapcomment
+    global highlight_files gdttype
+    global searchstring sstring
+    global bgcolor fgcolor bglist fglist diffcolors selectbgcolor
+    global uifgcolor uifgdisabledcolor
+    global filesepbgcolor filesepfgcolor
+    global diffbgcolors
+    global mergecolors foundbgcolor currentsearchhitbgcolor
+    global headctxmenu progresscanv progressitem progresscoords statusw
+    global fprogitem fprogcoord lastprogupdate progupdatepending
+    global rprogitem rprogcoord rownumsel numcommits
+    global have_tk85 use_ttk NS
+    global git_version
+    global worddiff
+
+    # The "mc" arguments here are purely so that xgettext
+    # sees the following string as needing to be translated
+    set file {
+        mc "&File" cascade {
+            {mc "&Update" command updatecommits -accelerator F5}
+            {mc "&Reload" command reloadcommits -accelerator Shift-F5}
+            {mc "Reread re&ferences" command rereadrefs}
+            {mc "&List references" command showrefs -accelerator F2}
+            {xx "" separator}
+            {mc "Start git &gui" command {exec git gui &}}
+            {xx "" separator}
+            {mc "&Quit" command doquit -accelerator Meta1-Q}
+        }}
+    set edit {
+        mc "&Edit" cascade {
+            {mc "&Preferences" command doprefs}
+        }}
+    set view {
+        mc "&View" cascade {
+            {mc "&New view..." command {newview 0} -accelerator Shift-F4}
+            {mc "&Edit view..." command editview -state disabled -accelerator F4}
+            {mc "&Delete view" command delview -state disabled}
+            {xx "" separator}
+            {mc "&All files" radiobutton {selectedview 0} -command {showview 0}}
+        }}
+    if {[tk windowingsystem] ne "aqua"} {
+        set help {
+        mc "&Help" cascade {
+            {mc "&About gitk" command about}
+            {mc "&Key bindings" command keys}
+        }}
+        set bar [list $file $edit $view $help]
+    } else {
+        lset file end [lreplace [lindex $file end] end-1 end]
+        set apple {
+        xx "&Apple" cascade {
+            {mc "&About gitk" command about}
+            {xx "" separator}
+        }}
+        set help {
+        mc "&Help" cascade {
+            {mc "&Key bindings" command keys}
+        }}
+        set bar [list $apple $file $view $help]
+    }
+    makemenu .bar $bar
+    . configure -menu .bar
+
+    if {$use_ttk} {
+        # cover the non-themed toplevel with a themed frame.
+        place [ttk::frame ._main_background] -x 0 -y 0 -relwidth 1 -relheight 1
+    }
+
+    # the gui has upper and lower half, parts of a paned window.
+    ${NS}::panedwindow .ctop -orient vertical
+
+    create_history_pane
+
+    .ctop add ${tfpath}
+    if {!$use_ttk} {
+        return 0
+        .ctop paneconfigure ${tfpath} -height $geometry(topheight)
+        .ctop paneconfigure ${tfpath} -width $geometry(topwidth)
+    }
+
+    # now build up the bottom
+    ${NS}::panedwindow .pwbottom -orient horizontal
+
+    create_diff_pane
+
     lappend bglist $ctext
     lappend fglist $ctext
 
