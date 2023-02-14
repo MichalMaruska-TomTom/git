@@ -2176,6 +2176,7 @@ proc create_history_pane {} {
     }
 
     # the upper half will have a paned window, a scroll bar to the right, and some stuff below
+    # mmc: this seems to have no effect?
     if ($original_layout) {
         ${NS}::frame ${tf} -height $geometry(topheight) -width $geometry(topwidth)
     } else {
@@ -2183,7 +2184,12 @@ proc create_history_pane {} {
         ${NS}::frame ${tf} -height $geometry(topheight) -width [ expr {int($geometry(topwidth) / 2)} ]
     }
 
+    # so we created a frame
+    # now another one??
     ${NS}::frame ${tf}.histframe
+    # pwc list .... canv canv2 canv3
+
+    # this is like treeview!  `sash' is divisors?
     ${NS}::panedwindow ${tf}.histframe.pwclist -orient horizontal
     if {!$use_ttk} {
         ${tf}.histframe.pwclist configure -sashpad 0 -handlesize 4
@@ -2191,17 +2197,22 @@ proc create_history_pane {} {
 
     # create three canvases
     set cscroll ${tf}.histframe.csb
+
+# mmc: I want to persist the widths here!
     set canv ${tf}.histframe.pwclist.canv
+
     canvas $canv \
         -selectbackground $selectbgcolor \
         -background $bgcolor -bd 0 \
         -yscrollincr $linespc -yscrollcommand "scrollcanv $cscroll"
     ${tf}.histframe.pwclist add $canv
+
     set canv2 ${tf}.histframe.pwclist.canv2
     canvas $canv2 \
         -selectbackground $selectbgcolor \
         -background $bgcolor -bd 0 -yscrollincr $linespc
     ${tf}.histframe.pwclist add $canv2
+
     set canv3 ${tf}.histframe.pwclist.canv3
     canvas $canv3 \
         -selectbackground $selectbgcolor \
@@ -2225,6 +2236,8 @@ proc create_history_pane {} {
                 if {$be_verbose} {
                     puts "The history is mapped: allocating widths/offsets:"
                 }
+                # mmc: this is a callback! it must have its variables.
+                # so what is this?
                 set offset1 [lindex $::geometry(pwsash1) 0]
                 set offset0 [lindex $::geometry(pwsash0) 0]
 
@@ -2235,6 +2248,11 @@ proc create_history_pane {} {
                 ${tf}.histframe.pwclist sashpos 1 $offset1
                 ${tf}.histframe.pwclist sashpos 0 $offset0
                 # [lindex $::geometry(pwsash0) 0]
+
+                #set geometry(pwsash0) [list [expr {40 * $charspc}] 2]
+                #set geometry(pwsash1) [list [expr {60 * $charspc}] 2]
+
+                # [winfo width ${tfpath}] 500
             }
         }
     } else {
@@ -2282,8 +2300,10 @@ proc create_history_pane {} {
         0x00, 0x38, 0xff, 0x7f, 0xff, 0x7f, 0xff, 0x7f, 0x00, 0x38, 0x00, 0x1c,
         0x00, 0x0e, 0x00, 0x07, 0x80, 0x03, 0xc0, 0x01};
     }
+    # arrows images
     image create bitmap bm-left -data $bm_left_data -foreground $uifgcolor
     image create bitmap bm-left-gray -data $bm_left_data -foreground $uifgdisabledcolor
+
     image create bitmap bm-right -data $bm_right_data -foreground $uifgcolor
     image create bitmap bm-right-gray -data $bm_right_data -foreground $uifgdisabledcolor
 
@@ -2568,6 +2588,12 @@ proc makewindow {} {
     }
 
     # the gui has upper and lower half, parts of a paned window.
+    #
+    # .ctop is container
+    # either we have  Hist|A|D | Diff |File
+    # or  Histo|A|D
+    #     -------
+    #     Diff | File
     if ($original_layout) {
         ${NS}::panedwindow .ctop -orient vertical
     } else {
@@ -2578,6 +2604,7 @@ proc makewindow {} {
 
     # Finish putting the upper half of the viewer together
     if ($original_layout) {
+
         .ctop add ${tfpath}
 
         if {!$use_ttk} {
@@ -2639,9 +2666,13 @@ proc makewindow {} {
     $ctext tag lower dresult
     $ctext tag lower d0
 
+    # mmc:
     if ($original_layout) {
+        # mmc: I think .diffWidget is the DIFF window.
         .commitWidget add .diffWidget
     } else {
+        # Add the file-list column
+        # if [expr {! $original_layout}]
         .commitWidget add .diffWidget
     }
 
@@ -2653,10 +2684,12 @@ proc makewindow {} {
 
     if [expr {! $original_layout}] {
         .commitWidget add .file_list
+    #mmc:
         .ctop add .commitWidget
     } else {
         .commitWidget add .file_list
         .ctop add .commitWidget
+        #.ctop add .diffWidget
     }
 
     # restore window width & height if known
@@ -2691,6 +2724,7 @@ proc makewindow {} {
         }
         bind .commitWidget <Map> {
             bind %W <Map> {}
+            ## if [expr {! $original_layout}]
             if ($original_layout) {
                 %W sashpos 0 $::geometry(botwidth)
             }
