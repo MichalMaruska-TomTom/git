@@ -2234,6 +2234,7 @@ proc create_history_pane {} {
                 # the original is still visible! :(
                 ${tf}.histframe.pwclist sashpos 1 $offset1
                 ${tf}.histframe.pwclist sashpos 0 $offset0
+                # [lindex $::geometry(pwsash0) 0]
             }
         }
     } else {
