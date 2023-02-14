@@ -2210,6 +2210,7 @@ proc create_history_pane {} {
         ${tf}.histframe.pwclist add $canv3 -weight 2
     } else {
         ${tf}.histframe.pwclist add $canv3
+        ## mmc: Why weight 2?
     }
 
     if {$use_ttk} {
