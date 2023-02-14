@@ -2111,9 +2111,11 @@ set tfpath .tf
 # Originally on the right in the bottom half
 proc create_file_list {fl_path} {
     global use_ttk NS have_tk85
+    # set:
     global cflist
     global bgcolor bglist selectbgcolor fgcolor
 
+    #mmc:
     set top ${fl_path}
 
     # lower right
