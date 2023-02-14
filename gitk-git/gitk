@@ -2150,16 +2150,26 @@ proc create_file_list {fl_path} {
 # commit-history ...is a frame!
 # and possibly attach to .ctop
 proc create_history_pane {} {
+    # not: ctext cflist
     global tfpath
     global canv canv2 canv3 linespc charspc cscroll
     global geometry
+    # set:
     global findtype findtypemenu findloc findstring fstring
     global entries sha1entry sha1string sha1but
+    # global diffbgcolors
+    # used:
+    # not fgcolor fglist diffcolors
     global bgcolor bglist selectbgcolor
     global uifgcolor uifgdisabledcolor
+    #
     global fprogitem fprogcoord lastprogupdate progupdatepending
 
+    # not headctxmenu
+    # set:
     global progresscanv progressitem progresscoords statusw
+    # consulted:
+    # not have_tk85
     global use_ttk NS
     global original_layout
     global be_verbose
@@ -2437,6 +2447,7 @@ proc create_diff_pane {} {
     global diffcontextstring diffcontext
     global git_version
     global bgcolor bglist selectbgcolor fgcolor
+    # set:
     global searchstring
     global worddiff
 
@@ -2514,7 +2525,10 @@ proc create_diff_pane {} {
 
 proc makewindow {} {
     global tfpath ## I use this global variable
+    # canv2 canv3 linespc charspc cscroll
     global canv ctext cflist
+    # global tabstop
+    # global findtype findtypemenu findloc findstring
     global fstring geometry
     global entries sha1entry sha1string sha1but
     global diffcontextstring diffcontext
@@ -2569,6 +2583,10 @@ proc makewindow {} {
         }}
         set bar [list $file $edit $view $help]
     } else {
+        # mmc: bug in indentation!
+        # proc ::tk::mac::ShowPreferences {} {doprefs}
+        # proc ::tk::mac::Quit {} {doquit}
+        # mmc: drop the last?
         lset file end [lreplace [lindex $file end] end-1 end]
         set apple {
         xx "&Apple" cascade {
@@ -2602,6 +2620,7 @@ proc makewindow {} {
         ${NS}::panedwindow .ctop -orient horizontal
     }
 
+    # mmc: vertical
     create_history_pane
 
     # Finish putting the upper half of the viewer together
@@ -2610,6 +2629,7 @@ proc makewindow {} {
         .ctop add ${tfpath}
 
         if {!$use_ttk} {
+            # mmc:
             return 0
             .ctop paneconfigure ${tf} -height $geometry(topheight)
             .ctop paneconfigure ${tf} -width $geometry(topwidth)
@@ -2625,6 +2645,7 @@ proc makewindow {} {
         ${NS}::panedwindow .commitWidget -orient vertical
     }
 
+    # mmc: bleft
     create_diff_pane
 
     lappend bglist $ctext
