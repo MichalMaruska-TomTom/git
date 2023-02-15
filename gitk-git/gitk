@@ -2637,15 +2637,25 @@ proc makewindow {} {
     $ctext tag lower dresult
     $ctext tag lower d0
 
-    .commitWidget add .diffWidget
+    if ($original_layout) {
+        .commitWidget add .diffWidget
+    } else {
+        .commitWidget add .diffWidget
+    }
+
     if {!$use_ttk} {
         .commitWidget paneconfigure .diffWidget -width $geometry(botwidth)
     }
 
     create_file_list .file_list
 
-    .commitWidget add .file_list
-    .ctop add .commitWidget
+    if [expr {! $original_layout}] {
+        .commitWidget add .file_list
+        .ctop add .commitWidget
+    } else {
+        .commitWidget add .file_list
+        .ctop add .commitWidget
+    }
 
     # restore window width & height if known
     if {[info exists geometry(main)]} {
