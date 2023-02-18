@@ -1,3 +1,52 @@
+git (1:2.39.2-1-maruska) unstable; urgency=medium
+
+  * indent-tabs-mode -- I don't want TABs
+  * Introduce --verbose/-v
+  * Recognize sums/start/base and treat them specially
+  * comments to understand gitk.
+  * comments on how the ref labels are drawn (rectangles & text)
+  * Expand how the fish form is drawn
+  * verbose on drawing tags (fish)
+  * gitk: search for which Refs are shown.
+  * make scrollbars blue
+  * Set the middle part of window title by --title= option
+  * try harder to display the tag-reference names
+  * gitk: use the full repo path
+  * be verbose var
+  * Refer to the FRAME .tf through a variable tfpath.
+  * Extract the Change-File-list frame creation. rename as .file_list
+  * avoid nested quotes?
+  * Extract History & DIFF widget creations
+  * rename .pwbottom as .commitWidget (contains list_list, and .bleft = diff?)
+  * rename .bleft as as .diffWidget -- contains the diff of the commit
+  * gitk: add cmdline options for --vertical, use a separate config file!
+  * Use 2 layouts: (NEW horizontal one)
+  * Layouts in create_history_pane(): width, makewindow ?
+  * put limits on the width of name/date of commits (sash)
+  * limit width of canvas
+  * Don't recompute the history 3 columns on resize (of the history window)
+  * Bind "v" to enlarge/shrink the 2 columns
+  * Setup the width of columns in history, at start
+  * useless doubling -- layout is the same in both
+  * comments
+  * comment
+  * comments
+  * verbose
+  * comments
+  * comments
+  * verbose -- on calculating History SASH
+  * verbose: in callbacks due to resizing
+  * verbose: when new geometry for history is calculated
+  * Verbose on save the dimensions
+  * report on ttk
+  * comments, on the size decision etc
+  * Colorize the native-code version of 'am', conditionally on GIT_USE_COLOR
+  * git-p4.py: comments & suppress "sync" when submitting!
+  * drop cvs
+  * remove test
+
+ -- Michal Maruska <mmaruska@gmail.com>  Sat, 18 Feb 2023 03:30:11 +0100
+
 git (1:2.39.2-1) unstable; urgency=medium
 
   * new upstream point release (see RelNotes/2.39.2.txt).  Addresses
