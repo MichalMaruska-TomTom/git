@@ -2020,7 +2020,9 @@ proc setttkstyle {} {
     eval font configure TkMenuFont    [fontflags uifont]
     eval font configure TkSmallCaptionFont [fontflags uifont]
 
-    puts "set scrollbar color"
+    if {false} {
+        puts "set scrollbar color"
+    }
     ttk::style configure TScrollbar -background blue
     # ttk::style configure TScrollbar -troughcolor color
     #ttk::style configure TScrollbar -arrowcolor color
@@ -3100,6 +3102,7 @@ proc savestuff {w} {
     global config_variables config_variable_changed
     global viewchanged
     global tfpath
+    global be_verbose
 
     set tf $tfpath
     upvar #0 viewname current_viewname
@@ -3139,7 +3142,9 @@ proc savestuff {w} {
         }
 
         #mmc:
-        puts "Saving geometry!"
+        if {$be_verbose} {
+            puts "Saving geometry!"
+        }
 
         puts $f "set geometry(main) [wm geometry .]"
         puts $f "set geometry(state) [wm state .]"
@@ -13057,8 +13062,10 @@ set NS [expr {$use_ttk ? "ttk" : ""}]
 
 if {$use_ttk} {
     set us 10000
-    puts [format "%d seconds to execute" $us ]
-    puts "using ttk!"
+    if {false} {
+        puts [format "%d seconds to execute" $us ]
+        puts "using ttk!"
+    }
     setttkstyle
 }
 
