@@ -1,3 +1,10 @@
+git (1:2.31.1-1-maruska2) focal; urgency=medium
+
+  [ mmaruska@gmail.com ]
+  * for Focal
+
+ --  <mmaruska@gmail.com>  Fri, 07 Jul 2023 15:51:48 +0200
+
 git (1:2.31.1-1-maruska) unstable; urgency=medium
 
   [ Torsten Bögershausen ]
