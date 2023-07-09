@@ -1,0 +1,7 @@
+sum	mmc-sum	014d439edd530e04a8e714dbe48df91895b358e6	 refs/heads/mmc	 refs/heads/gitk-wide
+segment mmc 	 f1e02400aeeeaa1d9eca278b4e91552b95b0d892 	 refs/heads/debian 	 3e185c0056d5dc581dfaf4fb1a7c43025dbf7c18
+segment gitk-wide 	 88e80fa51b297da6bc190d4e92b64d33817c3998 	 refs/heads/small 	 d7af6d6aed288b45f97114fa9b559879191d68b0
+sum	small	d7af6d6aed288b45f97114fa9b559879191d68b0	 refs/heads/mmc-gitk	 refs/heads/mmc-title
+segment mmc-gitk 	 e52394b0d9f90ff76d8152992b6248c893fe77d4 	 refs/heads/mmc-hierarchy 	 24802bfbdb556d2aebbcc701ac7bb5b11a8b7d41
+segment mmc-title 	 c35079844c92dfc9938e091c15d22165e8c9d747 	 refs/heads/debian 	 3e185c0056d5dc581dfaf4fb1a7c43025dbf7c18
+segment mmc-hierarchy 	 24802bfbdb556d2aebbcc701ac7bb5b11a8b7d41 	 refs/heads/debian 	 3e185c0056d5dc581dfaf4fb1a7c43025dbf7c18
