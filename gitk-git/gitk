@@ -4146,11 +4146,16 @@ proc shellsplit {str} {
 }
 
 proc set_window_title {} {
-    global appname curview viewname vrevs
+    global appname curview viewname vrevs cmdline_title
     set rev [mc "All files"]
     if {$curview ne 0} {
         if {$viewname($curview) eq [mc "Command line"]} {
+            if {$cmdline_title ne ""} {
+                # if set explicitly, use that!
+                set rev $cmdline_title
+            } else {
             set rev [string map {"--gitk-symmetric-diff-marker" "--merge"} $vrevs($curview)]
+            }
         } else {
             set rev $viewname($curview)
         }
@@ -12697,6 +12702,7 @@ set revtreeargs {}
 set cmdline_files {}
 set i 0
 set revtreeargscmd {}
+set cmdline_title ""
 foreach arg $argv {
     switch -glob -- $arg {
         "" { }
@@ -12709,6 +12715,9 @@ foreach arg $argv {
         }
         "--argscmd=*" {
             set revtreeargscmd [string range $arg 10 end]
+        }
+        "--title=*" {
+            set cmdline_title [string range $arg 8 end]
         }
         default {
             lappend revtreeargs $arg
