@@ -1,3 +1,53 @@
+git (1:2.43.0-1-maruska) unstable; urgency=medium
+
+  * indent-tabs-mode
+  * Recognize sums/start/base and treat specially
+  * be_verbose only when requested by option (-v --verbose)
+  * comments to understand gitk.
+  * comments on how the ref labels are drawn (rectangles & text)
+  * Expand how the fish form is drawn
+  * verbose on drawing tags (fish)
+  * gitk: search for which Refs are shown.
+  * gitk: use the full repo path
+  * make scrollbars blue
+  * Colorize the native-code version of 'am', conditionally on GIT_USE_COLOR
+  * Set the middle part of window title by --title= option
+  * try harder to display the tag-reference names
+  * drop cvs
+  * git-p4.py: comments & suppress "sync" when submitting!
+  * Refer to the FRAME .tf through a variable.
+  * Extract the Change-File-list frame creation
+  * sq. rename as such
+  * Extract create_history_pane and create_diff_pane (from makewindow)
+  * Move logical attaching of history_pane out of creation
+  * When vertical: interpose a frame to contain history -- use pack?
+  * part 2: based on original_layout ... create_tf, makewindow .... again
+  * process the cmdline early & decide for the config file
+  * put limits on the width of name/date of commits (sash)
+  * verbose in callbacks due to resizing
+  * comment on the size decision
+  * Comments! changes
+  * limit width of canvas
+  * fix emacs alignment -- don't use local functions?
+  * Verbose on save the dimensions
+  * comments
+  * report on ttk
+  * comments on ".narrow ??"
+  * Don't recompute the history 3 columns on resize (of the history windowd)
+  * comment
+  * Use .commitWidget as the name (contains list_list, and .bleft = diff?)
+  * name it as .diffWidget -- contains the diff of the commit
+  * Bind "v" to enlarge/shrink the 2 columns
+  * comments
+  * Setup the width of columns in history, at start
+  * silent
+  * Move the 'file list' to the bottom of the diff-pane
+  * gitk: add cmdline options for --vertical
+  * use be_verbose to suppress verbosity
+  * silent
+
+ -- Michal Maruska <mmaruska@gmail.com>  Mon, 27 Nov 2023 11:59:58 +0100
+
 git (1:2.43.0-1) unstable; urgency=low
 
   * new upstream release (see RelNotes/2.43.0.txt).
