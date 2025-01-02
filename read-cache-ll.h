@@ -1,7 +1,7 @@
 #ifndef READ_CACHE_LL_H
 #define READ_CACHE_LL_H
 
-#include "hash-ll.h"
+#include "hash.h"
 #include "hashmap.h"
 #include "statinfo.h"
 
@@ -151,7 +151,7 @@ enum sparse_index_mode {
 
 	/*
 	 * The index has already been collapsed to sparse directories
-	 * whereever possible.
+	 * wherever possible.
 	 */
 	INDEX_COLLAPSED,
 

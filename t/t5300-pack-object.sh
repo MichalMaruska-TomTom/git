@@ -3,9 +3,9 @@
 # Copyright (c) 2005 Junio C Hamano
 #
 
-test_description='git pack-object
+test_description='git pack-object'
 
-'
+TEST_PASSES_SANITIZE_LEAK=true
 . ./test-lib.sh
 
 test_expect_success 'setup' '
@@ -634,5 +634,44 @@ test_expect_success 'negative window clamps to 0' '
 	git pack-objects --progress --window=-1 neg-window <obj-list 2>stderr &&
 	check_deltas stderr = 0
 '
+
+for hash in sha1 sha256
+do
+	test_expect_success "verify-pack with $hash packfile" '
+		test_when_finished "rm -rf repo" &&
+		git init --object-format=$hash repo &&
+		test_commit -C repo initial &&
+		git -C repo repack -ad &&
+		git -C repo verify-pack "$(pwd)"/repo/.git/objects/pack/*.idx &&
+		if test $hash = sha1
+		then
+			nongit git verify-pack "$(pwd)"/repo/.git/objects/pack/*.idx
+		else
+			# We have no way to identify the hash used by packfiles
+			# or indices, so we always fall back to SHA1.
+			nongit test_must_fail git verify-pack "$(pwd)"/repo/.git/objects/pack/*.idx &&
+			# But with an explicit object format we should succeed.
+			nongit git verify-pack --object-format=$hash "$(pwd)"/repo/.git/objects/pack/*.idx
+		fi
+	'
+
+	test_expect_success "index-pack outside of a $hash repository" '
+		test_when_finished "rm -rf repo" &&
+		git init --object-format=$hash repo &&
+		test_commit -C repo initial &&
+		git -C repo repack -ad &&
+		git -C repo index-pack --verify "$(pwd)"/repo/.git/objects/pack/*.pack &&
+		if test $hash = sha1
+		then
+			nongit git index-pack --verify "$(pwd)"/repo/.git/objects/pack/*.pack
+		else
+			# We have no way to identify the hash used by packfiles
+			# or indices, so we always fall back to SHA1.
+			nongit test_must_fail git index-pack --verify "$(pwd)"/repo/.git/objects/pack/*.pack 2>err &&
+			# But with an explicit object format we should succeed.
+			nongit git index-pack --object-format=$hash --verify "$(pwd)"/repo/.git/objects/pack/*.pack
+		fi
+	'
+done
 
 test_done

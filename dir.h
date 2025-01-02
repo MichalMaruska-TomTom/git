@@ -1,7 +1,7 @@
 #ifndef DIR_H
 #define DIR_H
 
-#include "hash-ll.h"
+#include "hash.h"
 #include "hashmap.h"
 #include "pathspec.h"
 #include "statinfo.h"
@@ -62,7 +62,6 @@ struct path_pattern {
 	 */
 	struct pattern_list *pl;
 
-	const char *pattern;
 	int patternlen;
 	int nowildcardlen;
 	const char *base;
@@ -74,6 +73,8 @@ struct path_pattern {
 	 * and from -1 decrementing for patterns from CLI args.
 	 */
 	int srcpos;
+
+	char pattern[FLEX_ARRAY];
 };
 
 /* used for hashmaps for cone patterns */
@@ -93,9 +94,6 @@ struct pattern_entry {
 struct pattern_list {
 	int nr;
 	int alloc;
-
-	/* remember pointer to exclude file contents so we can free() */
-	char *filebuf;
 
 	/* origin of list, e.g. path to filename, or descriptive string */
 	const char *src;
@@ -543,9 +541,9 @@ int remove_dir_recursively(struct strbuf *path, int flag);
  */
 int remove_path(const char *path);
 
-int fspathcmp(const char *a, const char *b);
+int git_fspathcmp(const char *a, const char *b);
 int fspatheq(const char *a, const char *b);
-int fspathncmp(const char *a, const char *b, size_t count);
+int git_fspathncmp(const char *a, const char *b, size_t count);
 unsigned int fspathhash(const char *str);
 
 /*

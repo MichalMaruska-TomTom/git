@@ -1,9 +1,9 @@
+#define USE_THE_REPOSITORY_VARIABLE
 #include "builtin.h"
 #include "abspath.h"
 #include "environment.h"
 #include "gettext.h"
 #include "hex.h"
-#include "repository.h"
 #include "config.h"
 #include "lockfile.h"
 #include "object.h"
@@ -206,8 +206,8 @@ static unsigned int object_entry_alloc = 5000;
 static struct object_entry_pool *blocks;
 static struct hashmap object_table;
 static struct mark_set *marks;
-static const char *export_marks_file;
-static const char *import_marks_file;
+static char *export_marks_file;
+static char *import_marks_file;
 static int import_marks_file_from_stream;
 static int import_marks_file_ignore_missing;
 static int import_marks_file_done;
@@ -1279,8 +1279,10 @@ static void load_tree(struct tree_entry *root)
 		e->versions[0].mode = e->versions[1].mode;
 		e->name = to_atom(c, strlen(c));
 		c += e->name->str_len + 1;
-		oidread(&e->versions[0].oid, (unsigned char *)c);
-		oidread(&e->versions[1].oid, (unsigned char *)c);
+		oidread(&e->versions[0].oid, (unsigned char *)c,
+			the_repository->hash_algo);
+		oidread(&e->versions[1].oid, (unsigned char *)c,
+			the_repository->hash_algo);
 		c += the_hash_algo->rawsz;
 	}
 	free(buf);
@@ -1386,7 +1388,7 @@ static void tree_content_replace(
 {
 	if (!S_ISDIR(mode))
 		die("Root cannot be a non-directory");
-	oidclr(&root->versions[0].oid);
+	oidclr(&root->versions[0].oid, the_repository->hash_algo);
 	oidcpy(&root->versions[1].oid, oid);
 	if (root->tree)
 		release_tree_content_recursive(root->tree);
@@ -1445,7 +1447,7 @@ static int tree_content_set(
 				if (S_ISDIR(e->versions[0].mode))
 					e->versions[0].mode |= NO_DELTA;
 
-				oidclr(&root->versions[1].oid);
+				oidclr(&root->versions[1].oid, the_repository->hash_algo);
 				return 1;
 			}
 			if (!S_ISDIR(e->versions[1].mode)) {
@@ -1455,7 +1457,7 @@ static int tree_content_set(
 			if (!e->tree)
 				load_tree(e);
 			if (tree_content_set(e, slash1 + 1, oid, mode, subtree)) {
-				oidclr(&root->versions[1].oid);
+				oidclr(&root->versions[1].oid, the_repository->hash_algo);
 				return 1;
 			}
 			return 0;
@@ -1467,7 +1469,7 @@ static int tree_content_set(
 	e = new_tree_entry();
 	e->name = to_atom(p, n);
 	e->versions[0].mode = 0;
-	oidclr(&e->versions[0].oid);
+	oidclr(&e->versions[0].oid, the_repository->hash_algo);
 	t->entries[t->entry_count++] = e;
 	if (*slash1) {
 		e->tree = new_tree_content(8);
@@ -1478,7 +1480,7 @@ static int tree_content_set(
 		e->versions[1].mode = mode;
 		oidcpy(&e->versions[1].oid, oid);
 	}
-	oidclr(&root->versions[1].oid);
+	oidclr(&root->versions[1].oid, the_repository->hash_algo);
 	return 1;
 }
 
@@ -1523,7 +1525,8 @@ static int tree_content_remove(
 			if (tree_content_remove(e, slash1 + 1, backup_leaf, 0)) {
 				for (n = 0; n < e->tree->entry_count; n++) {
 					if (e->tree->entries[n]->versions[1].mode) {
-						oidclr(&root->versions[1].oid);
+						oidclr(&root->versions[1].oid,
+						       the_repository->hash_algo);
 						return 1;
 					}
 				}
@@ -1542,8 +1545,8 @@ del_entry:
 		release_tree_content_recursive(e->tree);
 	e->tree = NULL;
 	e->versions[1].mode = 0;
-	oidclr(&e->versions[1].oid);
-	oidclr(&root->versions[1].oid);
+	oidclr(&e->versions[1].oid, the_repository->hash_algo);
+	oidclr(&root->versions[1].oid, the_repository->hash_algo);
 	return 1;
 }
 
@@ -1604,11 +1607,12 @@ static int update_branch(struct branch *b)
 
 	if (is_null_oid(&b->oid)) {
 		if (b->delete)
-			delete_ref(NULL, b->name, NULL, 0);
+			refs_delete_ref(get_main_ref_store(the_repository),
+					NULL, b->name, NULL, 0);
 		return 0;
 	}
-	if (read_ref(b->name, &old_oid))
-		oidclr(&old_oid);
+	if (refs_read_ref(get_main_ref_store(the_repository), b->name, &old_oid))
+		oidclr(&old_oid, the_repository->hash_algo);
 	if (!force_update && !is_null_oid(&old_oid)) {
 		struct commit *old_cmit, *new_cmit;
 		int ret;
@@ -1631,10 +1635,11 @@ static int update_branch(struct branch *b)
 			return -1;
 		}
 	}
-	transaction = ref_transaction_begin(&err);
+	transaction = ref_store_transaction_begin(get_main_ref_store(the_repository),
+						  &err);
 	if (!transaction ||
 	    ref_transaction_update(transaction, b->name, &b->oid, &old_oid,
-				   0, msg, &err) ||
+				   NULL, NULL, 0, msg, &err) ||
 	    ref_transaction_commit(transaction, &err)) {
 		ref_transaction_free(transaction);
 		error("%s", err.buf);
@@ -1665,7 +1670,8 @@ static void dump_tags(void)
 	struct strbuf err = STRBUF_INIT;
 	struct ref_transaction *transaction;
 
-	transaction = ref_transaction_begin(&err);
+	transaction = ref_store_transaction_begin(get_main_ref_store(the_repository),
+						  &err);
 	if (!transaction) {
 		failure |= error("%s", err.buf);
 		goto cleanup;
@@ -1675,7 +1681,8 @@ static void dump_tags(void)
 		strbuf_addf(&ref_name, "refs/tags/%s", t->name);
 
 		if (ref_transaction_update(transaction, ref_name.buf,
-					   &t->oid, NULL, 0, msg, &err)) {
+					   &t->oid, NULL, NULL, NULL,
+					   0, msg, &err)) {
 			failure |= error("%s", err.buf);
 			goto cleanup;
 		}
@@ -2354,7 +2361,9 @@ static void file_change_m(const char *p, struct branch *b)
 	parse_path_eol(&path, p, "path");
 
 	/* Git does not track empty, non-toplevel directories. */
-	if (S_ISDIR(mode) && is_empty_tree_oid(&oid) && *path.buf) {
+	if (S_ISDIR(mode) &&
+	    is_empty_tree_oid(&oid, the_repository->hash_algo) &&
+	    *path.buf) {
 		tree_content_remove(&b->branch_tree, path.buf, NULL, 0);
 		return;
 	}
@@ -2546,8 +2555,8 @@ static void note_change_n(const char *p, struct branch *b, unsigned char *old_fa
 static void file_change_deleteall(struct branch *b)
 {
 	release_tree_content_recursive(b->branch_tree.tree);
-	oidclr(&b->branch_tree.versions[0].oid);
-	oidclr(&b->branch_tree.versions[1].oid);
+	oidclr(&b->branch_tree.versions[0].oid, the_repository->hash_algo);
+	oidclr(&b->branch_tree.versions[1].oid, the_repository->hash_algo);
 	load_tree(&b->branch_tree);
 	b->num_notes = 0;
 }
@@ -2566,8 +2575,8 @@ static void parse_from_commit(struct branch *b, char *buf, unsigned long size)
 static void parse_from_existing(struct branch *b)
 {
 	if (is_null_oid(&b->oid)) {
-		oidclr(&b->branch_tree.versions[0].oid);
-		oidclr(&b->branch_tree.versions[1].oid);
+		oidclr(&b->branch_tree.versions[0].oid, the_repository->hash_algo);
+		oidclr(&b->branch_tree.versions[1].oid, the_repository->hash_algo);
 	} else {
 		unsigned long size;
 		char *buf;
@@ -2890,9 +2899,9 @@ static void parse_reset_branch(const char *arg)
 
 	b = lookup_branch(arg);
 	if (b) {
-		oidclr(&b->oid);
-		oidclr(&b->branch_tree.versions[0].oid);
-		oidclr(&b->branch_tree.versions[1].oid);
+		oidclr(&b->oid, the_repository->hash_algo);
+		oidclr(&b->branch_tree.versions[0].oid, the_repository->hash_algo);
+		oidclr(&b->branch_tree.versions[1].oid, the_repository->hash_algo);
 		if (b->branch_tree.tree) {
 			release_tree_content_recursive(b->branch_tree.tree);
 			b->branch_tree.tree = NULL;
@@ -3265,6 +3274,7 @@ static void option_import_marks(const char *marks,
 			read_marks();
 	}
 
+	free(import_marks_file);
 	import_marks_file = make_fast_import_path(marks);
 	import_marks_file_from_stream = from_stream;
 	import_marks_file_ignore_missing = ignore_missing;
@@ -3307,6 +3317,7 @@ static void option_active_branches(const char *branches)
 
 static void option_export_marks(const char *marks)
 {
+	free(export_marks_file);
 	export_marks_file = make_fast_import_path(marks);
 }
 
@@ -3348,6 +3359,8 @@ static void option_rewrite_submodules(const char *arg, struct string_list *list)
 	free(f);
 
 	string_list_insert(list, s)->util = ms;
+
+	free(s);
 }
 
 static int parse_one_option(const char *option)
@@ -3472,8 +3485,8 @@ static void git_pack_config(void)
 	if (!git_config_get_int("pack.indexversion", &indexversion_value)) {
 		pack_idx_opts.version = indexversion_value;
 		if (pack_idx_opts.version > 2)
-			git_die_config("pack.indexversion",
-					"bad pack.indexVersion=%"PRIu32, pack_idx_opts.version);
+			git_die_config(the_repository, "pack.indexversion",
+				       "bad pack.indexVersion=%"PRIu32, pack_idx_opts.version);
 	}
 	if (!git_config_get_ulong("pack.packsizelimit", &packsizelimit_value))
 		max_packsize = packsizelimit_value;
@@ -3524,7 +3537,10 @@ static void parse_argv(void)
 	build_mark_map(&sub_marks_from, &sub_marks_to);
 }
 
-int cmd_fast_import(int argc, const char **argv, const char *prefix)
+int cmd_fast_import(int argc,
+		    const char **argv,
+		    const char *prefix,
+		    struct repository *repo UNUSED)
 {
 	unsigned int i;
 

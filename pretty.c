@@ -1,3 +1,5 @@
+#define USE_THE_REPOSITORY_VARIABLE
+
 #include "git-compat-util.h"
 #include "config.h"
 #include "commit.h"
@@ -61,8 +63,8 @@ static int git_pretty_formats_config(const char *var, const char *value,
 				     void *cb UNUSED)
 {
 	struct cmt_fmt_map *commit_format = NULL;
-	const char *name;
-	const char *fmt;
+	const char *name, *stripped;
+	char *fmt;
 	int i;
 
 	if (!skip_prefix(var, "pretty.", &name))
@@ -88,18 +90,28 @@ static int git_pretty_formats_config(const char *var, const char *value,
 		commit_formats_len++;
 	}
 
+	free((char *)commit_format->name);
 	commit_format->name = xstrdup(name);
 	commit_format->format = CMIT_FMT_USERFORMAT;
 	if (git_config_string(&fmt, var, value))
 		return -1;
 
-	if (skip_prefix(fmt, "format:", &fmt))
+	free((char *)commit_format->user_format);
+	if (skip_prefix(fmt, "format:", &stripped)) {
 		commit_format->is_tformat = 0;
-	else if (skip_prefix(fmt, "tformat:", &fmt) || strchr(fmt, '%'))
+		commit_format->user_format = xstrdup(stripped);
+		free(fmt);
+	} else if (skip_prefix(fmt, "tformat:", &stripped)) {
 		commit_format->is_tformat = 1;
-	else
+		commit_format->user_format = xstrdup(stripped);
+		free(fmt);
+	} else if (strchr(fmt, '%')) {
+		commit_format->is_tformat = 1;
+		commit_format->user_format = fmt;
+	} else {
 		commit_format->is_alias = 1;
-	commit_format->user_format = fmt;
+		commit_format->user_format = fmt;
+	}
 
 	return 0;
 }
@@ -1321,7 +1333,7 @@ int format_set_trailers_options(struct process_trailer_options *opts,
 static size_t parse_describe_args(const char *start, struct strvec *args)
 {
 	struct {
-		char *name;
+		const char *name;
 		enum {
 			DESCRIBE_ARG_BOOL,
 			DESCRIBE_ARG_INTEGER,
@@ -1580,8 +1592,8 @@ static size_t format_commit_one(struct strbuf *sb, /* in UTF-8 */
 	case 'D':
 		{
 			const struct decoration_options opts = {
-				.prefix = "",
-				.suffix = ""
+				.prefix = (char *) "",
+				.suffix = (char *) "",
 			};
 
 			format_decorations(sb, commit, c->auto_color, &opts);
@@ -1764,6 +1776,7 @@ static size_t format_commit_one(struct strbuf *sb, /* in UTF-8 */
 		}
 	trailer_out:
 		string_list_clear(&filter_list, 0);
+		strbuf_release(&kvsepbuf);
 		strbuf_release(&sepbuf);
 		return ret;
 	}
@@ -2192,7 +2205,7 @@ static void strbuf_add_tabexpand(struct strbuf *sb, struct grep_opt *opt,
 }
 
 /*
- * pp_handle_indent() prints out the intendation, and
+ * pp_handle_indent() prints out the indentation, and
  * the whole line (without the final newline), after
  * de-tabifying.
  */

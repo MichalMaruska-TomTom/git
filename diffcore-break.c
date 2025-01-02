@@ -1,6 +1,9 @@
 /*
  * Copyright (C) 2005 Junio C Hamano
  */
+
+#define USE_THE_REPOSITORY_VARIABLE
+
 #include "git-compat-util.h"
 #include "diffcore.h"
 #include "hash.h"
@@ -263,8 +266,8 @@ static void merge_broken(struct diff_filepair *p,
 	 * in the resulting tree.
 	 */
 	d->one->rename_used++;
-	diff_free_filespec_data(d->two);
-	diff_free_filespec_data(c->one);
+	free_filespec(d->two);
+	free_filespec(c->one);
 	free(d);
 	free(c);
 }

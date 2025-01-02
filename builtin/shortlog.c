@@ -1,3 +1,4 @@
+#define USE_THE_REPOSITORY_VARIABLE
 #include "builtin.h"
 #include "config.h"
 #include "commit.h"
@@ -5,7 +6,6 @@
 #include "environment.h"
 #include "gettext.h"
 #include "string-list.h"
-#include "repository.h"
 #include "revision.h"
 #include "utf8.h"
 #include "mailmap.h"
@@ -378,7 +378,10 @@ void shortlog_finish_setup(struct shortlog *log)
 	string_list_sort(&log->trailers);
 }
 
-int cmd_shortlog(int argc, const char **argv, const char *prefix)
+int cmd_shortlog(int argc,
+		 const char **argv,
+		 const char *prefix,
+		 struct repository *repo UNUSED)
 {
 	struct shortlog log = { STRING_LIST_INIT_NODUP };
 	struct rev_info rev;
@@ -435,7 +438,7 @@ parse_done:
 		usage_with_options(shortlog_usage, options);
 	}
 
-	if (setup_revisions(argc, argv, &rev, NULL) != 1) {
+	if (!nongit && setup_revisions(argc, argv, &rev, NULL) != 1) {
 		error(_("unrecognized argument: %s"), argv[1]);
 		usage_with_options(shortlog_usage, options);
 	}
@@ -460,11 +463,8 @@ parse_done:
 	else
 		get_from_rev(&rev, &log);
 
-	release_revisions(&rev);
-
 	shortlog_output(&log);
-	if (log.file != stdout)
-		fclose(log.file);
+	release_revisions(&rev);
 	return 0;
 }
 
@@ -517,4 +517,5 @@ void shortlog_output(struct shortlog *log)
 	string_list_clear(&log->list, 1);
 	clear_mailmap(&log->mailmap);
 	string_list_clear(&log->format, 0);
+	string_list_clear(&log->trailers, 0);
 }

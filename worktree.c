@@ -1,3 +1,5 @@
+#define USE_THE_REPOSITORY_VARIABLE
+
 #include "git-compat-util.h"
 #include "abspath.h"
 #include "environment.h"
@@ -53,6 +55,15 @@ static void add_head_info(struct worktree *wt)
 		wt->is_detached = 1;
 }
 
+static int is_current_worktree(struct worktree *wt)
+{
+	char *git_dir = absolute_pathdup(repo_get_git_dir(the_repository));
+	const char *wt_git_dir = get_worktree_git_dir(wt);
+	int is_current = !fspathcmp(git_dir, absolute_path(wt_git_dir));
+	free(git_dir);
+	return is_current;
+}
+
 /**
  * get the main worktree
  */
@@ -61,10 +72,11 @@ static struct worktree *get_main_worktree(int skip_reading_head)
 	struct worktree *worktree = NULL;
 	struct strbuf worktree_path = STRBUF_INIT;
 
-	strbuf_add_real_path(&worktree_path, get_git_common_dir());
+	strbuf_add_real_path(&worktree_path, repo_get_common_dir(the_repository));
 	strbuf_strip_suffix(&worktree_path, "/.git");
 
 	CALLOC_ARRAY(worktree, 1);
+	worktree->repo = the_repository;
 	worktree->path = strbuf_detach(&worktree_path, NULL);
 	/*
 	 * NEEDSWORK: If this function is called from a secondary worktree and
@@ -75,6 +87,7 @@ static struct worktree *get_main_worktree(int skip_reading_head)
 	 */
 	worktree->is_bare = (is_bare_repository_cfg == 1) ||
 		is_bare_repository();
+	worktree->is_current = is_current_worktree(worktree);
 	if (!skip_reading_head)
 		add_head_info(worktree);
 	return worktree;
@@ -98,8 +111,10 @@ struct worktree *get_linked_worktree(const char *id,
 	strbuf_strip_suffix(&worktree_path, "/.git");
 
 	CALLOC_ARRAY(worktree, 1);
+	worktree->repo = the_repository;
 	worktree->path = strbuf_detach(&worktree_path, NULL);
 	worktree->id = xstrdup(id);
+	worktree->is_current = is_current_worktree(worktree);
 	if (!skip_reading_head)
 		add_head_info(worktree);
 
@@ -107,23 +122,6 @@ done:
 	strbuf_release(&path);
 	strbuf_release(&worktree_path);
 	return worktree;
-}
-
-static void mark_current_worktree(struct worktree **worktrees)
-{
-	char *git_dir = absolute_pathdup(get_git_dir());
-	int i;
-
-	for (i = 0; worktrees[i]; i++) {
-		struct worktree *wt = worktrees[i];
-		const char *wt_git_dir = get_worktree_git_dir(wt);
-
-		if (!fspathcmp(git_dir, absolute_path(wt_git_dir))) {
-			wt->is_current = 1;
-			break;
-		}
-	}
-	free(git_dir);
 }
 
 /*
@@ -145,7 +143,7 @@ static struct worktree **get_worktrees_internal(int skip_reading_head)
 
 	list[counter++] = get_main_worktree(skip_reading_head);
 
-	strbuf_addf(&path, "%s/worktrees", get_git_common_dir());
+	strbuf_addf(&path, "%s/worktrees", repo_get_common_dir(the_repository));
 	dir = opendir(path.buf);
 	strbuf_release(&path);
 	if (dir) {
@@ -162,7 +160,6 @@ static struct worktree **get_worktrees_internal(int skip_reading_head)
 	ALLOC_GROW(list, counter + 1, alloc);
 	list[counter] = NULL;
 
-	mark_current_worktree(list);
 	return list;
 }
 
@@ -174,9 +171,9 @@ struct worktree **get_worktrees(void)
 const char *get_worktree_git_dir(const struct worktree *wt)
 {
 	if (!wt)
-		return get_git_dir();
+		return repo_get_git_dir(the_repository);
 	else if (!wt->id)
-		return get_git_common_dir();
+		return repo_get_common_dir(the_repository);
 	else
 		return git_common_path("worktrees/%s", wt->id);
 }
@@ -255,7 +252,7 @@ const char *worktree_lock_reason(struct worktree *wt)
 	if (!wt->lock_reason_valid) {
 		struct strbuf path = STRBUF_INIT;
 
-		strbuf_addstr(&path, worktree_git_path(wt, "locked"));
+		strbuf_addstr(&path, worktree_git_path(the_repository, wt, "locked"));
 		if (file_exists(path.buf)) {
 			struct strbuf lock_reason = STRBUF_INIT;
 			if (strbuf_read_file(&lock_reason, path.buf, 0) < 0)
@@ -549,7 +546,7 @@ int other_head_refs(each_ref_fn fn, void *cb_data)
 					    refname.buf,
 					    RESOLVE_REF_READING,
 					    &oid, &flag))
-			ret = fn(refname.buf, &oid, flag, cb_data);
+			ret = fn(refname.buf, NULL, &oid, flag, cb_data);
 		if (ret)
 			break;
 	}
@@ -629,7 +626,7 @@ static int is_main_worktree_path(const char *path)
 
 	strbuf_add_real_path(&target, path);
 	strbuf_strip_suffix(&target, "/.git");
-	strbuf_add_real_path(&maindir, get_git_common_dir());
+	strbuf_add_real_path(&maindir, repo_get_common_dir(the_repository));
 	strbuf_strip_suffix(&maindir, "/.git");
 	cmp = fspathcmp(maindir.buf, target.buf);
 

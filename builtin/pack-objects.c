@@ -1,8 +1,8 @@
+#define USE_THE_REPOSITORY_VARIABLE
 #include "builtin.h"
 #include "environment.h"
 #include "gettext.h"
 #include "hex.h"
-#include "repository.h"
 #include "config.h"
 #include "attr.h"
 #include "object.h"
@@ -771,7 +771,7 @@ static enum write_one_status write_one(struct hashfile *f,
 	return WRITE_ONE_WRITTEN;
 }
 
-static int mark_tagged(const char *path UNUSED, const struct object_id *oid,
+static int mark_tagged(const char *path UNUSED, const char *referent UNUSED, const struct object_id *oid,
 		       int flag UNUSED, void *cb_data UNUSED)
 {
 	struct object_id peeled;
@@ -779,7 +779,7 @@ static int mark_tagged(const char *path UNUSED, const struct object_id *oid,
 
 	if (entry)
 		entry->tagged = 1;
-	if (!peel_iterated_oid(oid, &peeled)) {
+	if (!peel_iterated_oid(the_repository, oid, &peeled)) {
 		entry = packlist_find(&to_pack, &peeled);
 		if (entry)
 			entry->tagged = 1;
@@ -939,7 +939,8 @@ static struct object_entry **compute_write_order(void)
 	/*
 	 * Mark objects that are at the tip of tags.
 	 */
-	for_each_tag_ref(mark_tagged, NULL);
+	refs_for_each_tag_ref(get_main_ref_store(the_repository), mark_tagged,
+			      NULL);
 
 	if (use_delta_islands) {
 		max_layers = compute_pack_layers(&to_pack);
@@ -1071,7 +1072,7 @@ static void write_reused_pack_one(struct packed_git *reuse_packfile,
 		fixup = find_reused_offset(offset) -
 			find_reused_offset(base_offset);
 		if (fixup) {
-			unsigned char ofs_header[10];
+			unsigned char ofs_header[MAX_PACK_OBJECT_HEADER];
 			unsigned i, ofs_len;
 			off_t ofs = offset - base_offset - fixup;
 
@@ -1190,6 +1191,7 @@ static void write_reused_pack(struct bitmapped_pack *reuse_packfile,
 		size_t pos = (i * BITS_IN_EWORD);
 
 		for (offset = 0; offset < BITS_IN_EWORD; ++offset) {
+			uint32_t pack_pos;
 			if ((word >> offset) == 0)
 				break;
 
@@ -1198,14 +1200,41 @@ static void write_reused_pack(struct bitmapped_pack *reuse_packfile,
 				continue;
 			if (pos + offset >= reuse_packfile->bitmap_pos + reuse_packfile->bitmap_nr)
 				goto done;
-			/*
-			 * Can use bit positions directly, even for MIDX
-			 * bitmaps. See comment in try_partial_reuse()
-			 * for why.
-			 */
-			write_reused_pack_one(reuse_packfile->p,
-					      pos + offset - reuse_packfile->bitmap_pos,
-					      f, pack_start, &w_curs);
+
+			if (reuse_packfile->bitmap_pos) {
+				/*
+				 * When doing multi-pack reuse on a
+				 * non-preferred pack, translate bit positions
+				 * from the MIDX pseudo-pack order back to their
+				 * pack-relative positions before attempting
+				 * reuse.
+				 */
+				struct multi_pack_index *m = reuse_packfile->from_midx;
+				uint32_t midx_pos;
+				off_t pack_ofs;
+
+				if (!m)
+					BUG("non-zero bitmap position without MIDX");
+
+				midx_pos = pack_pos_to_midx(m, pos + offset);
+				pack_ofs = nth_midxed_offset(m, midx_pos);
+
+				if (offset_to_pack_pos(reuse_packfile->p,
+						       pack_ofs, &pack_pos) < 0)
+					BUG("could not find expected object at offset %"PRIuMAX" in pack %s",
+					    (uintmax_t)pack_ofs,
+					    pack_basename(reuse_packfile->p));
+			} else {
+				/*
+				 * Can use bit positions directly, even for MIDX
+				 * bitmaps. See comment in try_partial_reuse()
+				 * for why.
+				 */
+				pack_pos = pos + offset;
+			}
+
+			write_reused_pack_one(reuse_packfile->p, pack_pos, f,
+					      pack_start, &w_curs);
 			display_progress(progress_state, ++written);
 		}
 	}
@@ -1314,6 +1343,7 @@ static void write_pack_file(void)
 		if (!pack_to_stdout) {
 			struct stat st;
 			struct strbuf tmpname = STRBUF_INIT;
+			struct bitmap_writer bitmap_writer;
 			char *idx_tmp_name = NULL;
 
 			/*
@@ -1339,9 +1369,11 @@ static void write_pack_file(void)
 				    hash_to_hex(hash));
 
 			if (write_bitmap_index) {
-				bitmap_writer_set_checksum(hash);
-				bitmap_writer_build_type_index(
-					&to_pack, written_list, nr_written);
+				bitmap_writer_init(&bitmap_writer,
+						   the_repository, &to_pack);
+				bitmap_writer_set_checksum(&bitmap_writer, hash);
+				bitmap_writer_build_type_index(&bitmap_writer,
+							       written_list);
 			}
 
 			if (cruft)
@@ -1358,12 +1390,17 @@ static void write_pack_file(void)
 				strbuf_addstr(&tmpname, "bitmap");
 				stop_progress(&progress_state);
 
-				bitmap_writer_show_progress(progress);
-				bitmap_writer_select_commits(indexed_commits, indexed_commits_nr, -1);
-				if (bitmap_writer_build(&to_pack) < 0)
+				bitmap_writer_show_progress(&bitmap_writer,
+							    progress);
+				bitmap_writer_select_commits(&bitmap_writer,
+							     indexed_commits,
+							     indexed_commits_nr);
+				if (bitmap_writer_build(&bitmap_writer) < 0)
 					die(_("failed to write bitmap index"));
-				bitmap_writer_finish(written_list, nr_written,
+				bitmap_writer_finish(&bitmap_writer,
+						     written_list,
 						     tmpname.buf, write_bitmap_options);
+				bitmap_writer_free(&bitmap_writer);
 				write_bitmap_index = 0;
 				strbuf_setlen(&tmpname, tmpname_len);
 			}
@@ -2070,7 +2107,8 @@ static void check_object(struct object_entry *entry, uint32_t object_index)
 				oidread(&base_ref,
 					use_pack(p, &w_curs,
 						 entry->in_pack_offset + used,
-						 NULL));
+						 NULL),
+					the_repository->hash_algo);
 				have_base = 1;
 			}
 			entry->in_pack_header_size = used + the_hash_algo->rawsz;
@@ -3119,12 +3157,12 @@ static void add_tag_chain(const struct object_id *oid)
 	}
 }
 
-static int add_ref_tag(const char *tag UNUSED, const struct object_id *oid,
+static int add_ref_tag(const char *tag UNUSED, const char *referent UNUSED, const struct object_id *oid,
 		       int flag UNUSED, void *cb_data UNUSED)
 {
 	struct object_id peeled;
 
-	if (!peel_iterated_oid(oid, &peeled) && obj_is_packed(&peeled))
+	if (!peel_iterated_oid(the_repository, oid, &peeled) && obj_is_packed(&peeled))
 		add_tag_chain(oid);
 	return 0;
 }
@@ -3930,7 +3968,7 @@ static int add_loose_object(const struct object_id *oid, const char *path,
  */
 static void add_unreachable_loose_objects(void)
 {
-	for_each_loose_file_in_objdir(get_object_directory(),
+	for_each_loose_file_in_objdir(repo_get_object_directory(the_repository),
 				      add_loose_object,
 				      NULL, NULL, NULL);
 }
@@ -4066,6 +4104,7 @@ static void record_recent_commit(struct commit *commit, void *data UNUSED)
 }
 
 static int mark_bitmap_preferred_tip(const char *refname,
+				     const char *referent UNUSED,
 				     const struct object_id *oid,
 				     int flags UNUSED,
 				     void *data UNUSED)
@@ -4073,7 +4112,7 @@ static int mark_bitmap_preferred_tip(const char *refname,
 	struct object_id peeled;
 	struct object *object;
 
-	if (!peel_iterated_oid(oid, &peeled))
+	if (!peel_iterated_oid(the_repository, oid, &peeled))
 		oid = &peeled;
 
 	object = parse_object_or_die(oid, refname);
@@ -4093,7 +4132,9 @@ static void mark_bitmap_preferred_tips(void)
 		return;
 
 	for_each_string_list_item(item, preferred_tips) {
-		for_each_ref_in(item->string, mark_bitmap_preferred_tip, NULL);
+		refs_for_each_ref_in(get_main_ref_store(the_repository),
+				     item->string, mark_bitmap_preferred_tip,
+				     NULL);
 	}
 }
 
@@ -4271,7 +4312,10 @@ static int option_parse_cruft_expiration(const struct option *opt UNUSED,
 	return 0;
 }
 
-int cmd_pack_objects(int argc, const char **argv, const char *prefix)
+int cmd_pack_objects(int argc,
+		     const char **argv,
+		     const char *prefix,
+		     struct repository *repo UNUSED)
 {
 	int use_internal_rev_list = 0;
 	int shallow = 0;
@@ -4588,7 +4632,8 @@ int cmd_pack_objects(int argc, const char **argv, const char *prefix)
 	}
 	cleanup_preferred_base();
 	if (include_tag && nr_result)
-		for_each_tag_ref(add_ref_tag, NULL);
+		refs_for_each_tag_ref(get_main_ref_store(the_repository),
+				      add_ref_tag, NULL);
 	stop_progress(&progress_state);
 	trace2_region_leave("pack-objects", "enumerate-objects",
 			    the_repository);
@@ -4627,6 +4672,7 @@ int cmd_pack_objects(int argc, const char **argv, const char *prefix)
 cleanup:
 	clear_packing_data(&to_pack);
 	list_objects_filter_release(&filter_options);
+	string_list_clear(&keep_pack_list, 0);
 	strvec_clear(&rp);
 
 	return 0;

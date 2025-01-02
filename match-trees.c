@@ -1,3 +1,5 @@
+#define USE_THE_REPOSITORY_VARIABLE
+
 #include "git-compat-util.h"
 #include "hex.h"
 #include "match-trees.h"
@@ -229,7 +231,7 @@ static int splice_tree(const struct object_id *oid1, const char *prefix,
 		    oid_to_hex(oid1));
 	if (*subpath) {
 		struct object_id tree_oid;
-		oidread(&tree_oid, rewrite_here);
+		oidread(&tree_oid, rewrite_here, the_repository->hash_algo);
 		status = splice_tree(&tree_oid, subpath, oid2, &subtree);
 		if (status)
 			return status;
@@ -237,7 +239,7 @@ static int splice_tree(const struct object_id *oid1, const char *prefix,
 	} else {
 		rewrite_with = oid2;
 	}
-	hashcpy(rewrite_here, rewrite_with->hash);
+	hashcpy(rewrite_here, rewrite_with->hash, the_repository->hash_algo);
 	status = write_object_file(buf, sz, OBJ_TREE, result);
 	free(buf);
 	return status;
@@ -292,18 +294,22 @@ void shift_tree(struct repository *r,
 		unsigned short mode;
 
 		if (!*del_prefix)
-			return;
+			goto out;
 
 		if (get_tree_entry(r, hash2, del_prefix, shifted, &mode))
 			die("cannot find path %s in tree %s",
 			    del_prefix, oid_to_hex(hash2));
-		return;
+		goto out;
 	}
 
 	if (!*add_prefix)
-		return;
+		goto out;
 
 	splice_tree(hash1, add_prefix, hash2, shifted);
+
+out:
+	free(add_prefix);
+	free(del_prefix);
 }
 
 /*

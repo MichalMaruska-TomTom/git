@@ -1,6 +1,8 @@
 #!/bin/sh
 
 test_description='credential-cache tests'
+
+TEST_PASSES_SANITIZE_LEAK=true
 . ./test-lib.sh
 . "$TEST_DIRECTORY"/lib-credential.sh
 
@@ -39,6 +41,7 @@ test_atexit 'git credential-cache exit'
 helper_test cache
 helper_test_password_expiry_utc cache
 helper_test_oauth_refresh_token cache
+helper_test_authtype cache
 
 test_expect_success 'socket defaults to ~/.cache/git/credential/socket' '
 	test_when_finished "

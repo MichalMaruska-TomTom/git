@@ -1,3 +1,5 @@
+#define USE_THE_REPOSITORY_VARIABLE
+
 #include "builtin.h"
 #include "config.h"
 #include "environment.h"
@@ -29,16 +31,17 @@
 
 struct cmd_struct {
 	const char *cmd;
-	int (*fn)(int, const char **, const char *);
+	int (*fn)(int, const char **, const char *, struct repository *);
 	unsigned int option;
 };
 
 const char git_usage_string[] =
 	N_("git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n"
 	   "           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n"
-	   "           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]\n"
-	   "           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]\n"
-	   "           [--config-env=<name>=<envvar>] <command> [<args>]");
+	   "           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]\n"
+	   "           [--no-optional-locks] [--no-advice] [--bare] [--git-dir=<path>]\n"
+	   "           [--work-tree=<path>] [--namespace=<name>] [--config-env=<name>=<envvar>]\n"
+	   "           <command> [<args>]");
 
 const char git_more_info_string[] =
 	N_("'git help -a' and 'git help -g' list available subcommands and some\n"
@@ -140,6 +143,13 @@ void setup_auto_pager(const char *cmd, int def)
 	commit_pager_choice();
 }
 
+static void print_system_path(const char *path)
+{
+	char *s_path = system_path(path);
+	puts(s_path);
+	free(s_path);
+}
+
 static int handle_options(const char ***argv, int *argc, int *envchanged)
 {
 	const char **orig_argv = *argv;
@@ -170,15 +180,15 @@ static int handle_options(const char ***argv, int *argc, int *envchanged)
 				exit(0);
 			}
 		} else if (!strcmp(cmd, "--html-path")) {
-			puts(system_path(GIT_HTML_PATH));
+			print_system_path(GIT_HTML_PATH);
 			trace2_cmd_name("_query_");
 			exit(0);
 		} else if (!strcmp(cmd, "--man-path")) {
-			puts(system_path(GIT_MAN_PATH));
+			print_system_path(GIT_MAN_PATH);
 			trace2_cmd_name("_query_");
 			exit(0);
 		} else if (!strcmp(cmd, "--info-path")) {
-			puts(system_path(GIT_INFO_PATH));
+			print_system_path(GIT_INFO_PATH);
 			trace2_cmd_name("_query_");
 			exit(0);
 		} else if (!strcmp(cmd, "-p") || !strcmp(cmd, "--paginate")) {
@@ -337,6 +347,10 @@ static int handle_options(const char ***argv, int *argc, int *envchanged)
 			setenv(GIT_ATTR_SOURCE_ENVIRONMENT, cmd, 1);
 			if (envchanged)
 				*envchanged = 1;
+		} else if (!strcmp(cmd, "--no-advice")) {
+			setenv(GIT_ADVICE_ENVIRONMENT, "0", 1);
+			if (envchanged)
+				*envchanged = 1;
 		} else {
 			fprintf(stderr, _("unknown option: %s\n"), cmd);
 			usage(git_usage_string);
@@ -427,7 +441,7 @@ static int handle_alias(int *argcp, const char ***argv)
 	return ret;
 }
 
-static int run_builtin(struct cmd_struct *p, int argc, const char **argv)
+static int run_builtin(struct cmd_struct *p, int argc, const char **argv, struct repository *repo)
 {
 	int status, help;
 	struct stat st;
@@ -465,9 +479,9 @@ static int run_builtin(struct cmd_struct *p, int argc, const char **argv)
 	trace_argv_printf(argv, "trace: built-in: git");
 	trace2_cmd_name(p->cmd);
 
-	validate_cache_entries(the_repository->index);
-	status = p->fn(argc, argv, prefix);
-	validate_cache_entries(the_repository->index);
+	validate_cache_entries(repo->index);
+	status = p->fn(argc, argv, prefix, (p->option & RUN_SETUP)? repo : NULL);
+	validate_cache_entries(repo->index);
 
 	if (status)
 		return status;
@@ -589,6 +603,7 @@ static struct cmd_struct commands[] = {
 	{ "rebase", cmd_rebase, RUN_SETUP | NEED_WORK_TREE },
 	{ "receive-pack", cmd_receive_pack },
 	{ "reflog", cmd_reflog, RUN_SETUP },
+	{ "refs", cmd_refs, RUN_SETUP },
 	{ "remote", cmd_remote, RUN_SETUP },
 	{ "remote-ext", cmd_remote_ext, NO_PARSEOPT },
 	{ "remote-fd", cmd_remote_fd, NO_PARSEOPT },
@@ -696,6 +711,7 @@ static void strip_extension(const char **argv)
 static void handle_builtin(int argc, const char **argv)
 {
 	struct strvec args = STRVEC_INIT;
+	const char **argv_copy = NULL;
 	const char *cmd;
 	struct cmd_struct *builtin;
 
@@ -716,13 +732,28 @@ static void handle_builtin(int argc, const char **argv)
 		}
 
 		argc++;
-		argv = args.v;
+
+		/*
+		 * `run_builtin()` will modify the argv array, so we need to
+		 * create a shallow copy such that we can free all of its
+		 * strings.
+		 */
+		CALLOC_ARRAY(argv_copy, argc + 1);
+		COPY_ARRAY(argv_copy, args.v, argc);
+
+		argv = argv_copy;
 	}
 
 	builtin = get_builtin(cmd);
-	if (builtin)
-		exit(run_builtin(builtin, argc, argv));
+	if (builtin) {
+		int ret = run_builtin(builtin, argc, argv, the_repository);
+		strvec_clear(&args);
+		free(argv_copy);
+		exit(ret);
+	}
+
 	strvec_clear(&args);
+	free(argv_copy);
 }
 
 static void execv_dashed_external(const char **argv)

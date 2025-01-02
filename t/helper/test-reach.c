@@ -1,3 +1,5 @@
+#define USE_THE_REPOSITORY_VARIABLE
+
 #include "test-tool.h"
 #include "commit.h"
 #include "commit-reach.h"
@@ -62,16 +64,16 @@ int cmd__reach(int ac, const char **av)
 			die("failed to resolve %s", buf.buf + 2);
 
 		orig = parse_object(r, &oid);
-		peeled = deref_tag_noverify(orig);
+		peeled = deref_tag_noverify(the_repository, orig);
 
 		if (!peeled)
-			die("failed to load commit for input %s resulting in oid %s\n",
+			die("failed to load commit for input %s resulting in oid %s",
 			    buf.buf, oid_to_hex(&oid));
 
 		c = object_as_type(peeled, OBJ_COMMIT, 0);
 
 		if (!c)
-			die("failed to load commit for input %s resulting in oid %s\n",
+			die("failed to load commit for input %s resulting in oid %s",
 			    buf.buf, oid_to_hex(&oid));
 
 		switch (buf.buf[0]) {
@@ -114,6 +116,8 @@ int cmd__reach(int ac, const char **av)
 		       repo_in_merge_bases_many(the_repository, A, X_nr, X_array, 0));
 	else if (!strcmp(av[1], "is_descendant_of"))
 		printf("%s(A,X):%d\n", av[1], repo_is_descendant_of(r, A, X));
+	else if (!strcmp(av[1], "get_branch_base_for_tip"))
+		printf("%s(A,X):%d\n", av[1], get_branch_base_for_tip(r, A, X_array, X_nr));
 	else if (!strcmp(av[1], "get_merge_bases_many")) {
 		struct commit_list *list = NULL;
 		if (repo_get_merge_bases_many(the_repository,

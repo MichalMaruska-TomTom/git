@@ -1,3 +1,5 @@
+#define USE_THE_REPOSITORY_VARIABLE
+
 #include "git-compat-util.h"
 #include "gettext.h"
 #include "hash.h"
@@ -6,19 +8,6 @@
 #include "refs.h"
 #include "refspec.h"
 #include "strbuf.h"
-
-static struct refspec_item s_tag_refspec = {
-	.force = 0,
-	.pattern = 1,
-	.matching = 0,
-	.exact_sha1 = 0,
-	.negative = 0,
-	.src = "refs/tags/*",
-	.dst = "refs/tags/*",
-};
-
-/* See TAG_REFSPEC for the string version */
-const struct refspec_item *tag_refspec = &s_tag_refspec;
 
 /*
  * Parses the provided refspec 'refspec' and populates the refspec_item 'item'.
@@ -236,7 +225,7 @@ void refspec_clear(struct refspec *rs)
 	rs->nr = 0;
 
 	for (i = 0; i < rs->raw_nr; i++)
-		free((char *)rs->raw[i]);
+		free(rs->raw[i]);
 	FREE_AND_NULL(rs->raw);
 	rs->raw_alloc = 0;
 	rs->raw_nr = 0;

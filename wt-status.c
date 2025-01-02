@@ -1,3 +1,5 @@
+#define USE_THE_REPOSITORY_VARIABLE
+
 #include "git-compat-util.h"
 #include "advice.h"
 #include "wt-status.h"
@@ -14,6 +16,7 @@
 #include "revision.h"
 #include "diffcore.h"
 #include "quote.h"
+#include "repository.h"
 #include "run-command.h"
 #include "strvec.h"
 #include "remote.h"
@@ -126,6 +129,7 @@ void status_printf(struct wt_status *s, const char *color,
 	va_end(ap);
 }
 
+__attribute__((format (printf, 3, 4)))
 static void status_printf_more(struct wt_status *s, const char *color,
 			       const char *fmt, ...)
 {
@@ -145,10 +149,11 @@ void wt_status_prepare(struct repository *r, struct wt_status *s)
 	s->show_untracked_files = SHOW_NORMAL_UNTRACKED_FILES;
 	s->use_color = -1;
 	s->relative_paths = 1;
-	s->branch = resolve_refdup("HEAD", 0, NULL, NULL);
+	s->branch = refs_resolve_refdup(get_main_ref_store(the_repository),
+					"HEAD", 0, NULL, NULL);
 	s->reference = "HEAD";
 	s->fp = stdout;
-	s->index_file = get_index_file();
+	s->index_file = repo_get_index_file(the_repository);
 	s->change.strdup_strings = 1;
 	s->untracked.strdup_strings = 1;
 	s->ignored.strdup_strings = 1;
@@ -640,7 +645,7 @@ static void wt_status_collect_changes_index(struct wt_status *s)
 
 	repo_init_revisions(s->repo, &rev, NULL);
 	memset(&opt, 0, sizeof(opt));
-	opt.def = s->is_initial ? empty_tree_oid_hex() : s->reference;
+	opt.def = s->is_initial ? empty_tree_oid_hex(the_repository->hash_algo) : s->reference;
 	setup_revisions(0, NULL, &rev, &opt);
 
 	rev.diffopt.flags.override_submodule_config = 1;
@@ -976,7 +981,8 @@ static int stash_count_refs(struct object_id *ooid UNUSED,
 static int count_stash_entries(void)
 {
 	int n = 0;
-	for_each_reflog_ent("refs/stash", stash_count_refs, &n);
+	refs_for_each_reflog_ent(get_main_ref_store(the_repository),
+				 "refs/stash", stash_count_refs, &n);
 	return n;
 }
 
@@ -1134,7 +1140,7 @@ static void wt_longstatus_print_verbose(struct wt_status *s)
 	rev.diffopt.ita_invisible_in_index = 1;
 
 	memset(&opt, 0, sizeof(opt));
-	opt.def = s->is_initial ? empty_tree_oid_hex() : s->reference;
+	opt.def = s->is_initial ? empty_tree_oid_hex(the_repository->hash_algo) : s->reference;
 	setup_revisions(0, NULL, &rev, &opt);
 
 	rev.diffopt.output_format |= DIFF_FORMAT_PATCH;
@@ -1304,10 +1310,10 @@ static int split_commit_in_progress(struct wt_status *s)
 	    !s->branch || strcmp(s->branch, "HEAD"))
 		return 0;
 
-	if (read_ref_full("HEAD", RESOLVE_REF_READING | RESOLVE_REF_NO_RECURSE,
-			  &head_oid, &head_flags) ||
-	    read_ref_full("ORIG_HEAD", RESOLVE_REF_READING | RESOLVE_REF_NO_RECURSE,
-			  &orig_head_oid, &orig_head_flags))
+	if (refs_read_ref_full(get_main_ref_store(the_repository), "HEAD", RESOLVE_REF_READING | RESOLVE_REF_NO_RECURSE,
+			       &head_oid, &head_flags) ||
+	    refs_read_ref_full(get_main_ref_store(the_repository), "ORIG_HEAD", RESOLVE_REF_READING | RESOLVE_REF_NO_RECURSE,
+			       &orig_head_oid, &orig_head_flags))
 		return 0;
 	if (head_flags & REF_ISSYMREF || orig_head_flags & REF_ISSYMREF)
 		return 0;
@@ -1613,7 +1619,7 @@ static char *get_branch(const struct worktree *wt, const char *path)
 	struct object_id oid;
 	const char *branch_name;
 
-	if (strbuf_read_file(&sb, worktree_git_path(wt, "%s", path), 0) <= 0)
+	if (strbuf_read_file(&sb, worktree_git_path(the_repository, wt, "%s", path), 0) <= 0)
 		goto got_nothing;
 
 	while (sb.len && sb.buf[sb.len - 1] == '\n')
@@ -1679,7 +1685,7 @@ static void wt_status_get_detached_from(struct repository *r,
 	char *ref = NULL;
 
 	strbuf_init(&cb.buf, 0);
-	if (for_each_reflog_ent_reverse("HEAD", grab_1st_switch, &cb) <= 0) {
+	if (refs_for_each_reflog_ent_reverse(get_main_ref_store(the_repository), "HEAD", grab_1st_switch, &cb) <= 0) {
 		strbuf_release(&cb.buf);
 		return;
 	}
@@ -1711,18 +1717,18 @@ int wt_status_check_rebase(const struct worktree *wt,
 {
 	struct stat st;
 
-	if (!stat(worktree_git_path(wt, "rebase-apply"), &st)) {
-		if (!stat(worktree_git_path(wt, "rebase-apply/applying"), &st)) {
+	if (!stat(worktree_git_path(the_repository, wt, "rebase-apply"), &st)) {
+		if (!stat(worktree_git_path(the_repository, wt, "rebase-apply/applying"), &st)) {
 			state->am_in_progress = 1;
-			if (!stat(worktree_git_path(wt, "rebase-apply/patch"), &st) && !st.st_size)
+			if (!stat(worktree_git_path(the_repository, wt, "rebase-apply/patch"), &st) && !st.st_size)
 				state->am_empty_patch = 1;
 		} else {
 			state->rebase_in_progress = 1;
 			state->branch = get_branch(wt, "rebase-apply/head-name");
 			state->onto = get_branch(wt, "rebase-apply/onto");
 		}
-	} else if (!stat(worktree_git_path(wt, "rebase-merge"), &st)) {
-		if (!stat(worktree_git_path(wt, "rebase-merge/interactive"), &st))
+	} else if (!stat(worktree_git_path(the_repository, wt, "rebase-merge"), &st)) {
+		if (!stat(worktree_git_path(the_repository, wt, "rebase-merge/interactive"), &st))
 			state->rebase_interactive_in_progress = 1;
 		else
 			state->rebase_in_progress = 1;
@@ -1738,7 +1744,7 @@ int wt_status_check_bisect(const struct worktree *wt,
 {
 	struct stat st;
 
-	if (!stat(worktree_git_path(wt, "BISECT_LOG"), &st)) {
+	if (!stat(worktree_git_path(the_repository, wt, "BISECT_LOG"), &st)) {
 		state->bisect_in_progress = 1;
 		state->bisecting_from = get_branch(wt, "BISECT_START");
 		return 1;
@@ -2087,7 +2093,8 @@ static void wt_shortstatus_print_tracking(struct wt_status *s)
 		upstream_is_gone = 1;
 	}
 
-	short_base = shorten_unambiguous_ref(base, 0);
+	short_base = refs_shorten_unambiguous_ref(get_main_ref_store(the_repository),
+						  base, 0);
 	color_fprintf(s->fp, header_color, "...");
 	color_fprintf(s->fp, branch_color_remote, "%s", short_base);
 	free(short_base);
@@ -2220,7 +2227,8 @@ static void wt_porcelain_v2_print_tracking(struct wt_status *s)
 		ab_info = stat_tracking_info(branch, &nr_ahead, &nr_behind,
 					     &base, 0, s->ahead_behind_flags);
 		if (base) {
-			base = shorten_unambiguous_ref(base, 0);
+			base = refs_shorten_unambiguous_ref(get_main_ref_store(the_repository),
+							    base, 0);
 			fprintf(s->fp, "# branch.upstream %s%c", base, eol);
 			free((char *)base);
 
@@ -2404,7 +2412,7 @@ static void wt_porcelain_v2_print_unmerged_entry(
 		int mode;
 		struct object_id oid;
 	} stages[3];
-	char *key;
+	const char *key;
 	char submodule_token[5];
 	char unmerged_prefix = 'u';
 	char eol_char = s->null_termination ? '\0' : '\n';
@@ -2588,7 +2596,7 @@ int has_unstaged_changes(struct repository *r, int ignore_submodules)
 	rev_info.diffopt.flags.quick = 1;
 	diff_setup_done(&rev_info.diffopt);
 	run_diff_files(&rev_info, 0);
-	result = diff_result_code(&rev_info.diffopt);
+	result = diff_result_code(&rev_info);
 	release_revisions(&rev_info);
 	return result;
 }
@@ -2622,7 +2630,7 @@ int has_uncommitted_changes(struct repository *r,
 
 	diff_setup_done(&rev_info.diffopt);
 	run_diff_index(&rev_info, DIFF_INDEX_CACHED);
-	result = diff_result_code(&rev_info.diffopt);
+	result = diff_result_code(&rev_info);
 	release_revisions(&rev_info);
 	return result;
 }

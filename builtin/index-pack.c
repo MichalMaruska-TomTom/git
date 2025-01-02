@@ -1,3 +1,4 @@
+#define USE_THE_REPOSITORY_VARIABLE
 #include "builtin.h"
 #include "config.h"
 #include "delta.h"
@@ -528,7 +529,8 @@ static void *unpack_raw_entry(struct object_entry *obj,
 
 	switch (obj->type) {
 	case OBJ_REF_DELTA:
-		oidread(ref_oid, fill(the_hash_algo->rawsz));
+		oidread(ref_oid, fill(the_hash_algo->rawsz),
+			the_repository->hash_algo);
 		use(the_hash_algo->rawsz);
 		break;
 	case OBJ_OFS_DELTA:
@@ -1204,7 +1206,7 @@ static void parse_pack_objects(unsigned char *hash)
 	the_hash_algo->init_fn(&tmp_ctx);
 	the_hash_algo->clone_fn(&tmp_ctx, &input_ctx);
 	the_hash_algo->final_fn(hash, &tmp_ctx);
-	if (!hasheq(fill(the_hash_algo->rawsz), hash))
+	if (!hasheq(fill(the_hash_algo->rawsz), hash, the_repository->hash_algo))
 		die(_("pack is corrupted (SHA1 mismatch)"));
 	use(the_hash_algo->rawsz);
 
@@ -1307,11 +1309,11 @@ static void conclude_pack(int fix_thin_pack, const char *curr_pack, unsigned cha
 		stop_progress_msg(&progress, msg.buf);
 		strbuf_release(&msg);
 		finalize_hashfile(f, tail_hash, FSYNC_COMPONENT_PACK, 0);
-		hashcpy(read_hash, pack_hash);
+		hashcpy(read_hash, pack_hash, the_repository->hash_algo);
 		fixup_pack_header_footer(output_fd, pack_hash,
 					 curr_pack, nr_objects,
 					 read_hash, consumed_bytes-the_hash_algo->rawsz);
-		if (!hasheq(read_hash, tail_hash))
+		if (!hasheq(read_hash, tail_hash, the_repository->hash_algo))
 			die(_("Unexpected tail checksum for %s "
 			      "(disk corruption?)"), curr_pack);
 	}
@@ -1372,7 +1374,7 @@ static struct object_entry *append_obj_to_pack(struct hashfile *f,
 	obj[1].idx.offset += write_compressed(f, buf, size);
 	obj[0].idx.crc32 = crc32_end(f);
 	hashflush(f);
-	oidread(&obj->idx.oid, sha1);
+	oidread(&obj->idx.oid, sha1, the_repository->hash_algo);
 	return obj;
 }
 
@@ -1717,7 +1719,10 @@ static void show_pack_info(int stat_only)
 	free(chain_histogram);
 }
 
-int cmd_index_pack(int argc, const char **argv, const char *prefix)
+int cmd_index_pack(int argc,
+		   const char **argv,
+		   const char *prefix,
+		   struct repository *repo UNUSED)
 {
 	int i, fix_thin_pack = 0, verify = 0, stat_only = 0, rev_index;
 	const char *curr_index;
@@ -1866,6 +1871,15 @@ int cmd_index_pack(int argc, const char **argv, const char *prefix)
 		die(_("options '%s' and '%s' cannot be used together"), "--object-format", "--stdin");
 	if (!index_name && pack_name)
 		index_name = derive_filename(pack_name, "pack", "idx", &index_name_buf);
+
+	/*
+	 * Packfiles and indices do not carry enough information to be able to
+	 * identify their object hash. So when we are neither in a repository
+	 * nor has the user told us which object hash to use we have no other
+	 * choice but to guess the object hash.
+	 */
+	if (!the_repository->hash_algo)
+		repo_set_hash_algo(the_repository, GIT_HASH_SHA1);
 
 	opts.flags &= ~(WRITE_REV | WRITE_REV_VERIFY);
 	if (rev_index) {

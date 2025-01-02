@@ -897,18 +897,6 @@ static void print_line(const char *prefix, char first,
 		fputs("\\ No newline at end of file\n", file);
 }
 
-static char *output_prefix(struct diff_options *opt)
-{
-	char *prefix = "";
-
-	if (opt->output_prefix) {
-		struct strbuf *sb = opt->output_prefix(opt, opt->output_prefix_data);
-		prefix = sb->buf;
-	}
-
-	return prefix;
-}
-
 static void dump_diff_hacky_one(struct rev_info *rev, struct line_log_data *range)
 {
 	unsigned int i, j = 0;
@@ -918,7 +906,7 @@ static void dump_diff_hacky_one(struct rev_info *rev, struct line_log_data *rang
 	struct diff_ranges *diff = &range->diff;
 
 	struct diff_options *opt = &rev->diffopt;
-	char *prefix = output_prefix(opt);
+	const char *prefix = diff_line_prefix(opt);
 	const char *c_reset = diff_get_color(opt->use_color, DIFF_RESET);
 	const char *c_frag = diff_get_color(opt->use_color, DIFF_FRAGINFO);
 	const char *c_meta = diff_get_color(opt->use_color, DIFF_METAINFO);
@@ -927,7 +915,7 @@ static void dump_diff_hacky_one(struct rev_info *rev, struct line_log_data *rang
 	const char *c_context = diff_get_color(opt->use_color, DIFF_CONTEXT);
 
 	if (!pair || !diff)
-		return;
+		goto out;
 
 	if (pair->one->oid_valid)
 		fill_line_ends(rev->diffopt.repo, pair->one, &p_lines, &p_ends);
@@ -1002,6 +990,7 @@ static void dump_diff_hacky_one(struct rev_info *rev, struct line_log_data *rang
 				   c_context, c_reset, opt->file);
 	}
 
+out:
 	free(p_ends);
 	free(t_ends);
 }
@@ -1012,7 +1001,10 @@ static void dump_diff_hacky_one(struct rev_info *rev, struct line_log_data *rang
  */
 static void dump_diff_hacky(struct rev_info *rev, struct line_log_data *range)
 {
-	fprintf(rev->diffopt.file, "%s\n", output_prefix(&rev->diffopt));
+	const char *prefix = diff_line_prefix(&rev->diffopt);
+
+	fprintf(rev->diffopt.file, "%s\n", prefix);
+
 	while (range) {
 		dump_diff_hacky_one(rev, range);
 		range = range->next;
@@ -1032,6 +1024,7 @@ static int process_diff_filepair(struct rev_info *rev,
 	struct range_set tmp;
 	struct diff_ranges diff;
 	mmfile_t file_parent, file_target;
+	char *parent_data_to_free = NULL;
 
 	assert(pair->two->path);
 	while (rg) {
@@ -1056,7 +1049,7 @@ static int process_diff_filepair(struct rev_info *rev,
 		file_parent.ptr = pair->one->data;
 		file_parent.size = pair->one->size;
 	} else {
-		file_parent.ptr = "";
+		file_parent.ptr = parent_data_to_free = xstrdup("");
 		file_parent.size = 0;
 	}
 
@@ -1075,6 +1068,7 @@ static int process_diff_filepair(struct rev_info *rev,
 
 	diff_ranges_release(&diff);
 
+	free(parent_data_to_free);
 	return ((*diff_out)->parent.nr > 0);
 }
 

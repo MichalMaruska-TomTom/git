@@ -2,6 +2,7 @@
 
 test_description='test for-each-refs usage of ref-filter APIs'
 
+TEST_PASSES_SANITIZE_LEAK=true
 . ./test-lib.sh
 . "$TEST_DIRECTORY"/lib-gpg.sh
 
@@ -52,6 +53,23 @@ test_expect_success '--include-root-refs pattern prints pseudorefs' '
 	test_cmp expect actual
 '
 
+test_expect_success '--include-root-refs pattern does not print special refs' '
+	test_when_finished "rm -rf repo" &&
+	git init repo &&
+	(
+		cd repo &&
+		test_commit initial &&
+		git rev-parse HEAD >.git/MERGE_HEAD &&
+		git for-each-ref --format="%(refname)" --include-root-refs >actual &&
+		cat >expect <<-EOF &&
+		HEAD
+		$(git symbolic-ref HEAD)
+		refs/tags/initial
+		EOF
+		test_cmp expect actual
+	)
+'
+
 test_expect_success '--include-root-refs with other patterns' '
 	cat >expect <<-\EOF &&
 	HEAD
@@ -60,6 +78,23 @@ test_expect_success '--include-root-refs with other patterns' '
 	git update-ref ORIG_HEAD main &&
 	git for-each-ref --format="%(refname)" --include-root-refs "*HEAD" >actual &&
 	test_cmp expect actual
+'
+
+test_expect_success '--include-root-refs omits dangling symrefs' '
+	test_when_finished "rm -rf repo" &&
+	git init repo &&
+	(
+		cd repo &&
+		test_commit initial &&
+		git symbolic-ref DANGLING_HEAD refs/heads/missing &&
+		cat >expect <<-EOF &&
+		HEAD
+		$(git symbolic-ref HEAD)
+		refs/tags/initial
+		EOF
+		git for-each-ref --format="%(refname)" --include-root-refs >actual &&
+		test_cmp expect actual
+	)
 '
 
 test_expect_success 'filtering with --points-at' '

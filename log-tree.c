@@ -1,3 +1,5 @@
+#define USE_THE_REPOSITORY_VARIABLE
+
 #include "git-compat-util.h"
 #include "commit-reach.h"
 #include "config.h"
@@ -29,6 +31,7 @@
 #include "tree.h"
 #include "wildmatch.h"
 #include "write-or-die.h"
+#include "pager.h"
 
 static struct decoration name_decoration = { "object names" };
 static int decoration_loaded;
@@ -143,7 +146,7 @@ static int ref_filter_match(const char *refname,
 	return 1;
 }
 
-static int add_ref_decoration(const char *refname, const struct object_id *oid,
+static int add_ref_decoration(const char *refname, const char *referent UNUSED, const struct object_id *oid,
 			      int flags UNUSED,
 			      void *cb_data)
 {
@@ -232,8 +235,10 @@ void load_ref_decorations(struct decoration_filter *filter, int flags)
 		}
 		decoration_loaded = 1;
 		decoration_flags = flags;
-		for_each_ref(add_ref_decoration, filter);
-		head_ref(add_ref_decoration, filter);
+		refs_for_each_ref(get_main_ref_store(the_repository),
+				  add_ref_decoration, filter);
+		refs_head_ref(get_main_ref_store(the_repository),
+			      add_ref_decoration, filter);
 		for_each_commit_graft(add_graft_decoration, filter);
 	}
 }
@@ -277,7 +282,8 @@ static const struct name_decoration *current_pointed_by_HEAD(const struct name_d
 		return NULL;
 
 	/* Now resolve and find the matching current branch */
-	branch_name = resolve_ref_unsafe("HEAD", 0, NULL, &rru_flags);
+	branch_name = refs_resolve_ref_unsafe(get_main_ref_store(the_repository),
+					      "HEAD", 0, NULL, &rru_flags);
 	if (!branch_name || !(rru_flags & REF_ISSYMREF))
 		return NULL;
 
@@ -406,16 +412,6 @@ void show_decorations(struct rev_info *opt, struct commit *commit)
 	strbuf_release(&sb);
 }
 
-static unsigned int digits_in_number(unsigned int number)
-{
-	unsigned int i = 10, result = 1;
-	while (i <= number) {
-		i *= 10;
-		result++;
-	}
-	return result;
-}
-
 void fmt_output_subject(struct strbuf *filename,
 			const char *subject,
 			struct rev_info *info)
@@ -459,7 +455,7 @@ void fmt_output_email_subject(struct strbuf *sb, struct rev_info *opt)
 		strbuf_addf(sb, "Subject: [%s%s%0*d/%d] ",
 			    opt->subject_prefix,
 			    *opt->subject_prefix ? " " : "",
-			    digits_in_number(opt->total),
+			    decimal_width(opt->total),
 			    opt->nr, opt->total);
 	} else if (opt->total == 0 && opt->subject_prefix && *opt->subject_prefix) {
 		strbuf_addf(sb, "Subject: [%s] ",
@@ -670,6 +666,51 @@ static void next_commentary_block(struct rev_info *opt, struct strbuf *sb)
 	opt->shown_dashes = 1;
 }
 
+static void show_diff_of_diff(struct rev_info *opt)
+{
+	if (!cmit_fmt_is_mail(opt->commit_format))
+		return;
+
+	if (opt->idiff_oid1) {
+		struct diff_queue_struct dq;
+
+		memcpy(&dq, &diff_queued_diff, sizeof(diff_queued_diff));
+		DIFF_QUEUE_CLEAR(&diff_queued_diff);
+
+		fprintf_ln(opt->diffopt.file, "\n%s", opt->idiff_title);
+		show_interdiff(opt->idiff_oid1, opt->idiff_oid2, 2,
+			       &opt->diffopt);
+
+		memcpy(&diff_queued_diff, &dq, sizeof(diff_queued_diff));
+	}
+
+	if (opt->rdiff1) {
+		struct diff_queue_struct dq;
+		struct diff_options opts;
+		struct range_diff_options range_diff_opts = {
+			.creation_factor = opt->creation_factor,
+			.dual_color = 1,
+			.diffopt = &opts
+		};
+
+		memcpy(&dq, &diff_queued_diff, sizeof(diff_queued_diff));
+		DIFF_QUEUE_CLEAR(&diff_queued_diff);
+
+		fprintf_ln(opt->diffopt.file, "\n%s", opt->rdiff_title);
+		/*
+		 * Pass minimum required diff-options to range-diff; others
+		 * can be added later if deemed desirable.
+		 */
+		repo_diff_setup(the_repository, &opts);
+		opts.file = opt->diffopt.file;
+		opts.use_color = opt->diffopt.use_color;
+		diff_setup_done(&opts);
+		show_range_diff(opt->rdiff1, opt->rdiff2, &range_diff_opts);
+
+		memcpy(&diff_queued_diff, &dq, sizeof(diff_queued_diff));
+	}
+}
+
 void show_log(struct rev_info *opt)
 {
 	struct strbuf msgbuf = STRBUF_INIT;
@@ -853,47 +894,6 @@ void show_log(struct rev_info *opt)
 	strbuf_release(&msgbuf);
 	free(ctx.notes_message);
 	free(ctx.after_subject);
-
-	if (cmit_fmt_is_mail(ctx.fmt) && opt->idiff_oid1) {
-		struct diff_queue_struct dq;
-
-		memcpy(&dq, &diff_queued_diff, sizeof(diff_queued_diff));
-		DIFF_QUEUE_CLEAR(&diff_queued_diff);
-
-		next_commentary_block(opt, NULL);
-		fprintf_ln(opt->diffopt.file, "%s", opt->idiff_title);
-		show_interdiff(opt->idiff_oid1, opt->idiff_oid2, 2,
-			       &opt->diffopt);
-
-		memcpy(&diff_queued_diff, &dq, sizeof(diff_queued_diff));
-	}
-
-	if (cmit_fmt_is_mail(ctx.fmt) && opt->rdiff1) {
-		struct diff_queue_struct dq;
-		struct diff_options opts;
-		struct range_diff_options range_diff_opts = {
-			.creation_factor = opt->creation_factor,
-			.dual_color = 1,
-			.diffopt = &opts
-		};
-
-		memcpy(&dq, &diff_queued_diff, sizeof(diff_queued_diff));
-		DIFF_QUEUE_CLEAR(&diff_queued_diff);
-
-		next_commentary_block(opt, NULL);
-		fprintf_ln(opt->diffopt.file, "%s", opt->rdiff_title);
-		/*
-		 * Pass minimum required diff-options to range-diff; others
-		 * can be added later if deemed desirable.
-		 */
-		repo_diff_setup(the_repository, &opts);
-		opts.file = opt->diffopt.file;
-		opts.use_color = opt->diffopt.use_color;
-		diff_setup_done(&opts);
-		show_range_diff(opt->rdiff1, opt->rdiff2, &range_diff_opts);
-
-		memcpy(&diff_queued_diff, &dq, sizeof(diff_queued_diff));
-	}
 }
 
 int log_tree_diff_flush(struct rev_info *opt)
@@ -922,12 +922,7 @@ int log_tree_diff_flush(struct rev_info *opt)
 			 * diff/diffstat output for readability.
 			 */
 			int pch = DIFF_FORMAT_DIFFSTAT | DIFF_FORMAT_PATCH;
-			if (opt->diffopt.output_prefix) {
-				struct strbuf *msg = NULL;
-				msg = opt->diffopt.output_prefix(&opt->diffopt,
-					opt->diffopt.output_prefix_data);
-				fwrite(msg->buf, msg->len, 1, opt->diffopt.file);
-			}
+			fputs(diff_line_prefix(&opt->diffopt), opt->diffopt.file);
 
 			/*
 			 * We may have shown three-dashes line early
@@ -1015,8 +1010,19 @@ static int do_remerge_diff(struct rev_info *opt,
 	struct strbuf parent1_desc = STRBUF_INIT;
 	struct strbuf parent2_desc = STRBUF_INIT;
 
+	/*
+	 * Lazily prepare a temporary object directory and rotate it
+	 * into the alternative object store list as the primary.
+	 */
+	if (opt->remerge_diff && !opt->remerge_objdir) {
+		opt->remerge_objdir = tmp_objdir_create("remerge-diff");
+		if (!opt->remerge_objdir)
+			return error(_("unable to create temporary object directory"));
+		tmp_objdir_replace_primary_odb(opt->remerge_objdir, 1);
+	}
+
 	/* Setup merge options */
-	init_merge_options(&o, the_repository);
+	init_ui_merge_options(&o, the_repository);
 	o.show_rename_progress = 0;
 	o.record_conflict_msgs_as_headers = 1;
 	o.msg_header_prefix = "remerge";
@@ -1044,16 +1050,14 @@ static int do_remerge_diff(struct rev_info *opt,
 	log_tree_diff_flush(opt);
 
 	/* Cleanup */
+	free_commit_list(bases);
 	cleanup_additional_headers(&opt->diffopt);
 	strbuf_release(&parent1_desc);
 	strbuf_release(&parent2_desc);
 	merge_finalize(&o, &res);
 
 	/* Clean up the contents of the temporary object directory */
-	if (opt->remerge_objdir)
-		tmp_objdir_discard_objects(opt->remerge_objdir);
-	else
-		BUG("did a remerge diff without remerge_objdir?!?");
+	tmp_objdir_discard_objects(opt->remerge_objdir);
 
 	return !opt->loginfo;
 }
@@ -1162,9 +1166,12 @@ int log_tree_commit(struct rev_info *opt, struct commit *commit)
 	}
 	if (opt->track_linear && !opt->linear && opt->reverse_output_stage)
 		fprintf(opt->diffopt.file, "\n%s\n", opt->break_bar);
+	if (shown)
+		show_diff_of_diff(opt);
 	opt->loginfo = NULL;
 	maybe_flush_or_die(opt->diffopt.file, "stdout");
 	opt->diffopt.no_free = no_free;
+
 	diff_free(&opt->diffopt);
 	return shown;
 }

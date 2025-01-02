@@ -2,7 +2,6 @@
 #define REFSPEC_H
 
 #define TAG_REFSPEC "refs/tags/*:refs/tags/*"
-extern const struct refspec_item *tag_refspec;
 
 /**
  * A struct refspec_item holds the parsed interpretation of a refspec.  If it
@@ -44,7 +43,7 @@ struct refspec {
 	int alloc;
 	int nr;
 
-	const char **raw;
+	char **raw;
 	int raw_alloc;
 	int raw_nr;
 

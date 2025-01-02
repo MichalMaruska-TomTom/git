@@ -1,3 +1,5 @@
+#define USE_THE_REPOSITORY_VARIABLE
+
 #include "git-compat-util.h"
 #include "repository.h"
 #include "hex.h"
@@ -72,7 +74,7 @@ static void start_object_request(struct object_request *obj_req)
 	obj_req->state = ACTIVE;
 	if (!start_active_slot(slot)) {
 		obj_req->state = ABORTED;
-		release_http_object_request(req);
+		release_http_object_request(&req);
 		return;
 	}
 }
@@ -108,7 +110,7 @@ static void process_object_response(void *callback_data)
 		if (obj_req->repo->next) {
 			obj_req->repo =
 				obj_req->repo->next;
-			release_http_object_request(obj_req->req);
+			release_http_object_request(&obj_req->req);
 			start_object_request(obj_req);
 			return;
 		}
@@ -152,7 +154,7 @@ static void prefetch(struct walker *walker, unsigned char *sha1)
 
 	newreq = xmalloc(sizeof(*newreq));
 	newreq->walker = walker;
-	oidread(&newreq->oid, sha1);
+	oidread(&newreq->oid, sha1, the_repository->hash_algo);
 	newreq->repo = data->alt;
 	newreq->state = WAITING;
 	newreq->req = NULL;
@@ -485,7 +487,7 @@ static int fetch_object(struct walker *walker, unsigned char *hash)
 
 	list_for_each(pos, head) {
 		obj_req = list_entry(pos, struct object_request, node);
-		if (hasheq(obj_req->oid.hash, hash))
+		if (hasheq(obj_req->oid.hash, hash, the_repository->hash_algo))
 			break;
 	}
 	if (!obj_req)
@@ -493,7 +495,7 @@ static int fetch_object(struct walker *walker, unsigned char *hash)
 
 	if (repo_has_object_file(the_repository, &obj_req->oid)) {
 		if (obj_req->req)
-			abort_http_object_request(obj_req->req);
+			abort_http_object_request(&obj_req->req);
 		abort_object_request(obj_req);
 		return 0;
 	}
@@ -541,7 +543,7 @@ static int fetch_object(struct walker *walker, unsigned char *hash)
 		strbuf_release(&buf);
 	}
 
-	release_http_object_request(req);
+	release_http_object_request(&obj_req->req);
 	release_object_request(obj_req);
 	return ret;
 }
@@ -577,7 +579,17 @@ static void cleanup(struct walker *walker)
 	if (data) {
 		alt = data->alt;
 		while (alt) {
+			struct packed_git *pack;
+
 			alt_next = alt->next;
+
+			pack = alt->packs;
+			while (pack) {
+				struct packed_git *pack_next = pack->next;
+				close_pack(pack);
+				free(pack);
+				pack = pack_next;
+			}
 
 			free(alt->base);
 			free(alt);

@@ -3,11 +3,11 @@
  *
  * Copyright (c) 2006 Junio C Hamano
  */
+#define USE_THE_REPOSITORY_VARIABLE
 #include "builtin.h"
 #include "abspath.h"
 #include "gettext.h"
 #include "hex.h"
-#include "repository.h"
 #include "config.h"
 #include "tag.h"
 #include "tree-walk.h"
@@ -888,7 +888,10 @@ static int pattern_callback(const struct option *opt, const char *arg,
 	return 0;
 }
 
-int cmd_grep(int argc, const char **argv, const char *prefix)
+int cmd_grep(int argc,
+	     const char **argv,
+	     const char *prefix,
+	     struct repository *repo UNUSED)
 {
 	int hit = 0;
 	int cached = 0, untracked = 0, opt_exclude = -1;
@@ -1114,7 +1117,7 @@ int cmd_grep(int argc, const char **argv, const char *prefix)
 	for (i = 0; i < argc; i++) {
 		const char *arg = argv[i];
 		struct object_id oid;
-		struct object_context oc;
+		struct object_context oc = {0};
 		struct object *object;
 
 		if (!strcmp(arg, "--")) {
@@ -1133,6 +1136,7 @@ int cmd_grep(int argc, const char **argv, const char *prefix)
 					 &oid, &oc)) {
 			if (seen_dashdash)
 				die(_("unable to resolve revision: %s"), arg);
+			object_context_release(&oc);
 			break;
 		}
 
@@ -1140,7 +1144,7 @@ int cmd_grep(int argc, const char **argv, const char *prefix)
 		if (!seen_dashdash)
 			verify_non_filename(prefix, arg);
 		add_object_array_with_path(object, arg, &list, oc.mode, oc.path);
-		free(oc.path);
+		object_context_release(&oc);
 	}
 
 	/*

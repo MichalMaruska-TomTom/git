@@ -4,16 +4,14 @@
 #
 
 test_description='reftable basics'
+
 GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME=main
 export GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME
+GIT_TEST_DEFAULT_REF_FORMAT=reftable
+export GIT_TEST_DEFAULT_REF_FORMAT
 
+TEST_PASSES_SANITIZE_LEAK=true
 . ./test-lib.sh
-
-if ! test_have_prereq REFTABLE
-then
-	skip_all='skipping reftable tests; set GIT_TEST_DEFAULT_REF_FORMAT=reftable'
-	test_done
-fi
 
 INVALID_OID=$(test_oid 001)
 
@@ -81,8 +79,8 @@ test_expect_success 'init: reinitializing reftable with files backend fails' '
 '
 
 test_expect_perms () {
-	local perms="$1"
-	local file="$2"
+	local perms="$1" &&
+	local file="$2" &&
 	local actual="$(ls -l "$file")" &&
 
 	case "$actual" in
@@ -286,7 +284,7 @@ test_expect_success 'ref transaction: creating symbolic ref fails with F/D confl
 	git init repo &&
 	test_commit -C repo A &&
 	cat >expect <<-EOF &&
-	error: unable to write symref for refs/heads: file/directory conflict
+	error: ${SQ}refs/heads/main${SQ} exists; cannot create ${SQ}refs/heads${SQ}
 	EOF
 	test_must_fail git -C repo symbolic-ref refs/heads refs/heads/foo 2>err &&
 	test_cmp expect err
@@ -425,6 +423,71 @@ test_expect_success 'ref transaction: fails gracefully when auto compaction fail
 	)
 '
 
+test_expect_success 'ref transaction: timeout acquiring tables.list lock' '
+	test_when_finished "rm -rf repo" &&
+	git init repo &&
+	(
+		cd repo &&
+		test_commit initial &&
+		>.git/reftable/tables.list.lock &&
+		test_must_fail git update-ref refs/heads/branch HEAD 2>err &&
+		test_grep "cannot lock references" err
+	)
+'
+
+test_expect_success 'ref transaction: retry acquiring tables.list lock' '
+	test_when_finished "rm -rf repo" &&
+	git init repo &&
+	(
+		cd repo &&
+		test_commit initial &&
+		LOCK=.git/reftable/tables.list.lock &&
+		>$LOCK &&
+		{
+			( sleep 1 && rm -f $LOCK ) &
+		} &&
+		git -c reftable.lockTimeout=5000 update-ref refs/heads/branch HEAD
+	)
+'
+
+# This test fails most of the time on Windows systems. The root cause is
+# that Windows does not allow us to rename the "tables.list.lock" file into
+# place when "tables.list" is open for reading by a concurrent process.
+test_expect_success !WINDOWS 'ref transaction: many concurrent writers' '
+	test_when_finished "rm -rf repo" &&
+	git init repo &&
+	(
+		cd repo &&
+		# Set a high timeout. While a couple of seconds should be
+		# plenty, using the address sanitizer will significantly slow
+		# us down here. So we are aiming way higher than you would ever
+		# think is necessary just to keep us from flaking. We could
+		# also lock indefinitely by passing -1, but that could
+		# potentially block CI jobs indefinitely if there was a bug
+		# here.
+		git config set reftable.lockTimeout 300000 &&
+		test_commit --no-tag initial &&
+
+		head=$(git rev-parse HEAD) &&
+		for i in $(test_seq 100)
+		do
+			printf "%s commit\trefs/heads/branch-%s\n" "$head" "$i" ||
+			return 1
+		done >expect &&
+		printf "%s commit\trefs/heads/main\n" "$head" >>expect &&
+
+		for i in $(test_seq 100)
+		do
+			{ git update-ref refs/heads/branch-$i HEAD& } ||
+			return 1
+		done &&
+
+		wait &&
+		git for-each-ref --sort=v:refname >actual &&
+		test_cmp expect actual
+	)
+'
+
 test_expect_success 'pack-refs: compacts tables' '
 	test_when_finished "rm -rf repo" &&
 	git init repo &&
@@ -480,19 +543,26 @@ test_expect_success "$command: auto compaction" '
 
 		test_oid blob17_2 | git hash-object -w --stdin &&
 
-		# Lock all tables write some refs. Auto-compaction will be
-		# unable to compact tables and thus fails gracefully, leaving
-		# the stack in a sub-optimal state.
-		ls .git/reftable/*.ref |
+		# Lock all tables, write some refs. Auto-compaction will be
+		# unable to compact tables and thus fails gracefully,
+		# compacting only those tables which are not locked.
+		ls .git/reftable/*.ref | sort |
 		while read table
 		do
-			touch "$table.lock" || exit 1
+			touch "$table.lock" &&
+			basename "$table" >>tables.expect || exit 1
 		done &&
+		test_line_count = 2 .git/reftable/tables.list &&
 		git branch B &&
 		git branch C &&
-		rm .git/reftable/*.lock &&
-		test_line_count = 4 .git/reftable/tables.list &&
 
+		# The new tables are auto-compacted, but the locked tables are
+		# left intact.
+		test_line_count = 3 .git/reftable/tables.list &&
+		head -n 2 .git/reftable/tables.list >tables.head &&
+		test_cmp tables.expect tables.head &&
+
+		rm .git/reftable/*.lock &&
 		git $command --auto &&
 		test_line_count = 1 .git/reftable/tables.list
 	)
@@ -851,6 +921,39 @@ test_expect_success 'reflog: updates via HEAD update HEAD reflog' '
 		echo new-one >expect &&
 		git log -1 --format=%s HEAD@{1} >actual &&
 		test_cmp expect actual
+	)
+'
+
+test_expect_success 'branch: copying branch with D/F conflict' '
+	test_when_finished "rm -rf repo" &&
+	git init repo &&
+	(
+		cd repo &&
+		test_commit A &&
+		git branch branch &&
+		cat >expect <<-EOF &&
+		error: ${SQ}refs/heads/branch${SQ} exists; cannot create ${SQ}refs/heads/branch/moved${SQ}
+		fatal: branch copy failed
+		EOF
+		test_must_fail git branch -c branch branch/moved 2>err &&
+		test_cmp expect err
+	)
+'
+
+test_expect_success 'branch: moving branch with D/F conflict' '
+	test_when_finished "rm -rf repo" &&
+	git init repo &&
+	(
+		cd repo &&
+		test_commit A &&
+		git branch branch &&
+		git branch conflict &&
+		cat >expect <<-EOF &&
+		error: ${SQ}refs/heads/conflict${SQ} exists; cannot create ${SQ}refs/heads/conflict/moved${SQ}
+		fatal: branch rename failed
+		EOF
+		test_must_fail git branch -m branch conflict/moved 2>err &&
+		test_cmp expect err
 	)
 '
 
