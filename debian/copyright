@@ -6,7 +6,7 @@ Files: *
 Copyright: © 2005-2024, Linus Torvalds and others.
 License: GPL-2
 
-Files: reftable/* t/t0032-reftable-unittest.sh
+Files: reftable/* t/unit-tests/t-reftable-*.c
 Copyright: © 2020 Google LLC
 License: BSD-3-clause
  Redistribution and use in source and binary forms, with or without
@@ -177,6 +177,10 @@ License: GPL-2+
 Files: t/test-lib-github-workflow-markup.sh t/test-lib-junit.sh
 Copyright: © 2022, Johannes Schindelin
 License: GPL-2+
+
+Files: t/unit-tests/clar/*
+Copyright: © 2011-2015, Vicent Marti
+License: ISC
 
 Files: compat/inet_ntop.c compat/inet_pton.c
 Copyright: © 1996-2001, Internet Software Consortium.
