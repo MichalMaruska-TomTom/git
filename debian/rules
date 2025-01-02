@@ -166,9 +166,5 @@ override_dh_installdocs-indep:
 override_dh_installchangelogs:
 	dh_installchangelogs debian/changelog.upstream
 
-override_dh_installinit:
-	dh_installinit -pgit-daemon-sysvinit --name=git-daemon
-	dh_installinit
-
 override_dh_compress:
 	dh_compress -X.txt -Xcontrib

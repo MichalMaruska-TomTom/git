@@ -1,7 +1,10 @@
-git (1:2.47.1-0.1) unstable; urgency=low
+git (1:2.47.1-1) unstable; urgency=low
 
   * new upstream release (see RelNotes/2.46.0.txt, RelNotes/2.47.0.txt).
   * new upstream point release (see RelNotes/2.47.1.txt).
+  * remove unsafe and under-maintained packages that install an
+    unsecured git-daemon services (thx Chris Hofstaedtler; closes:
+    #1078778, #1020284).
 
  -- Jonathan Nieder <jrnieder@gmail.com>  Thu, 02 Jan 2025 13:12:25 +0100
 

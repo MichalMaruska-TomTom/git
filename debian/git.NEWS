@@ -1,3 +1,17 @@
+git (1:2.47.1-1) unstable; urgency=low
+
+  The git-daemon-sysvinit and git-daemon-run service configuration
+  packages have been removed, as they were security-sensitive, had
+  low usage, and were not actively maintained.  Moreover, they are
+  difficult to run safely because git:// protocol does not include
+  built-in privacy or integrity guarantees on the channel it sets
+  up.  See git-daemon(1) for information on how to configure
+  git-daemon to be run and serve using inetd and similar service
+  runners, or see the gitolite package for an example of how to set
+  up a safer git server configuration.
+
+ -- Jonathan Nieder <jrnieder@gmail.com>  Thu, 02 Jan 2025 13:29:44 +0100
+
 git (1:1.8.4~rc0-1) experimental; urgency=low
 
   Starting with this version, gitweb and "git daemon" on Debian are

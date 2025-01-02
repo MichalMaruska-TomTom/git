@@ -31,7 +31,7 @@ Depends: ${misc:Depends}, ${shlibs:Depends}, perl, liberror-perl,
  git-man (>> ${source:Upstream-Version}), git-man (<< ${source:Upstream-Version}-.)
 Pre-Depends: ${misc:Pre-Depends}
 Recommends: ca-certificates, patch, less, ssh-client
-Suggests: gettext-base, git-daemon-run | git-daemon-sysvinit,
+Suggests: gettext-base,
  git-doc, git-email, git-gui, gitk, gitweb,
  git-cvs, git-mediawiki, git-svn
 Breaks: bash-completion (<< 1:1.90-1),
@@ -183,50 +183,6 @@ Description: fast, scalable, distributed revision control system (email add-on)
  This package provides the git-send-email program for sending series of
  patch emails.
 
-Package: git-daemon-run
-Architecture: all
-Multi-Arch: foreign
-Depends: ${misc:Depends}, git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.), runit, adduser
-Conflicts: git-daemon-sysvinit
-Description: fast, scalable, distributed revision control system (git-daemon service)
- Git is popular version control system designed to handle very large
- projects with speed and efficiency; it is used for many high profile
- open source projects, most notably the Linux kernel.
- .
- Git falls in the category of distributed source code management tools.
- Every Git working directory is a full-fledged repository with full
- revision tracking capabilities, not dependent on network access or a
- central server.
- .
- git-daemon, as provided by the git package, is a simple server for git
- repositories, ideally suited for read-only updates, i.e. pulling from git
- repositories through the network.  This package provides a runit service
- for running git-daemon permanently.  This configuration is simpler and
- more reliable than git-daemon-sysvinit, at a cost of being less
- familiar for administrators accustomed to sysvinit.
-
-Package: git-daemon-sysvinit
-Architecture: all
-Multi-Arch: foreign
-Depends: ${misc:Depends}, git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.), adduser, lsb-base (>= 3.0-6)
-Conflicts: git-daemon-run
-Description: fast, scalable, distributed revision control system (git-daemon service)
- Git is popular version control system designed to handle very large
- projects with speed and efficiency; it is used for many high profile
- open source projects, most notably the Linux kernel.
- .
- Git falls in the category of distributed source code management tools.
- Every Git working directory is a full-fledged repository with full
- revision tracking capabilities, not dependent on network access or a
- central server.
- .
- git-daemon, as provided by the git package, is a simple server for git
- repositories, ideally suited for read-only updates, i.e. pulling from git
- repositories through the network.  This package provides a sysvinit service
- for running git-daemon permanently.  Unlike git-daemon-run, this
- package provides the usual sysvinit service management commands
- ("service git-daemon start/stop") for git-daemon.
-
 Package: git-gui
 Architecture: all
 Multi-Arch: foreign
@@ -302,7 +258,6 @@ Multi-Arch: foreign
 Depends: ${misc:Depends}, git (>> ${source:Upstream-Version}), git (<< ${source:Upstream-Version}-.),
  git-doc, git-cvs, git-mediawiki, git-svn,
  git-email, git-gui, gitk, gitweb
-Suggests: git-daemon-run | git-daemon-sysvinit
 Description: fast, scalable, distributed revision control system (all subpackages)
  Git is popular version control system designed to handle very large
  projects with speed and efficiency; it is used for many high profile
